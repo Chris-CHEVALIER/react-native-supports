@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TP3 – Projet, jalon 2 – React Native</title>
+  <link rel="stylesheet" href="../assets/css/enonce.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="titre">
+    <h1>TP3 – Navigation et données distantes</h1>
+    <p><span class="code-module">React Native</span> · En trinôme · Projet, jalon 2 · <strong>Noté</strong></p>
+  </div>
+</header>
+
+<main>
+
+  <p>
+    Votre projet a son architecture. Il devient maintenant une vraie application : plusieurs écrans reliés entre eux,
+    des adresses sur le web, des données qui viennent d'une <strong>API publique</strong> et des écrans qui réagissent à leur cycle de vie.
+  </p>
+
+  <div class="encadre neutre">
+    <span class="intitule">Ce TP en bref</span>
+    <ul>
+      <li><strong>Objectifs</strong> : mettre en place la navigation avec Expo Router (onglets, pile, route dynamique), consommer une API avec <code>fetch</code>, gérer le cycle de vie des écrans et des listes plus riches.</li>
+      <li>En trinôme, dans le dépôt du projet, <strong>en autonomie</strong> du 29 octobre au 24 novembre.</li>
+      <li><strong>Ce jalon est noté</strong> sur 20 avec la grille de la dernière partie. Sa note compte pour <strong>3 points</strong> sur les 20 du projet.</li>
+      <li>Le cours 3 (catalogue de séjours avec météo) vous sert de modèle.</li>
+    </ul>
+  </div>
+
+  <nav class="sommaire">
+    <a href="#etape-1"><span class="n">Étape 1</span><br>La navigation</a>
+    <a href="#etape-2"><span class="n">Étape 2</span><br>L'API publique</a>
+    <a href="#etape-3"><span class="n">Étape 3</span><br>L'écran de détail</a>
+    <a href="#etape-4"><span class="n">Étape 4</span><br>Le catalogue et ses filtres</a>
+    <a href="#etape-5"><span class="n">Étape 5</span><br>Le cycle de vie</a>
+    <a href="#rendu"><span class="n">Rendu</span><br>Tag Git et point d'étape</a>
+    <a href="#grille"><span class="n">Grille</span><br>La notation</a>
+  </nav>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-1">
+    <h2><span class="num">1</span> La navigation</h2>
+    <div class="meta"><span class="etiquette clair">Expo Router · Stack · Tabs</span></div>
+    <ol>
+      <li>Réorganisez <code>src/app/</code> :
+        <ul>
+          <li>une <strong>pile racine</strong> dans <code>src/app/_layout.tsx</code>, qui garde votre Provider ;</li>
+          <li>un groupe <code>(tabs)</code> avec <strong>au moins deux onglets</strong>, chacun avec un titre et une icône ;</li>
+          <li>une <strong>route dynamique</strong> pour le détail d'un élément, par exemple <code>src/app/recipes/[id].tsx</code> ;</li>
+          <li>un écran <code>+not-found.tsx</code> avec un lien de retour à l'accueil.</li>
+        </ul>
+      </li>
+      <li>Déclarez <code>unstable_settings = { anchor: "(tabs)" }</code> dans la pile racine, pour qu'un détail ouvert par son URL garde une flèche de retour.</li>
+    </ol>
+    <div class="encadre">
+      Importez <code>Tabs</code> depuis <code>expo-router/js-tabs</code>. Installez les icônes avec <code>npx expo install @expo/vector-icons</code>, jamais avec <code>npm install</code> : la commande d'Expo choisit la version compatible avec votre SDK.
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-2">
+    <h2><span class="num">2</span> L'API publique</h2>
+    <div class="meta"><span class="etiquette clair">fetch · async · typage</span></div>
+    <ol>
+      <li>Choisissez l'API de votre sujet et notez son adresse dans le README. Elle doit être <strong>gratuite et sans clé secrète</strong>.</li>
+      <li>Ouvrez une réponse de l'API dans votre navigateur. Écrivez le <strong>type de la réponse</strong>, limité aux champs que vous utilisez.</li>
+      <li>Remplacez le contenu de votre service par un appel à <code>fetch</code> :
+        <ul>
+          <li>vérifiez <code>response.ok</code> et levez une erreur sinon ;</li>
+          <li><strong>convertissez</strong> la réponse en objets de votre modèle. Le reste de l'application ne doit pas connaître les noms de champs de l'API.</li>
+        </ul>
+      </li>
+      <li>Vérifiez que vos hooks et vos composants <strong>n'ont pas changé</strong>. Si vous avez dû les modifier, c'est qu'une responsabilité était mal placée au TP2.</li>
+      <li>Coupez le réseau (mode avion ou outils de développement du navigateur) : l'erreur et le bouton « Réessayer » doivent s'afficher.</li>
+    </ol>
+    <details>
+      <summary>Indice : l'API renvoie beaucoup plus de champs que nécessaire</summary>
+      <p>C'est normal. Ne typez que ce que vous utilisez, puis construisez vos objets du modèle avec les bons noms. Un champ facultatif de l'API devient une propriété facultative (<code>?</code>) de votre type.</p>
+    </details>
+    <details>
+      <summary>Indice : les données locales servent encore</summary>
+      <p>Si votre API ne fournit pas tout (vos catégories, par exemple), gardez ces données dans <code>src/data/</code>. Ce sont vos deux CRUD Firebase du TP4 qui remplaceront le reste.</p>
+    </details>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-3">
+    <h2><span class="num">3</span> L'écran de détail</h2>
+    <div class="meta"><span class="etiquette clair">useLocalSearchParams · liens profonds</span></div>
+    <ol>
+      <li>Depuis le catalogue, un appui sur un élément ouvre son détail avec <code>router.push</code> ou un <code>&lt;Link&gt;</code>.</li>
+      <li>Le détail lit l'identifiant avec <code>useLocalSearchParams</code> et <strong>recharge l'élément</strong> par un service et un hook dédiés.</li>
+      <li>Son titre apparaît dans l'en-tête (<code>&lt;Stack.Screen options&gt;</code>).</li>
+      <li>Un identifiant inconnu affiche un message clair, sans planter.</li>
+    </ol>
+    <div class="encadre">
+      <span class="intitule">Le test qui compte</span>
+      Sur le web, ouvrez un détail, puis <strong>rechargez la page</strong> (F5) et copiez son adresse dans un nouvel onglet. Le même détail doit s'afficher, avec une flèche de retour.
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-4">
+    <h2><span class="num">4</span> Le catalogue et ses filtres</h2>
+    <div class="meta"><span class="etiquette clair">FlatList · SectionList · hooks</span></div>
+    <ol>
+      <li>Le catalogue affiche les données de l'API en grille sur ordinateur et en liste sur téléphone.</li>
+      <li>Il propose <strong>au moins deux filtres combinables</strong> (une recherche et une catégorie, par exemple). Leur logique est dans le modèle et dans un hook, jamais dans un composant.</li>
+      <li>Un des écrans utilise une <code>SectionList</code> pour présenter des éléments <strong>groupés</strong> (par catégorie, par date…). La fonction de regroupement est dans le modèle.</li>
+      <li>Chaque liste a une <code>keyExtractor</code>, un message quand elle est vide, et aucun calcul dans <code>renderItem</code>.</li>
+    </ol>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-5">
+    <h2><span class="num">5</span> Le cycle de vie</h2>
+    <div class="meta"><span class="etiquette clair">useFocusEffect · AppState</span></div>
+    <ol>
+      <li>Repérez un écran dont les données peuvent changer pendant qu'il est caché (un onglet de favoris, par exemple). Rechargez-le avec <code>useFocusEffect</code>.</li>
+      <li>Dans le README, expliquez en deux ou trois phrases <strong>pourquoi</strong> un <code>useEffect(…, [])</code> ne suffisait pas à cet endroit.</li>
+      <li><strong>Facultatif</strong> : rafraîchissez une donnée au retour de l'application au premier plan, avec <code>AppState</code>.</li>
+    </ol>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="rendu">
+    <h2><span class="num">✓</span> Rendu et point d'étape</h2>
+    <ul class="checklist">
+      <li><code>npx tsc --noEmit</code> et <code>npx expo lint</code> n'affichent aucune erreur.</li>
+      <li>L'application se lance sur le web et sur Expo Go.</li>
+      <li>Le README liste les écrans et leurs URL, l'API utilisée et l'explication de l'étape 5.</li>
+      <li>Les trois membres ont commité pendant ce jalon.</li>
+    </ul>
+    <ol>
+      <li>Quand le jalon est prêt, créez un <strong>tag Git</strong> et poussez-le, <strong>au plus tard le mardi 24 novembre à 23h59</strong> :
+        <pre data-titre="Terminal"><code class="language-bash">
+          git tag jalon-2
+          git push origin jalon-2
+        </code></pre>
+      </li>
+      <li>Envoyez un e-mail à <a href="mailto:chevalier@chris-freelance.com">chevalier@chris-freelance.com</a> avec l'objet <code>[RN-IWB1] Jalon 2 – NOM1, NOM2, NOM3</code> (ou <code>IWB2</code>).</li>
+      <li>Le mercredi 25 novembre, au <strong>point d'étape</strong>, chaque groupe me montre son application en 5 minutes. Je pose une question à chaque membre.</li>
+    </ol>
+    <p class="muet">Je corrige le commit pointé par le tag <code>jalon-2</code>. Les commits suivants comptent pour le rendu final, pas pour ce jalon.</p>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="grille">
+    <h2><span class="num">20</span> La grille de notation</h2>
+    <table>
+      <tr><th>Critère</th><th>Ce que je vérifie</th><th>Points</th></tr>
+      <tr><td><strong>Navigation</strong></td><td>Pile racine, au moins deux onglets avec icônes, route dynamique de détail, écran <code>+not-found</code></td><td>5</td></tr>
+      <tr><td><strong>URL et liens profonds</strong></td><td>Un détail s'ouvre et se recharge depuis son adresse, avec une flèche de retour</td><td>2</td></tr>
+      <tr><td><strong>API publique</strong></td><td>Service avec <code>fetch</code>, test de <code>response.ok</code>, réponse typée et convertie en modèle, états de chargement et d'erreur</td><td>5</td></tr>
+      <tr><td><strong>Catalogue et listes</strong></td><td>Grille ou liste selon la largeur, deux filtres combinables dans un hook, une <code>SectionList</code></td><td>3</td></tr>
+      <tr><td><strong>Cycle de vie</strong></td><td><code>useFocusEffect</code> utilisé à bon escient et expliqué dans le README</td><td>2</td></tr>
+      <tr><td><strong>Architecture et qualité</strong></td><td>MVC respecté (aucun service dans un composant), aucune erreur TypeScript, commits des trois membres</td><td>3</td></tr>
+      <tr><td colspan="2"><strong>Total</strong></td><td><strong>20</strong></td></tr>
+    </table>
+    <p>Un critère est noté en entier s'il fonctionne <strong>sur le web et sur mobile</strong>. Une fonctionnalité que personne ne sait expliquer au point d'étape n'est pas comptée.</p>
+  </section>
+
+</main>
+
+<footer class="pied">React Native · TP3 · Chris CHEVALIER</footer>
+
+<script src="../assets/vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="../assets/js/enonce.js"></script>
+</body>
+</html>

@@ -173,3 +173,4 @@ th code { background: rgba(255, 255, 255, .18) !important; color: #fff; border: 
 /* Charte neutre : texte accentué lisible sur fond blanc */
 .sommaire .n, .entete .sur-titre { color: #0B7A70; }
 .entete .code-module { color: #2EC4B6; }
+ul.checklist > li::before { content: "☐"; background: none; width: auto; height: auto; left: 0; top: 0; border-radius: 0; color: var(--marine); }

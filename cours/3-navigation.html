@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Navigation et cycle de vie – React Native</title>
+  <link rel="stylesheet" href="../assets/vendor/reveal/dist/reset.css">
+  <link rel="stylesheet" href="../assets/vendor/reveal/dist/reveal.css">
+  <link rel="stylesheet" href="../assets/css/theme.css">
+</head>
+<body data-pied="React Native · Cours 3 · Navigation et cycle de vie">
+<div class="reveal">
+<div class="slides">
+
+  <section data-layout="titre">
+    <h1>Navigation et cycle de vie</h1>
+    <div class="sous-titre">
+      <span class="code-module">Cours 3</span> – Expo Router, données distantes et listes<br>
+      Chris CHEVALIER
+    </div>
+  </section>
+
+  <section data-layout="sommaire">
+    <h1>Sommaire</h1>
+    <ol>
+      <li>Naviguer sur mobile et sur le web</li>
+      <li>Expo Router : les fichiers sont les routes</li>
+      <li>Onglets, pile et routes dynamiques</li>
+      <li>Les données distantes</li>
+      <li>Le cycle de vie</li>
+      <li>Les listes volumineuses</li>
+    </ol>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">01</div>
+    <h2>Naviguer sur mobile et sur le web</h2>
+    <div class="sous-titre">Deux logiques à réconcilier</div>
+  </section>
+
+  <section>
+    <h2>Deux façons de naviguer</h2>
+    <div class="corps">
+      <table>
+        <tr><th></th><th>Sur le web</th><th>Sur mobile</th></tr>
+        <tr><td><strong>Ce qui définit l'écran</strong></td><td>L'URL dans la barre d'adresse</td><td>Une <strong>pile</strong> d'écrans en mémoire</td></tr>
+        <tr><td><strong>Le retour</strong></td><td>Le bouton du navigateur</td><td>La flèche de l'en-tête, le geste ou le bouton système</td></tr>
+        <tr><td><strong>Les sections</strong></td><td>Un menu</td><td>Des <strong>onglets</strong> en bas de l'écran</td></tr>
+        <tr><td><strong>Ouvrir un contenu de l'extérieur</strong></td><td>Un lien partagé</td><td>Un <strong>lien profond</strong> (<em>deep link</em>) qui ouvre l'application sur le bon écran</td></tr>
+      </table>
+      <div class="encadre" style="margin-top: 20px;">
+        Avec <strong>Expo Router</strong>, chaque écran a une URL. La même navigation produit une pile sur mobile et des adresses dans le navigateur.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>La pile d'écrans</h2>
+    <div class="corps">
+      <div class="frise" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="etape"><div class="date">1. Onglet « Séjours »</div><code>/</code><br>Le catalogue est la base de la pile</div>
+        <div class="etape"><div class="date">2. On empile</div><code>/stays/s3</code><br>Le détail se pose par-dessus, avec une flèche de retour</div>
+        <div class="etape corail"><div class="date">3. On dépile</div><code>/</code><br>Le catalogue réapparaît <strong>dans l'état où on l'avait laissé</strong> (filtres, défilement)</div>
+      </div>
+      <div class="encadre neutre" style="margin-top: 26px;">
+        Expo Router s'appuie sur <a href="https://reactnavigation.org/" target="_blank">React Navigation</a>, la bibliothèque de navigation de référence. Vous n'avez pas à la configurer vous-mêmes.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">02</div>
+    <h2>Expo Router : les fichiers sont les routes</h2>
+    <div class="sous-titre">Le routage par fichiers</div>
+  </section>
+
+  <section>
+    <h2>Un fichier, une URL</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="compact" data-titre="src/app/"><code class="language-plaintext" data-trim>
+src/app/
+├── _layout.tsx         pile racine
+├── +not-found.tsx      URL inconnue
+├── (tabs)/
+│   ├── _layout.tsx     onglets
+│   ├── index.tsx       /
+│   └── favorites.tsx   /favorites
+└── stays/
+    └── [id].tsx        /stays/s1, /stays/s2…
+        </code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>_layout.tsx</code> : le <strong>navigateur</strong> (pile ou onglets) de son dossier</li>
+            <li><code>(tabs)</code> : un <strong>groupe</strong>. Les parenthèses n'apparaissent pas dans l'URL</li>
+            <li><code>[id]</code> : un <strong>segment dynamique</strong>, récupéré comme paramètre</li>
+            <li><code>+not-found</code> : l'écran des adresses inconnues</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">Projet de démo : demos/cours3. Ouvrir /_sitemap dans le navigateur pour voir toutes les routes générées.</aside>
+  </section>
+
+  <section>
+    <h2>La pile racine</h2>
+    <div class="corps">
+      <div class="colonnes code-large">
+        <pre class="compact" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-trim>
+import { Stack } from "expo-router";
+
+import { FavoritesProvider } from "@/context/favorites-context";
+
+// Ouvert par son URL, un séjour garde un retour vers les onglets
+export const unstable_settings = { anchor: "(tabs)" };
+
+export default function RootLayout() {
+  return (
+    &lt;FavoritesProvider&gt;
+      &lt;Stack&gt;
+        &lt;Stack.Screen name="(tabs)" options={{ headerShown: false }} /&gt;
+        &lt;Stack.Screen name="stays/[id]" options={{ title: "Séjour" }} /&gt;
+      &lt;/Stack&gt;
+    &lt;/FavoritesProvider&gt;
+  );
+}
+        </code></pre>
+        <div>
+          <ul class="dense">
+            <li>Les onglets forment <strong>un seul écran</strong> de la pile, sans en-tête (ils ont le leur)</li>
+            <li>Le détail se pose par-dessus</li>
+            <li><code>anchor</code> : sans lui, une page ouverte par son URL n'a pas de flèche de retour</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">03</div>
+    <h2>Onglets, pile et routes dynamiques</h2>
+    <div class="sous-titre">Construire le parcours de l'utilisateur</div>
+  </section>
+
+  <section>
+    <h2>Les onglets</h2>
+    <div class="corps">
+      <div class="colonnes code-large">
+        <pre class="mini" data-titre="src/app/(tabs)/_layout.tsx"><code class="language-tsx" data-trim>
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { Tabs } from "expo-router/js-tabs";
+const ACTIVE = "#0B7A70";
+const INACTIVE = "#8C90B4";
+
+export default function TabsLayout() {
+  return (
+    &lt;Tabs screenOptions={{
+      tabBarActiveTintColor: ACTIVE, tabBarInactiveTintColor: INACTIVE }}&gt;
+      &lt;Tabs.Screen name="index" options={{
+        title: "Séjours",
+        tabBarIcon: ({ focused, size }) =&gt; (
+          &lt;Ionicons name="bed-outline" size={size}
+            color={focused ? ACTIVE : INACTIVE} /&gt;
+        ),
+      }} /&gt;
+      &lt;Tabs.Screen name="favorites" options={{ title: "Favoris" /* … */ }} /&gt;
+    &lt;/Tabs&gt;
+  );
+}
+        </code></pre>
+        <div>
+          <ul class="dense">
+            <li>Depuis le SDK 58, importez <code>Tabs</code> depuis <code>expo-router/js-tabs</code>. L'import depuis <code>expo-router</code> est <strong>déprécié</strong></li>
+            <li><code>name</code> reprend le nom du fichier</li>
+            <li>Icônes : <a href="https://icons.expo.fyi" target="_blank"><code>@expo/vector-icons</code></a>, à installer avec <code>npx expo install</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">Il existe aussi NativeTabs (expo-router/native-tabs) pour la barre d'onglets native du système. On garde les onglets JavaScript, identiques sur le web et sur mobile.</aside>
+  </section>
+
+  <section>
+    <h2>Naviguer : <code>Link</code> et <code>useRouter</code></h2>
+    <div class="corps">
+      <div class="colonnes" style="grid-template-columns: 1.25fr 1fr;">
+        <div>
+          <pre class="mini" data-titre="Un lien (dans favorites.tsx)"><code class="language-tsx" data-trim>
+&lt;Link href={{
+  pathname: "/stays/[id]",
+  params: { id: item.id },
+}}&gt;
+  {item.title}
+&lt;/Link&gt;
+          </code></pre>
+          <pre class="mini" data-titre="Par le code (dans index.tsx)"><code class="language-tsx" data-trim>
+const router = useRouter();
+const openStay = (id: string) =&gt;
+  router.push({ pathname: "/stays/[id]", params: { id } });
+          </code></pre>
+        </div>
+        <div>
+          <table class="serre">
+            <tr><th>Méthode</th><th>Effet</th></tr>
+            <tr><td><code>push(href)</code></td><td>Empile un écran</td></tr>
+            <tr><td><code>back()</code></td><td>Revient à l'écran précédent</td></tr>
+            <tr><td><code>replace(href)</code></td><td>Remplace l'écran actuel (après une connexion, par exemple)</td></tr>
+            <tr><td><code>navigate(href)</code></td><td>Va à l'écran, sans l'empiler s'il existe déjà</td></tr>
+          </table>
+          <p class="petit muet" style="margin-top: 10px;">Les <strong>routes typées</strong> (<code>typedRoutes</code> dans <code>app.json</code>) font signaler par TypeScript un lien vers une page inexistante.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Une route dynamique</h2>
+    <div class="corps">
+      <div class="colonnes code-large">
+        <pre class="mini" data-titre="src/app/stays/[id].tsx (extrait)"><code class="language-tsx" data-trim>
+export default function StayScreen() {
+  const { id } = useLocalSearchParams&lt;{ id: string }&gt;();
+  const state = useStay(id);
+
+  if (state.status === "loading") return &lt;StateMessage loading /&gt;;
+  if (state.status === "not-found")
+    return &lt;StateMessage message="Ce séjour est introuvable." /&gt;;
+  return &lt;StayDetails stay={state.stay} /&gt;;
+}
+
+function StayDetails({ stay }: { stay: Stay }) {
+  const weather = useWeather(stay.latitude, stay.longitude);
+  return (
+    &lt;ScrollView contentContainerStyle={styles.content}&gt;
+      &lt;Stack.Screen options={{ title: stay.title }} /&gt;
+      {/* photo, titre, prix… */}
+      &lt;WeatherBadge state={weather} /&gt;
+    &lt;/ScrollView&gt;
+  );
+}
+        </code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>useLocalSearchParams</code> lit <code>id</code> dans l'URL</li>
+            <li>L'écran ne reçoit <strong>que l'identifiant</strong>, jamais l'objet entier : il recharge ses données. C'est ce qui permet d'ouvrir la page depuis un lien</li>
+            <li><code>&lt;Stack.Screen options&gt;</code> change le titre de l'en-tête</li>
+            <li>Un identifiant inconnu est un cas prévu</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">StayDetails est un composant séparé car useWeather ne peut pas être appelé après les return conditionnels (règles des hooks).</aside>
+  </section>
+
+  <section>
+    <h2>URL et liens profonds</h2>
+    <div class="corps">
+      <div class="colonnes">
+        <div class="carte">
+          <h3>Sur le web</h3>
+          <ul class="dense">
+            <li>L'URL <code>/stays/s3</code> s'affiche dans la barre d'adresse</li>
+            <li>On peut la copier, la partager, la recharger : le même écran s'ouvre</li>
+            <li>Le bouton retour du navigateur dépile</li>
+          </ul>
+        </div>
+        <div class="carte">
+          <h3>Sur mobile</h3>
+          <ul class="dense">
+            <li>Le <code>scheme</code> d'<code>app.json</code> définit le préfixe : <code>cours3://stays/s3</code></li>
+            <li>Dans Expo Go, l'adresse devient <code>exp://&lt;IP&gt;:8081/--/stays/s3</code></li>
+            <li>Une notification ou un e-mail peut ouvrir l'application sur le bon séjour</li>
+          </ul>
+        </div>
+      </div>
+      <div class="encadre corail" style="margin-top: 20px;">
+        Un paramètre d'URL vient de l'extérieur : <strong>ne lui faites pas confiance</strong>. Vérifiez qu'il existe avant de l'utiliser, comme le cas <code>not-found</code> du détail.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Quiz</h2>
+    <div class="corps">
+      <p><strong>Quelle URL correspond au fichier <code>src/app/(tabs)/favorites.tsx</code> ?</strong></p>
+      <div class="reponse fragment"><code>/favorites</code> : les groupes entre parenthèses n'apparaissent pas dans l'URL.</div>
+      <p style="margin-top: 22px;"><strong>Pourquoi passer l'identifiant du séjour au détail plutôt que l'objet complet ?</strong></p>
+      <div class="reponse fragment">L'URL doit suffire à afficher la page : ouverte depuis un lien ou rechargée, elle n'a que l'identifiant. Le détail recharge donc ses données.</div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">04</div>
+    <h2>Les données distantes</h2>
+    <div class="sous-titre">Consommer une API publique</div>
+  </section>
+
+  <section>
+    <h2>Un service qui appelle une API</h2>
+    <div class="corps">
+      <div class="colonnes code-large">
+        <pre class="mini" data-titre="src/services/weather-service.ts (extrait)"><code class="language-typescript" data-trim>
+// Forme de la réponse de l'API, limitée à ce qu'on utilise
+type OpenMeteoResponse = {
+  current: { temperature_2m: number; wind_speed_10m: number; weather_code: number };
+};
+export async function fetchWeather(
+  latitude: number, longitude: number
+): Promise&lt;Weather&gt; {
+  const url =
+    "https://api.open-meteo.com/v1/forecast" +
+    `?latitude=${latitude}&amp;longitude=${longitude}` +
+    "&amp;current=temperature_2m,wind_speed_10m,weather_code";
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
+  const data: OpenMeteoResponse = await response.json();
+  // On convertit la réponse de l'API en objet du modèle
+  return {
+    temperature: data.current.temperature_2m,
+    windSpeed: data.current.wind_speed_10m,
+    code: data.current.weather_code,
+  };
+}
+        </code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>fetch</code> fonctionne de la même façon sur le web et sur mobile</li>
+            <li><code>fetch</code> ne lève <strong>pas</strong> d'erreur sur une réponse 404 ou 500 : testez <code>response.ok</code></li>
+            <li>Le service <strong>traduit</strong> la réponse de l'API dans le vocabulaire du modèle. Si l'API change, seul ce fichier change</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">API : Open-Meteo, gratuite et sans clé. Montrer la réponse brute dans le navigateur avant de montrer le service.</aside>
+  </section>
+
+  <section>
+    <h2>Le contrôleur et la vue</h2>
+    <div class="corps">
+      <div class="colonnes">
+        <div>
+          <pre class="mini" data-titre="src/hooks/use-weather.ts (extrait)"><code class="language-typescript" data-trim>
+export type WeatherState =
+  | { status: "loading" }
+  | { status: "error"; message: string }
+  | { status: "success"; weather: Weather };
+
+export function useWeather(
+  latitude: number, longitude: number
+) {
+  const [state, setState] =
+    useState&lt;WeatherState&gt;({ status: "loading" });
+  // … useEffect qui appelle fetchWeather()
+  return state;
+}
+          </code></pre>
+        </div>
+        <div>
+          <pre class="mini" data-titre="src/components/weather-badge.tsx (extrait)"><code class="language-tsx" data-trim>
+export function WeatherBadge({ state }: WeatherBadgeProps) {
+  return (
+    &lt;View style={styles.badge}&gt;
+      {state.status === "loading" &amp;&amp;
+        &lt;ActivityIndicator /&gt;}
+      {state.status === "error" &amp;&amp;
+        &lt;Text&gt;{state.message}&lt;/Text&gt;}
+      {state.status === "success" &amp;&amp; (
+        &lt;Text style={styles.text}&gt;
+          {describeWeather(state.weather.code)} ·{" "}
+          {Math.round(state.weather.temperature)} °C
+        &lt;/Text&gt;
+      )}
+    &lt;/View&gt;
+  );
+}
+          </code></pre>
+        </div>
+      </div>
+      <div class="encadre" style="margin-top: 6px;">
+        Même structure qu'au cours 2 : le service parle à l'API, le hook tient l'état, la vue affiche ce qu'on lui donne.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Ce qui peut mal se passer</h2>
+    <div class="corps">
+      <table>
+        <tr><th>Situation</th><th>Ce qui se passe</th><th>Ce que voit l'utilisateur</th></tr>
+        <tr><td>Pas de réseau</td><td><code>fetch</code> lève une erreur</td><td>Un message et « Réessayer »</td></tr>
+        <tr><td>Erreur 404 ou 500</td><td><code>response.ok</code> vaut <code>false</code></td><td>Un message et « Réessayer »</td></tr>
+        <tr><td>Réponse lente</td><td>La promesse attend</td><td>Un indicateur de chargement</td></tr>
+        <tr><td>L'écran est quitté avant la réponse</td><td>Le drapeau <code>cancelled</code> ignore le résultat</td><td>Rien</td></tr>
+      </table>
+      <div class="encadre corail" style="margin-top: 20px;">
+        Une clé d'API placée dans le code de l'application est <strong>lisible par tous</strong> : le code JavaScript est livré avec l'application. N'y mettez jamais de secret. Préférez des API sans clé ou passez par votre propre serveur.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">05</div>
+    <h2>Le cycle de vie</h2>
+    <div class="sous-titre">Écrans et application</div>
+  </section>
+
+  <section>
+    <h2>Un écran ne se démonte pas toujours</h2>
+    <div class="corps">
+      <div class="colonnes code-large">
+        <pre class="mini" data-titre="src/app/(tabs)/favorites.tsx (extrait)"><code class="language-tsx" data-trim>
+export default function FavoritesScreen() {
+  const { state, reload } = useStays();
+  const { isFavorite } = useFavorites();
+
+  // À chaque fois que l'onglet redevient visible, on recharge les séjours
+  useFocusEffect(
+    useCallback(() =&gt; {
+      reload();
+    }, [reload])
+  );
+  // …
+}
+        </code></pre>
+        <div>
+          <ul class="dense">
+            <li>Un onglet quitté reste <strong>monté</strong> : son <code>useEffect(…, [])</code> ne s'exécutera plus</li>
+            <li><code>useFocusEffect</code> (d'<code>expo-router</code>) s'exécute à <strong>chaque</strong> affichage de l'écran</li>
+            <li>La fonction renvoyée, si vous en écrivez une, s'exécute quand l'écran perd le focus</li>
+            <li><code>useCallback</code> évite de relancer l'effet à chaque rendu</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>L'application passe en arrière-plan</h2>
+    <div class="corps">
+      <div class="colonnes code-large">
+        <pre class="compact" data-titre="src/hooks/use-is-app-active.ts"><code class="language-typescript" data-trim>
+import { useEffect, useState } from "react";
+import { AppState } from "react-native";
+
+// true au premier plan, false en arrière-plan
+export function useIsAppActive(): boolean {
+  const [isActive, setIsActive] = useState(true);
+
+  useEffect(() =&gt; {
+    const subscription = AppState.addEventListener(
+      "change",
+      (status) =&gt; setIsActive(status === "active")
+    );
+    return () =&gt; subscription.remove();
+  }, []);
+
+  return isActive;
+}
+        </code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>AppState</code> signale le premier plan (<code>"active"</code>) et l'arrière-plan (<code>"background"</code>)</li>
+            <li>Sur le web, il suit la visibilité de l'onglet du navigateur</li>
+            <li>Toujours <strong>retirer l'écouteur</strong> au démontage, sinon il s'accumule</li>
+            <li><code>useWeather</code> s'en sert pour recharger la météo au retour dans l'application</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Quel outil pour quel moment ?</h2>
+    <div class="corps">
+      <table>
+        <tr><th>Moment</th><th>Outil</th><th>Exemple</th></tr>
+        <tr><td>Le composant apparaît pour la première fois</td><td><code>useEffect(…, [])</code></td><td>Charger le détail d'un séjour</td></tr>
+        <tr><td>Un paramètre change</td><td><code>useEffect(…, [id])</code></td><td>Recharger quand l'identifiant change</td></tr>
+        <tr><td>L'écran redevient visible</td><td><code>useFocusEffect</code></td><td>Rafraîchir l'onglet des favoris</td></tr>
+        <tr><td>L'application revient au premier plan</td><td><code>AppState</code></td><td>Recharger la météo</td></tr>
+        <tr><td>Le composant disparaît</td><td>la fonction renvoyée par l'effet</td><td>Retirer un écouteur, ignorer une réponse tardive</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">06</div>
+    <h2>Les listes volumineuses</h2>
+    <div class="sous-titre">FlatList et SectionList</div>
+  </section>
+
+  <section>
+    <h2>Une <code>FlatList</code> qui reste fluide</h2>
+    <div class="corps">
+      <table class="serre">
+        <tr><th>Prop ou pratique</th><th>Effet</th></tr>
+        <tr><td><code>keyExtractor</code></td><td>Une clé stable par élément : React réutilise les lignes au lieu de les recréer</td></tr>
+        <tr><td><code>initialNumToRender</code></td><td>Le nombre d'éléments affichés au premier rendu (10 par défaut)</td></tr>
+        <tr><td><code>windowSize</code></td><td>Combien d'écrans de contenu sont gardés en mémoire autour de la zone visible</td></tr>
+        <tr><td><code>getItemLayout</code></td><td>Si toutes les lignes ont la même hauteur, la liste n'a plus à les mesurer</td></tr>
+        <tr><td>Des éléments légers</td><td>Peu de vues imbriquées, des images à la bonne taille</td></tr>
+        <tr><td>Pas de calcul dans <code>renderItem</code></td><td>Filtrer ou trier <strong>avant</strong>, dans le hook</td></tr>
+      </table>
+      <p class="petit muet" style="margin-top: 12px;">Pour des milliers de lignes, <a href="https://shopify.github.io/flash-list/" target="_blank">FlashList</a> (Shopify) réutilise encore mieux les éléments.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><code>SectionList</code> : une liste par groupes</h2>
+    <div class="corps">
+      <div class="colonnes">
+        <pre class="mini" data-titre="src/models/stay.ts (extrait)"><code class="language-typescript" data-trim>
+export type CitySection = { title: string; data: Stay[] };
+
+// Regroupe des séjours par ville,
+// au format attendu par SectionList
+export function groupByCity(
+  stays: Stay[]
+): CitySection[] {
+  const cities =
+    [...new Set(stays.map((stay) =&gt; stay.city))].sort();
+  return cities.map((city) =&gt; ({
+    title: city,
+    data: stays.filter((stay) =&gt; stay.city === city),
+  }));
+}
+        </code></pre>
+        <pre class="mini" data-titre="src/app/(tabs)/favorites.tsx (extrait)"><code class="language-tsx" data-trim>
+&lt;SectionList
+  sections={sections}
+  keyExtractor={(stay) =&gt; stay.id}
+  renderSectionHeader={({ section }) =&gt; (
+    &lt;Text style={styles.city}&gt;{section.title}&lt;/Text&gt;
+  )}
+  renderItem={({ item }) =&gt; (
+    &lt;Link href={{
+      pathname: "/stays/[id]",
+      params: { id: item.id },
+    }}&gt;
+      {item.title}
+    &lt;/Link&gt;
+  )}
+/&gt;
+        </code></pre>
+      </div>
+      <div class="encadre" style="margin-top: 6px;">
+        Chaque section a un <code>title</code> et un tableau <code>data</code>. Le regroupement est une <strong>règle du modèle</strong>, pure et testable.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Quiz</h2>
+    <div class="corps">
+      <p><strong>L'onglet « Favoris » charge ses données dans un <code>useEffect(…, [])</code>. J'ajoute un favori depuis le catalogue puis je reviens. Que se passe-t-il ?</strong></p>
+      <div class="reponse fragment">L'onglet n'est pas rechargé : il est resté monté, l'effet ne se relance pas. Il faut <code>useFocusEffect</code>.</div>
+      <p style="margin-top: 22px;"><strong><code>fetch</code> reçoit une réponse 404. Le bloc <code>catch</code> s'exécute-t-il ?</strong></p>
+      <div class="reponse fragment">Non : <code>fetch</code> ne lève une erreur qu'en cas d'échec réseau. Il faut tester <code>response.ok</code> et lever l'erreur soi-même.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>À retenir</h2>
+    <div class="corps">
+      <ul>
+        <li>Avec Expo Router, <strong>chaque fichier de <code>src/app/</code> est une route</strong> et chaque écran a une URL</li>
+        <li><code>_layout.tsx</code> choisit le navigateur : pile (<code>Stack</code>) ou onglets (<code>Tabs</code> depuis <code>expo-router/js-tabs</code>)</li>
+        <li>Une route dynamique reçoit un identifiant et <strong>recharge</strong> ses données</li>
+        <li>Un service appelle l'API avec <code>fetch</code>, teste <code>response.ok</code> et traduit la réponse en modèle</li>
+        <li><code>useFocusEffect</code> pour un écran qui redevient visible, <code>AppState</code> pour l'application</li>
+        <li>Des listes légères, filtrées en amont. <code>SectionList</code> pour des groupes</li>
+      </ul>
+    </div>
+  </section>
+
+  <section data-layout="titre">
+    <h1>Des questions ?</h1>
+    <div class="sous-titre">
+      Chris CHEVALIER<br>
+      chevalier@chris-freelance.com
+    </div>
+  </section>
+
+</div>
+</div>
+
+<script src="../assets/vendor/reveal/dist/reveal.js"></script>
+<script src="../assets/vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="../assets/vendor/reveal/plugin/notes/notes.js"></script>
+<script src="../assets/js/theme.js"></script>
+</body>
+</html>
