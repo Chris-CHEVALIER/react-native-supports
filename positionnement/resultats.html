@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Résultats du positionnement React Native</title>
+  <link rel="stylesheet" href="positionnement.css">
+</head>
+<body>
+
+<header class="bandeau">
+  <div class="interieur">
+    <div class="sur-titre">React Native · Mastère 1</div>
+    <h1>Résultats du test de positionnement</h1>
+    <p>Résultats anonymes, mis à jour en direct pendant que la classe répond.</p>
+  </div>
+</header>
+
+<main>
+  <div class="alerte" id="apercu" hidden>Mode aperçu : aucune base n'est connectée. Les chiffres ci-dessous sont des exemples fictifs.</div>
+
+  <div class="onglets" id="onglets" role="group" aria-label="Classe affichée"></div>
+
+  <div class="tuiles">
+    <div class="tuile"><div class="valeur" id="nb">–</div><div class="libelle">réponses reçues</div></div>
+    <div class="tuile"><div class="valeur" id="moyenne">–</div><div class="libelle">moyenne sur 20</div></div>
+    <div class="tuile"><div class="valeur" id="mediane">–</div><div class="libelle">médiane sur 20</div></div>
+    <div class="tuile"><div class="valeur" id="nsp">–</div><div class="libelle">de « Je ne sais pas »</div></div>
+  </div>
+
+  <section class="bloc">
+    <h2>Réussite par question</h2>
+    <div class="legende"><span><i style="background: var(--accent)"></i>Bonne réponse</span><span><i style="background: var(--corail)"></i>Mauvaise réponse</span><span><i style="background: var(--bordure)"></i>Je ne sais pas</span></div>
+    <div id="par-question"></div>
+  </section>
+
+  <section class="bloc">
+    <h2>Expérience déclarée</h2>
+    <div id="experience"></div>
+  </section>
+
+  <section class="bloc">
+    <h2>Récapitulatif à envoyer à l'AP et au DP</h2>
+    <textarea id="recap" readonly aria-label="Récapitulatif des résultats"></textarea>
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px;">
+      <button class="secondaire" type="button" id="copier">Copier le récapitulatif</button>
+      <span class="aide" id="copie-etat"></span>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+  import { CLASSES, QUESTIONS, AUTO, NIVEAUX, JE_NE_SAIS_PAS } from "./questions.js";
+  import { connecter, COLLECTION } from "./firebase.js";
+
+  const nom = (c) => c.replace("IWB", "IWB ");
+  let toutes = [];
+  let classe = CLASSES[0];
+
+  const onglets = document.getElementById("onglets");
+  onglets.innerHTML = [...CLASSES, "Toutes"].map((c) => `<button type="button" data-classe="${c}">${c === "Toutes" ? "Les deux classes" : nom(c)}</button>`).join("");
+  onglets.addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    classe = b.dataset.classe;
+    afficher();
+  });
+
+  const sur20 = (score) => (score * 20) / QUESTIONS.length;
+  const format = (n) => n.toLocaleString("fr-FR", { maximumFractionDigits: 1 });
+  const pourcent = (n, total) => (total ? Math.round((100 * n) / total) : 0);
+
+  function afficher() {
+    onglets.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.classe === classe)));
+    const lignes = classe === "Toutes" ? toutes : toutes.filter((r) => r.classe === classe);
+    const n = lignes.length;
+    const scores = lignes.map((r) => r.reponses.filter((x, i) => x === QUESTIONS[i].bonne).length).sort((a, b) => a - b);
+    const moyenne = n ? sur20(scores.reduce((s, x) => s + x, 0) / n) : null;
+    const mediane = n ? sur20(n % 2 ? scores[(n - 1) / 2] : (scores[n / 2 - 1] + scores[n / 2]) / 2) : null;
+    const nspTotal = lignes.reduce((s, r) => s + r.reponses.filter((x) => x === JE_NE_SAIS_PAS).length, 0);
+
+    document.getElementById("nb").textContent = n;
+    document.getElementById("moyenne").textContent = n ? format(moyenne) : "–";
+    document.getElementById("mediane").textContent = n ? format(mediane) : "–";
+    document.getElementById("nsp").textContent = n ? pourcent(nspTotal, n * QUESTIONS.length) + " %" : "–";
+
+    const parQuestion = QUESTIONS.map((q, i) => {
+      const ok = lignes.filter((r) => r.reponses[i] === q.bonne).length;
+      const nsp = lignes.filter((r) => r.reponses[i] === JE_NE_SAIS_PAS).length;
+      return { q, ok, nsp, ko: n - ok - nsp };
+    });
+    document.getElementById("par-question").innerHTML = parQuestion.map(({ q, ok, ko, nsp }, i) => `
+      <div class="ligne-q">
+        <div class="intitule"><strong>${i + 1}. ${q.theme}</strong> · ${q.intitule}</div>
+        <div class="taux">${n ? pourcent(ok, n) + " %" : "–"}</div>
+        <div class="barre" aria-hidden="true">
+          <span class="ok" style="width: ${pourcent(ok, n)}%"></span><span class="ko" style="width: ${pourcent(ko, n)}%"></span><span class="nsp" style="width: ${pourcent(nsp, n)}%"></span>
+        </div>
+      </div>`).join("");
+
+    document.getElementById("experience").innerHTML = AUTO.map((a) => {
+      const repondu = lignes.filter((r) => r.auto && r.auto[a.cle] !== null && r.auto[a.cle] !== undefined);
+      return `<div class="ligne-q"><div class="intitule"><strong>${a.intitule}</strong> · ${repondu.length} réponse(s)</div><div></div>
+        <div class="legende" style="grid-column: 1 / -1;">${NIVEAUX.map((niveau, k) =>
+          `<span>${niveau} : <strong>${pourcent(repondu.filter((r) => r.auto[a.cle] === k).length, repondu.length)} %</strong></span>`).join("")}</div></div>`;
+    }).join("");
+
+    const titre = classe === "Toutes" ? "les deux classes (IWB 1 et IWB 2)" : nom(classe);
+    const plusFaibles = [...parQuestion].sort((a, b) => a.ok - b.ok).slice(0, 3).map(({ q }) => q.theme + " (" + q.intitule.replace(/<[^>]+>/g, "") + ")");
+    document.getElementById("recap").value = n
+      ? `Test de positionnement React Native – ${titre}\n` +
+        `${n} réponses anonymes · moyenne ${format(moyenne)}/20 · médiane ${format(mediane)}/20\n` +
+        `« Je ne sais pas » : ${pourcent(nspTotal, n * QUESTIONS.length)} % des réponses\n` +
+        `Notions les moins maîtrisées : ${plusFaibles.join(" ; ")}\n`
+      : `Aucune réponse pour l'instant (${titre}).`;
+  }
+
+  document.getElementById("copier").addEventListener("click", async () => {
+    const zone = document.getElementById("recap");
+    const etat = document.getElementById("copie-etat");
+    try {
+      await navigator.clipboard.writeText(zone.value);
+      etat.textContent = "Copié.";
+    } catch {
+      zone.select();
+      etat.textContent = "Texte sélectionné : copiez-le avec Ctrl+C ou Cmd+C.";
+    }
+  });
+
+  // Exemples fictifs pour le mode aperçu (jamais enregistrés)
+  function exemples() {
+    const lignes = [];
+    let graine = 7;
+    const hasard = () => ((graine = (graine * 16807) % 2147483647) / 2147483647);
+    CLASSES.forEach((c, k) => {
+      for (let e = 0; e < (k ? 14 : 11); e++) {
+        lignes.push({
+          classe: c,
+          reponses: QUESTIONS.map((q, i) => { const t = hasard(); return t < 0.75 - i * 0.05 ? q.bonne : t < 0.88 ? (q.bonne + 1) % q.choix.length : JE_NE_SAIS_PAS; }),
+          auto: { react: Math.floor(hasard() * 2) + 2, typescript: Math.floor(hasard() * 4), mobile: Math.floor(hasard() * 2) },
+        });
+      }
+    });
+    return lignes;
+  }
+
+  afficher();
+  const firebase = await connecter();
+  if (firebase) {
+    firebase.onSnapshot(firebase.collection(firebase.db, COLLECTION), (instantane) => {
+      toutes = instantane.docs.map((d) => d.data()).filter((r) => Array.isArray(r.reponses) && r.reponses.length === QUESTIONS.length);
+      afficher();
+    });
+  } else {
+    document.getElementById("apercu").hidden = false;
+    toutes = exemples();
+    afficher();
+  }
+</script>
+</body>
+</html>

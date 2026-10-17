@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Test de positionnement React Native</title>
+  <link rel="stylesheet" href="positionnement.css">
+</head>
+<body>
+
+<header class="bandeau">
+  <div class="interieur">
+    <div class="sur-titre">React Native · Mastère 1</div>
+    <h1>Test de positionnement</h1>
+    <p>Dix questions pour que j'adapte le cours à votre niveau. Le test est anonyme et non noté. Répondez seuls, sans aide ni IA : « Je ne sais pas » est une réponse utile.</p>
+  </div>
+</header>
+
+<main id="contenu">
+  <div class="alerte" id="apercu" hidden>Mode aperçu : vos réponses ne sont pas enregistrées.</div>
+
+  <form id="test" novalidate>
+    <div style="display: flex; flex-direction: column; gap: 18px;">
+      <section class="bloc">
+        <fieldset>
+          <legend><h2>Votre classe</h2></legend>
+          <div class="classes choix" id="classes"></div>
+        </fieldset>
+      </section>
+
+      <div id="questions" style="display: flex; flex-direction: column; gap: 18px;"></div>
+
+      <section class="bloc">
+        <h2>Votre expérience (non notée)</h2>
+        <div class="auto" id="auto"></div>
+      </section>
+
+      <div class="actions">
+        <button class="principal" type="submit" id="envoyer">Envoyer mes réponses</button>
+        <p class="aide" id="aide">Choisissez votre classe et répondez à toutes les questions, au besoin avec « Je ne sais pas ».</p>
+      </div>
+    </div>
+  </form>
+
+  <section class="bloc merci" id="merci" hidden>
+    <div class="grand" id="score"></div>
+    <p><strong>Merci, vos réponses sont enregistrées.</strong> Nous corrigeons les questions ensemble dans quelques minutes, à partir des résultats de la classe.</p>
+  </section>
+</main>
+
+<script type="module">
+  import { CLASSES, QUESTIONS, AUTO, NIVEAUX, JE_NE_SAIS_PAS } from "./questions.js";
+  import { connecter, COLLECTION } from "./firebase.js";
+
+  // Ordre des choix tiré au hasard pour chaque étudiant (la valeur garde l'indice d'origine)
+  const melanger = (liste) => {
+    for (let i = liste.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [liste[i], liste[j]] = [liste[j], liste[i]];
+    }
+    return liste;
+  };
+  const echapper =(texte) => texte.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+  document.getElementById("classes").innerHTML = CLASSES.map((c) =>
+    `<label><input type="radio" name="classe" id="classe-${c}" value="${c}" required><span>${c.replace("IWB", "IWB ")}</span></label>`
+  ).join("");
+
+  document.getElementById("questions").innerHTML = QUESTIONS.map((q, i) => `
+    <section class="bloc">
+      <fieldset>
+        <legend>
+          <span class="theme">${q.theme}</span>
+          <h2><span class="num">${i + 1}/${QUESTIONS.length} ·</span> ${q.intitule}</h2>
+        </legend>
+        ${q.code ? `<pre><code>${echapper(q.code)}</code></pre>` : ""}
+        <div class="choix">
+          ${melanger(q.choix.map((choix, j) => [choix, j])).map(([choix, j]) => `
+            <label><input type="radio" name="q${i}" id="q${i}-${j}" value="${j}"><span>${echapper(choix)}</span></label>`).join("")}
+          <label class="nsp"><input type="radio" name="q${i}" id="q${i}-nsp" value="${JE_NE_SAIS_PAS}"><span>Je ne sais pas</span></label>
+        </div>
+      </fieldset>
+    </section>`).join("");
+
+  document.getElementById("auto").innerHTML = AUTO.map((a) => `
+    <div>
+      <label for="auto-${a.cle}">${a.intitule}</label>
+      <select id="auto-${a.cle}" name="auto-${a.cle}">
+        <option value="">Choisir…</option>
+        ${NIVEAUX.map((n, k) => `<option value="${k}">${n}</option>`).join("")}
+      </select>
+    </div>`).join("");
+
+  const formulaire = document.getElementById("test");
+  const aide = document.getElementById("aide");
+  const bouton = document.getElementById("envoyer");
+  const firebase = await connecter();
+  document.getElementById("apercu").hidden = Boolean(firebase);
+
+  formulaire.addEventListener("submit", async (evenement) => {
+    evenement.preventDefault();
+    const donnees = new FormData(formulaire);
+    const classe = donnees.get("classe");
+    const reponses = QUESTIONS.map((_, i) => donnees.get("q" + i));
+    const manquantes = reponses.map((r, i) => (r === null ? i + 1 : null)).filter(Boolean);
+    if (!classe || manquantes.length) {
+      aide.textContent = !classe
+        ? "Choisissez d'abord votre classe, tout en haut de la page."
+        : `Il manque une réponse aux questions ${manquantes.join(", ")}. Choisissez « Je ne sais pas » si besoin.`;
+      aide.style.color = "var(--corail-texte)";
+      return;
+    }
+    const valeurs = reponses.map(Number);
+    const auto = Object.fromEntries(AUTO.map((a) => [a.cle, donnees.get("auto-" + a.cle) === "" ? null : Number(donnees.get("auto-" + a.cle))]));
+    const score = valeurs.filter((r, i) => r === QUESTIONS[i].bonne).length;
+
+    bouton.disabled = true;
+    bouton.textContent = "Envoi en cours…";
+    try {
+      if (firebase) {
+        await firebase.addDoc(firebase.collection(firebase.db, COLLECTION), {
+          classe, reponses: valeurs, auto, createdAt: firebase.serverTimestamp(),
+        });
+      }
+      formulaire.hidden = true;
+      document.getElementById("score").textContent = `${score} / ${QUESTIONS.length}`;
+      document.getElementById("merci").hidden = false;
+      window.scrollTo({ top: 0 });
+    } catch (erreur) {
+      console.error(erreur);
+      bouton.disabled = false;
+      bouton.textContent = "Envoyer mes réponses";
+      aide.textContent = "L'envoi a échoué. Vérifiez votre connexion puis réessayez.";
+      aide.style.color = "var(--corail-texte)";
+    }
+  });
+</script>
+</body>
+</html>

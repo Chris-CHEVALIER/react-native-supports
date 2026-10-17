@@ -1,0 +1,109 @@
+@import url("../assets/fonts/outfit.css");
+/* Test de positionnement – une colonne de lecture, pensée pour le téléphone de l'étudiant.
+   Mêmes couleurs que les supports (charte neutre), avec un thème sombre. */
+:root {
+  --fond: #F6F7FB;
+  --surface: #FFFFFF;
+  --texte: #1B1E3C;
+  --texte-doux: #5A5F80;
+  --bordure: #D9DCEA;
+  --accent: #2EC4B6;
+  --accent-texte: #0B7A70;
+  --accent-clair: #E2F7F4;
+  --corail: #FF7A59;
+  --corail-texte: #C2410C;
+  --corail-clair: #FFEDE6;
+  --code-fond: #EEF0F8;
+  --bandeau: #1B1E3C;
+  --bandeau-texte: #FFFFFF;
+  --police: "Outfit", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --police-code: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fond: #12142A; --surface: #1B1E3C; --texte: #ECEEFA; --texte-doux: #A6AACB; --bordure: #34385E;
+    --accent-texte: #5FE0D3; --accent-clair: #173B44; --corail-texte: #FF9C7F; --corail-clair: #3E2530;
+    --code-fond: #262A4D; --bandeau: #0C0E1F; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --fond: #12142A; --surface: #1B1E3C; --texte: #ECEEFA; --texte-doux: #A6AACB; --bordure: #34385E;
+  --accent-texte: #5FE0D3; --accent-clair: #173B44; --corail-texte: #FF9C7F; --corail-clair: #3E2530;
+  --code-fond: #262A4D; --bandeau: #0C0E1F; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--fond); color: var(--texte); font-family: var(--police); font-size: 17px; line-height: 1.55; }
+
+.bandeau { background: var(--bandeau); color: var(--bandeau-texte); }
+.bandeau .interieur, main {
+  max-width: 720px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.bandeau .interieur { padding-block: 28px 24px; }
+.bandeau .sur-titre { color: var(--accent); font-weight: 700; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
+.bandeau h1 { margin: 6px 0 8px; font-size: clamp(28px, 6vw, 38px); line-height: 1.1; text-wrap: balance; }
+.bandeau p { margin: 0; opacity: .85; max-width: 60ch; }
+main { padding-block: 22px 60px; display: flex; flex-direction: column; gap: 18px; }
+
+.alerte { border-radius: 10px; padding: 12px 16px; background: var(--corail-clair); color: var(--texte); border-left: 5px solid var(--corail); }
+.bloc { background: var(--surface); border: 1px solid var(--bordure); border-radius: 14px; padding: 18px 18px 16px; }
+.bloc h2 { margin: 0 0 12px; font-size: 19px; line-height: 1.3; text-wrap: balance; }
+.bloc .theme { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--accent-texte); margin-bottom: 6px; }
+.bloc .num { color: var(--texte-doux); font-variant-numeric: tabular-nums; }
+code { font-family: var(--police-code); font-size: .88em; background: var(--code-fond); padding: 1px 6px; border-radius: 5px; }
+pre { margin: 0 0 12px; background: var(--code-fond); border-radius: 10px; padding: 12px 14px; overflow-x: auto; }
+pre code { background: none; padding: 0; font-size: 14px; }
+
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+legend { padding: 0; }
+.choix { display: flex; flex-direction: column; gap: 8px; }
+.choix label {
+  display: flex; gap: 12px; align-items: flex-start; padding: 11px 14px; border: 2px solid var(--bordure); border-radius: 10px;
+  cursor: pointer; min-width: 0;
+}
+.choix label:hover { border-color: var(--accent); }
+.choix input { margin: 4px 0 0; accent-color: var(--accent-texte); flex: 0 0 auto; width: 18px; height: 18px; }
+.choix label:has(input:checked) { border-color: var(--accent); background: var(--accent-clair); }
+.choix label.nsp { color: var(--texte-doux); border-style: dashed; }
+.choix span { min-width: 0; overflow-wrap: anywhere; }
+input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid var(--corail); outline-offset: 2px; }
+
+.classes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.auto { display: flex; flex-direction: column; gap: 14px; }
+.auto label { display: block; font-weight: 600; margin-bottom: 6px; }
+select { width: 100%; font: inherit; font-size: 16px; color: var(--texte); background: var(--surface); border: 2px solid var(--bordure); border-radius: 10px; padding: 10px 12px; }
+
+.actions { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+button.principal {
+  font: 700 18px var(--police); color: #1B1E3C; background: var(--accent); border: 0; border-radius: 12px; padding: 15px 20px; cursor: pointer;
+}
+button.principal:disabled { opacity: .5; cursor: not-allowed; }
+.aide { color: var(--texte-doux); font-size: 14px; margin: 0; }
+.merci { text-align: center; padding-block: 28px; }
+.merci .grand { font-size: 48px; font-weight: 800; color: var(--accent-texte); font-variant-numeric: tabular-nums; line-height: 1; }
+.merci p { max-width: 50ch; margin: 12px auto 0; }
+
+/* Résultats */
+.tuiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.tuile { background: var(--surface); border: 1px solid var(--bordure); border-radius: 12px; padding: 14px 16px; }
+.tuile .valeur { font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.tuile .libelle { color: var(--texte-doux); font-size: 14px; }
+.ligne-q { display: grid; grid-template-columns: minmax(0, 1fr) 64px; gap: 4px 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--bordure); }
+.ligne-q:first-of-type { border-top: 0; }
+.ligne-q .intitule { font-size: 15px; min-width: 0; }
+.ligne-q .taux { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.barre { grid-column: 1 / -1; display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--code-fond); }
+.barre .ok { background: var(--accent); }
+.barre .ko { background: var(--corail); }
+.barre .nsp { background: var(--bordure); }
+.legende { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--texte-doux); }
+.legende i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+.onglets { display: flex; gap: 8px; flex-wrap: wrap; }
+.onglets button { font: 600 15px var(--police); color: var(--texte); background: var(--surface); border: 2px solid var(--bordure); border-radius: 30px; padding: 7px 16px; cursor: pointer; }
+.onglets button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-clair); }
+textarea { width: 100%; min-height: 150px; font: 14px var(--police-code); color: var(--texte); background: var(--code-fond); border: 1px solid var(--bordure); border-radius: 10px; padding: 10px 12px; }
+button.secondaire { font: 600 15px var(--police); color: var(--texte); background: var(--surface); border: 2px solid var(--accent); border-radius: 10px; padding: 9px 16px; cursor: pointer; align-self: flex-start; }
+@media (prefers-reduced-motion: no-preference) { .choix label { transition: border-color .15s, background-color .15s; } }

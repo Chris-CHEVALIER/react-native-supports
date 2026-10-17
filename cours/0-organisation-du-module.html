@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Organisation du module – React Native</title>
+  <link rel="stylesheet" href="../assets/vendor/reveal/dist/reset.css">
+  <link rel="stylesheet" href="../assets/vendor/reveal/dist/reveal.css">
+  <link rel="stylesheet" href="../assets/css/theme.css">
+</head>
+<body data-pied="React Native · Organisation du module">
+<div class="reveal">
+<div class="slides">
+
+  <!-- ================================================================== -->
+  <section data-layout="titre">
+    <h1>Organisation du module</h1>
+    <div class="sous-titre">
+      <span class="code-module">React Native</span> – Mastère 1 ingénierie du web<br>
+      Chris CHEVALIER
+    </div>
+    <aside class="notes">
+      Me présenter en deux minutes : formateur indépendant depuis 2020 (web full stack, programmation, gestion de projet).
+      Puis présenter le cours, le déroulé et l'évaluation avant le test de positionnement.
+    </aside>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="sommaire">
+    <h1>Sommaire</h1>
+    <ol>
+      <li>Le module</li>
+      <li>Le déroulé</li>
+      <li>Le projet</li>
+      <li>L'évaluation</li>
+    </ol>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">01</div>
+    <h2>Le module</h2>
+    <div class="sous-titre">Organisation du module</div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Une base de code, trois plateformes</h2>
+    <div class="corps">
+      <div class="colonnes c3">
+        <div class="carte accent">
+          <h3>iOS</h3>
+          De vrais composants natifs, affichés par le système du téléphone
+        </div>
+        <div class="carte accent">
+          <h3>Android</h3>
+          Le même code TypeScript, sans réécrire l'application en Kotlin
+        </div>
+        <div class="carte corail">
+          <h3>Web</h3>
+          <a href="https://necolas.github.io/react-native-web/" target="_blank">React Native for Web</a> transforme <code>&lt;View&gt;</code> en <code>&lt;div&gt;</code> dans le navigateur
+        </div>
+      </div>
+      <ul style="margin-top: 30px;">
+        <li>Vous connaissez React. Vous allez réutiliser vos réflexes : composants, props, état, hooks</li>
+        <li>Ce qui change : pas de HTML ni de CSS, des contraintes mobiles (tactile, taille d'écran, réseau, cycle de vie)</li>
+        <li>Exemple en production : l'application <a href="https://github.com/bluesky-social/social-app" target="_blank">Bluesky</a>, écrite avec React Native et Expo, tourne sur iOS, Android et le web</li>
+      </ul>
+    </div>
+    <aside class="notes">
+      Demander qui a déjà fait du React Native, du Flutter ou du natif. Le code de Bluesky est public : c'est une bonne référence d'architecture.
+    </aside>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Objectifs du module</h2>
+    <div class="corps">
+      <p>À la fin du module, vous serez capables de :</p>
+      <ul>
+        <li><strong>Maîtriser React Native et son extension web</strong> pour concevoir une application performante à partir d'une base de code unique</li>
+        <li><strong>Structurer votre application selon le pattern MVC</strong> : composants d'affichage, hooks et services pour la logique, modèles de données typés</li>
+        <li><strong>Concevoir des interfaces réactives et fluides</strong> avec les composants natifs, le rendu web et Flexbox</li>
+        <li><strong>Gérer le cycle de vie, la navigation et la persistance des données</strong> de manière unifiée entre le navigateur et le mobile</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Programme</h2>
+    <div class="corps">
+      <div class="colonnes c4">
+        <div class="carte">
+          <h3>Cours 1 · Fondations</h3>
+          Architecture, React Native for Web, Expo, TypeScript, composants primitifs, Flexbox et responsive
+        </div>
+        <div class="carte">
+          <h3>Cours 2 · Architecture</h3>
+          Pattern MVC dans React, hooks personnalisés, services, modèles typés, état global avec Context
+        </div>
+        <div class="carte">
+          <h3>Cours 3 · Navigation</h3>
+          Expo Router (pile, onglets, URL, liens profonds), cycle de vie, listes volumineuses
+        </div>
+        <div class="carte">
+          <h3>Cours 4 · Persistance</h3>
+          Firebase : authentification, base Firestore, temps réel et règles de sécurité. Mise en production
+        </div>
+      </div>
+      <div class="encadre" style="margin-top: 26px;">
+        Environ <strong>un tiers de théorie</strong> et <strong>deux tiers de pratique</strong>. Chaque notion est appliquée dans un TP le jour même.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">02</div>
+    <h2>Le déroulé</h2>
+    <div class="sous-titre">Organisation du module</div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Calendrier</h2>
+    <div class="corps">
+      <div class="frise">
+        <div class="etape">
+          <div class="date">Mar. 27 oct.</div>
+          <ul>
+            <li>Test de positionnement</li>
+            <li>Cours 1</li>
+            <li>Trinômes et dépôt du projet</li>
+          </ul>
+        </div>
+        <div class="etape">
+          <div class="date">Mer. 28 oct.</div>
+          <ul>
+            <li>TP1 Fondations</li>
+            <li>Cours 2</li>
+            <li>TP2 Projet</li>
+          </ul>
+        </div>
+        <div class="etape corail">
+          <div class="date">Jeu. 29 oct.</div>
+          <ul>
+            <li>Cours 3</li>
+            <li><strong>CC1 noté</strong></li>
+            <li>TP3 en autonomie jusqu'au 25 nov.</li>
+          </ul>
+        </div>
+        <div class="etape">
+          <div class="date">Mer. 25 nov.</div>
+          <ul>
+            <li>Point d'étape</li>
+            <li>Cours 4 Firebase</li>
+            <li>TP4 Projet</li>
+          </ul>
+        </div>
+        <div class="etape corail">
+          <div class="date">Jeu. 17 déc.</div>
+          <ul>
+            <li>Mise en production</li>
+            <li><strong>Démos du projet</strong></li>
+            <li><strong>Examen écrit</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="encadre neutre" style="margin-top: 22px;">
+        Les deux classes suivent le même programme. Seuls les horaires changent : consultez votre emploi du temps sur MyGES.
+      </div>
+    </div>
+    <aside class="notes">
+      IWB 1 : 27/10 9h45-13h, 28/10 14h-19h, 29/10 11h30-15h30, 25/11 9h45-13h, 17/12 14h-19h.
+      IWB 2 : 27/10 14h-19h, 28/10 9h45-13h, 29/10 8h-11h15, 25/11 14h-19h, 17/12 9h45-13h.
+      Selon la classe, le TP1 a lieu le 27 au soir (IWB 2) ou le 28 (IWB 1) : la frise reste juste dans les deux cas à une demi-journée près.
+    </aside>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Votre environnement de travail</h2>
+    <div class="corps">
+      <div class="colonnes">
+        <div>
+          <p><strong>Sur votre ordinateur</strong></p>
+          <ul class="dense">
+            <li><a href="https://nodejs.org/fr/download" target="_blank"><strong>Node.js</strong> en version LTS</a></li>
+            <li><a href="https://code.visualstudio.com/" target="_blank"><strong>VS Code</strong></a> ou l'éditeur de votre choix</li>
+            <li><a href="https://git-scm.com/downloads" target="_blank"><strong>Git</strong></a> et un compte <a href="https://github.com/signup" target="_blank"><strong>GitHub</strong></a></li>
+            <li>Un navigateur récent pour la version web</li>
+          </ul>
+        </div>
+        <div>
+          <p><strong>Pour tester sur mobile</strong></p>
+          <ul class="dense">
+            <li>L'application <a href="https://expo.dev/go" target="_blank"><strong>Expo Go</strong></a> sur votre téléphone (iOS ou Android)</li>
+            <li>À défaut : un émulateur <a href="https://docs.expo.dev/workflow/android-studio-emulator/" target="_blank">Android Studio</a> ou le <a href="https://docs.expo.dev/workflow/ios-simulator/" target="_blank">simulateur iOS</a> (macOS uniquement)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="encadre" style="margin-top: 18px;">
+        Le téléphone et l'ordinateur doivent être sur le <strong>même réseau</strong>. Si le Wi-Fi de l'école bloque la connexion, lancez le projet avec <code>npx expo start --tunnel</code>.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Test de positionnement</h2>
+    <div class="corps">
+      <ul>
+        <li><strong>Une dizaine de questions</strong> sur React, JavaScript, TypeScript et le mobile</li>
+        <li><strong>Anonyme et non noté</strong> : il sert à adapter le cours à votre niveau réel</li>
+        <li>Répondez seuls et sans aide. Une réponse « je ne sais pas » m'est plus utile qu'une réponse devinée</li>
+      </ul>
+      <div class="encadre corail" style="margin-top: 22px;">
+        Ouvrez le lien que je vous donne. Vous avez <strong>10 minutes</strong>. Nous regardons ensuite les résultats de la classe ensemble.
+      </div>
+    </div>
+    <aside class="notes">
+      Partager le lien du test (page web anonyme). Après 10 minutes, afficher les résultats agrégés de la classe et commenter les questions les moins réussies.
+      Envoyer ensuite la moyenne de la classe à l'attaché de promotion et au directeur pédagogique.
+    </aside>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">03</div>
+    <h2>Le projet</h2>
+    <div class="sous-titre">Organisation du module</div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Une application multiplateforme en trinôme</h2>
+    <div class="corps">
+      <ul>
+        <li><strong>Sujet libre</strong>, à faire valider par moi aujourd'hui</li>
+        <li><strong>Groupes de trois</strong>, formés aujourd'hui. Les groupes d'une seule personne ne sont pas possibles</li>
+        <li>Le projet avance à chaque TP. <strong>Chaque TP est un jalon</strong> du projet final</li>
+        <li>Il doit fonctionner <strong>sur le web et sur mobile</strong>, avec le même code</li>
+      </ul>
+      <div class="frise" style="grid-template-columns: repeat(4, 1fr); margin-top: 22px;">
+        <div class="etape"><div class="date">TP2 · 28 oct.</div>Squelette MVC, modèles typés, mise en page</div>
+        <div class="etape"><div class="date">TP3 · autonomie</div>Navigation, API publique, catalogue et filtres</div>
+        <div class="etape"><div class="date">TP4 · 25 nov.</div>Authentification et CRUD Firebase</div>
+        <div class="etape corail"><div class="date">17 déc.</div>Rendu final et démo</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Ce que votre application doit contenir</h2>
+    <div class="corps">
+      <div class="colonnes">
+        <div>
+          <p><strong>Obligatoire</strong></p>
+          <ul class="dense">
+            <li>Au moins <strong>4 écrans</strong>, avec des onglets, une pile et une route dynamique</li>
+            <li><strong>L'URL du navigateur</strong> suit la navigation sur le web</li>
+            <li>Un <strong>catalogue responsive</strong> : grille sur ordinateur, liste sur mobile, avec des filtres</li>
+            <li>Une <strong>API publique</strong> consommée avec <code>fetch()</code></li>
+            <li><strong>Firebase</strong> : authentification et 2 CRUD</li>
+            <li>Une <strong>architecture MVC</strong> en TypeScript</li>
+            <li>Un <strong>README</strong> complet</li>
+          </ul>
+        </div>
+        <div>
+          <p><strong>Valorisé</strong></p>
+          <ul class="dense">
+            <li>Une API native : caméra, localisation, notifications…</li>
+            <li>Des animations soignées</li>
+            <li>Un cache ou un mode hors ligne</li>
+            <li>Des tests automatisés</li>
+            <li>Une version web déployée en ligne</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Des idées de sujets</h2>
+    <div class="corps">
+      <div class="colonnes">
+        <div class="carte">
+          <h3>Carnet de recettes</h3>
+          Catalogue de <a href="https://www.themealdb.com/api.php" target="_blank">TheMealDB</a>, favoris et recettes personnelles
+        </div>
+        <div class="carte">
+          <h3>Bibliothèque personnelle</h3>
+          Recherche dans <a href="https://openlibrary.org/developers/api" target="_blank">Open Library</a>, livres lus ou à lire et avis
+        </div>
+        <div class="carte">
+          <h3>Carnet de voyage</h3>
+          Pays de <a href="https://restcountries.com" target="_blank">REST Countries</a>, météo d'<a href="https://open-meteo.com" target="_blank">Open-Meteo</a>, étapes et souvenirs
+        </div>
+        <div class="carte">
+          <h3>Garde-manger anti-gaspi</h3>
+          Produits d'<a href="https://world.openfoodfacts.org/data" target="_blank">Open Food Facts</a> et dates de péremption. Le scan de codes-barres est un bonus
+        </div>
+      </div>
+      <div class="encadre neutre" style="margin-top: 22px;">
+        Toutes ces API sont <strong>gratuites et sans clé</strong>. Un autre sujet vous tente ? Proposez-le-moi : il doit se prêter à un catalogue et à deux CRUD.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Votre dépôt Git, dès ce soir</h2>
+    <div class="corps">
+      <ul>
+        <li><strong>Un dépôt personnel</strong> pour le TP1 et le CC1</li>
+        <li><strong>Un dépôt commun</strong> par trinôme pour le projet</li>
+        <li>Invitez <strong>Chris-CHEVALIER</strong> comme collaborateur sur les deux <strong>dès aujourd'hui</strong></li>
+        <li><strong>Des commits réguliers et signés de votre nom</strong> : l'historique me montre la contribution de chacun</li>
+      </ul>
+      <div class="encadre corail" style="margin-top: 22px;">
+        Le soir même, envoyez-moi un e-mail à <a href="mailto:chevalier@chris-freelance.com">chevalier@chris-freelance.com</a> avec l'objet
+        <code>[RN-IWB1] Groupe – NOM1, NOM2, NOM3</code> (ou <code>IWB2</code>), le sujet choisi et le lien du dépôt.
+      </div>
+    </div>
+    <aside class="notes">
+      Les rendus ne passent pas par MyGES. L'objet normalisé me permet de filtrer les e-mails des deux classes.
+      IWB 1 : 27 étudiants, soit 9 trinômes. IWB 2 : 35 étudiants, soit 11 trinômes et un binôme.
+    </aside>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">04</div>
+    <h2>L'évaluation</h2>
+    <div class="sous-titre">Organisation du module</div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Modalités d'évaluation</h2>
+    <div class="corps">
+      <table>
+        <tr><th>Épreuve</th><th>Conditions</th><th class="num">Poids</th></tr>
+        <tr><td><strong>CC1 · Refactoring</strong> <span class="etiquette">Individuel</span></td><td>Le 29 octobre, sur machine, 1h30, sans IA</td><td class="num"><strong>25 %</strong></td></tr>
+        <tr><td><strong>CC2 · Projet</strong> <span class="etiquette accent">Trinôme</span></td><td>Jalons des TP2 à TP4, rendu final et démo le 17 décembre</td><td class="num"><strong>25 %</strong></td></tr>
+        <tr><td><strong>Examen écrit</strong> <span class="etiquette">Individuel</span></td><td>Le 17 décembre, sur table, 45 min, sans document ni IA</td><td class="num"><strong>50 %</strong></td></tr>
+      </table>
+      <div class="encadre" style="margin-top: 22px;">
+        <strong>75 % de la note</strong> est individuelle. Pour le projet, la note du groupe peut être modulée selon la contribution de chacun.
+      </div>
+    </div>
+    <aside class="notes">
+      Règle ESGI : 50 % de contrôle continu (CC1 + CC2) et 50 % d'examen.
+    </aside>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>CC1 : refactoring et portabilité web</h2>
+    <div class="corps">
+      <ul>
+        <li>Vous recevez une <strong>petite application React Native mal structurée</strong> : elle est pensée uniquement pour le mobile et sa logique est écrite au milieu des composants</li>
+        <li>Votre mission : <strong>appliquer le pattern MVC</strong> (logique dans des hooks et des services, composants d'affichage purs) et la rendre <strong>impeccable sur le web</strong></li>
+        <li>Individuel, 1h30, sur votre machine, <strong>sans IA</strong>. La documentation officielle est autorisée</li>
+        <li>Rendu à la fin du créneau : le lien de votre dépôt par e-mail</li>
+      </ul>
+      <div class="encadre neutre" style="margin-top: 18px;">
+        Critères : séparation stricte des responsabilités, aucun bug d'affichage sur le web, propreté du code.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>Le 17 décembre</h2>
+    <div class="corps">
+      <div class="colonnes">
+        <div class="carte">
+          <h3>Démo du projet · 8 min par groupe</h3>
+          <ul>
+            <li><strong>5 min</strong> : démonstration sur le web et sur mobile</li>
+            <li><strong>3 min</strong> : questions, au moins une par membre du groupe</li>
+            <li>Rendu : dernier commit poussé <strong>la veille à 23h59</strong></li>
+          </ul>
+        </div>
+        <div class="carte">
+          <h3>Examen écrit · 45 min</h3>
+          <ul>
+            <li>À la fin de la séance, après les démos</li>
+            <li><strong>Questions ouvertes</strong> sur l'ensemble des cours</li>
+            <li>Plusieurs questions portent sur des <strong>extraits de code</strong> à lire ou à corriger</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section>
+    <h2>L'IA générative : autorisée, à une condition</h2>
+    <div class="corps">
+      <div class="colonnes">
+        <div>
+          <ul>
+            <li>ChatGPT, Claude, Copilot… sont <strong>autorisés</strong> pour les TP et le projet</li>
+            <li>Vous devez <strong>comprendre votre code de bout en bout</strong>. Chaque membre du groupe doit pouvoir expliquer chaque partie</li>
+            <li>Déclarez votre usage dans le README : quels outils, pour quoi faire</li>
+          </ul>
+        </div>
+        <div>
+          <ul>
+            <li>Les questions de la démo vérifient cette compréhension. <strong>Une fonctionnalité non expliquée n'est pas comptée</strong></li>
+            <li>Le CC1 et l'examen écrit se font <strong>sans IA</strong></li>
+            <li>Le plagiat et la triche entraînent un 0 à l'épreuve concernée</li>
+          </ul>
+        </div>
+      </div>
+      <div class="encadre" style="margin-top: 8px;">
+        Conseil : utilisez l'IA comme un <strong>tuteur</strong> (expliquer une erreur, relire votre code), pas comme un <strong>auteur</strong>.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="titre">
+    <h1>Des questions ?</h1>
+    <div class="sous-titre">
+      Chris CHEVALIER<br>
+      <a href="mailto:chevalier@chris-freelance.com" style="color: inherit;">chevalier@chris-freelance.com</a>
+    </div>
+  </section>
+
+</div>
+</div>
+
+<script src="../assets/vendor/reveal/dist/reveal.js"></script>
+<script src="../assets/vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="../assets/vendor/reveal/plugin/notes/notes.js"></script>
+<script src="../assets/js/theme.js"></script>
+</body>
+</html>

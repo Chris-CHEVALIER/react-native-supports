@@ -1,0 +1,263 @@
+@import url("../fonts/outfit.css");
+/* ==========================================================================
+   Thème reveal.js — charte neutre de Chris CHEVALIER (aucun logo ni marque)
+   16:9, 1280 × 720
+   Mises en page : data-layout="titre" | "section" | "sommaire" | (défaut) contenu
+   ========================================================================== */
+
+:root {
+  --nuit: #1B1E3C;
+  --nuit-fonce: #12142A;
+  --code-fond: #101227;
+  --accent: #2EC4B6;
+  --accent-texte: #0B7A70;
+  --corail: #FF7A59;
+  --corail-texte: #C2410C;
+  --blanc: #FFFFFF;
+  --clair: #F2F3F9;
+  --accent-clair: #E2F7F4;
+  --corail-clair: #FFEDE6;
+  --bordure: #D9DCEA;
+  --texte: var(--nuit);
+  --police: "Outfit", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --police-code: "JetBrains Mono", "Cascadia Code", "SF Mono", Menlo, Consolas, "Courier New", monospace;
+}
+
+/* ---------- Base ---------- */
+.reveal-viewport { background: var(--blanc); }
+.reveal { font-family: var(--police); font-size: 26px; color: var(--texte); }
+.reveal .slides { text-align: left; }
+.reveal .slides section:not(.stack) { width: 1280px; height: 720px; box-sizing: border-box; padding: 0; }
+.reveal .deco { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.reveal .deco > * { position: absolute; }
+.reveal .slides section > *:not(.deco):not(aside):not(.pied):not(.numero-diapo) { position: relative; z-index: 1; }
+
+/* ---------- Typographie ---------- */
+.reveal h1, .reveal h2, .reveal h3 { font-family: var(--police); font-weight: 700; margin: 0; line-height: 1.15; }
+.reveal p { margin: 0 0 .6em; line-height: 1.4; }
+.reveal strong { color: inherit; font-weight: 700; }
+.reveal a { color: var(--nuit); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.reveal .txt-accent { color: var(--accent-texte); }
+.reveal .txt-corail { color: var(--corail-texte); }
+.reveal .petit { font-size: .75em; }
+.reveal .muet { opacity: .7; }
+
+/* ---------- Décor : téléphone stylisé (titres et intercalaires) ---------- */
+.reveal .telephone {
+  width: 250px; height: 500px; border: 7px solid var(--accent); border-radius: 42px;
+  box-shadow: 18px 18px 0 0 rgba(255, 122, 89, .9);
+}
+.reveal .telephone::before { /* encoche */
+  content: ""; position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+  width: 70px; height: 12px; border-radius: 8px; background: var(--accent); opacity: .8;
+}
+.reveal .telephone::after { /* blocs d'interface */
+  content: ""; position: absolute; left: 26px; right: 26px; top: 60px; height: 360px;
+  background:
+    linear-gradient(var(--accent) 0 0) 0 0 / 60% 14px no-repeat,
+    linear-gradient(rgba(255,255,255,.22) 0 0) 0 34px / 100% 110px no-repeat,
+    linear-gradient(rgba(255,255,255,.14) 0 0) 0 162px / 47% 90px no-repeat,
+    linear-gradient(rgba(255,255,255,.14) 0 0) 100% 162px / 47% 90px no-repeat,
+    linear-gradient(rgba(255,255,255,.14) 0 0) 0 270px / 100% 22px no-repeat,
+    linear-gradient(var(--corail) 0 0) 0 320px / 40% 34px no-repeat;
+  border-radius: 6px;
+}
+.reveal .grille-points {
+  width: 360px; height: 360px; opacity: .16;
+  background-image: radial-gradient(var(--blanc) 2px, transparent 2.5px); background-size: 24px 24px;
+}
+
+/* ==========================================================================
+   Mise en page : TITRE et SOMMAIRE — fond nuit, téléphone à droite
+   ========================================================================== */
+.reveal section.l-titre .telephone, .reveal section.l-sommaire .telephone { right: 140px; top: 110px; }
+.reveal section.l-titre .grille-points, .reveal section.l-sommaire .grille-points { left: -60px; bottom: -80px; }
+.reveal section.l-titre .trait { left: 90px; top: 150px; width: 90px; height: 10px; border-radius: 5px; background: var(--accent); }
+.reveal section.l-titre > h1 {
+  position: absolute !important; left: 90px; top: 180px; width: 720px; height: 230px;
+  display: flex; align-items: flex-end; font-size: 58px; color: var(--blanc);
+}
+.reveal section.l-titre > .sous-titre {
+  position: absolute !important; left: 90px; top: 440px; width: 720px; font-size: 24px; color: var(--blanc); line-height: 1.5;
+}
+.reveal section.l-titre > .sous-titre .code-module { color: var(--accent); font-weight: 700; }
+
+.reveal section.l-sommaire > h1 { position: absolute !important; left: 90px; top: 110px; font-size: 46px; color: var(--accent); }
+.reveal section.l-sommaire > ol {
+  position: absolute !important; left: 90px; top: 210px; width: 720px;
+  list-style: none; margin: 0; padding: 0; counter-reset: partie;
+}
+.reveal section.l-sommaire > ol > li { counter-increment: partie; font-size: 30px; color: var(--blanc); margin: 0 0 22px; }
+.reveal section.l-sommaire > ol > li::before {
+  content: counter(partie, decimal-leading-zero); color: var(--corail); font-weight: 700; display: inline-block; width: 70px;
+}
+
+/* ==========================================================================
+   Mise en page : SECTION — fond nuit, grand numéro, petit téléphone
+   ========================================================================== */
+.reveal section.l-section .telephone { right: 150px; top: 110px; transform: rotate(8deg); opacity: .9; }
+.reveal section.l-section .grille-points { left: -60px; bottom: -80px; }
+.reveal section.l-section > .numero {
+  position: absolute !important; left: 90px; top: 170px; font-size: 120px; font-weight: 800; color: var(--accent); line-height: 1;
+}
+.reveal section.l-section > h2 {
+  position: absolute !important; left: 90px; top: 310px; width: 760px; font-size: 58px; color: var(--blanc);
+}
+.reveal section.l-section > .sous-titre {
+  position: absolute !important; left: 90px; top: 470px; width: 760px; font-size: 22px; color: var(--blanc); opacity: .75;
+}
+
+/* ==========================================================================
+   Mise en page : CONTENU (défaut) — fond blanc, liseré dégradé à gauche
+   ========================================================================== */
+.reveal section.l-contenu .lisere { left: 0; top: 0; width: 14px; height: 720px; background: linear-gradient(var(--accent), var(--corail)); }
+.reveal section.l-contenu .puce-titre { left: 80px; top: 104px; width: 22px; height: 22px; border-radius: 6px; background: var(--accent); }
+.reveal section.l-contenu > h2 {
+  position: absolute !important; left: 122px; top: 50px; width: 1060px; height: 130px;
+  display: flex; align-items: center; font-size: 42px; color: var(--nuit);
+}
+.reveal section.l-contenu > .corps { position: absolute !important; left: 80px; top: 200px; width: 1120px; height: 470px; }
+.reveal section.l-contenu .pied, .reveal section.l-contenu .numero-diapo {
+  position: absolute; bottom: 20px; font-size: 14px; color: var(--nuit); opacity: .55;
+}
+.reveal section.l-contenu .pied { left: 80px; }
+.reveal section.l-contenu .numero-diapo { right: 80px; }
+
+/* ==========================================================================
+   Composants du corps de diapo
+   ========================================================================== */
+.reveal .corps ul { list-style: none; margin: 0; padding: 0; }
+.reveal .corps ul > li { position: relative; padding-left: 32px; margin: 0 0 14px; line-height: 1.35; }
+.reveal .corps ul > li::before {
+  content: ""; position: absolute; left: 4px; top: .42em; width: 12px; height: 12px; border-radius: 3px; background: var(--accent);
+}
+.reveal .corps ul ul { margin-top: 8px; }
+.reveal .corps ul ul > li { font-size: .85em; margin-bottom: 6px; }
+.reveal .corps ul ul > li::before { width: 8px; height: 3px; top: .62em; border-radius: 2px; background: var(--corail); }
+.reveal .corps ol { margin: 0; padding-left: 1.3em; }
+.reveal .corps ol > li { margin-bottom: 12px; line-height: 1.35; }
+.reveal .corps ol > li::marker { color: var(--accent-texte); font-weight: 700; }
+
+.reveal .colonnes { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+.reveal .colonnes > * { min-width: 0; }
+.reveal .colonnes.c3 { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.reveal .colonnes.c4 { grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.reveal .colonnes.code-texte { grid-template-columns: 1.55fr 1fr; gap: 30px; align-items: start; }
+.reveal .colonnes.texte-code { grid-template-columns: 1fr 1.3fr; gap: 30px; align-items: start; }
+
+.reveal table { border-collapse: collapse; width: 100%; font-size: .8em; }
+.reveal th { background: var(--nuit); color: var(--blanc); text-align: left; padding: 10px 14px; font-weight: 700; }
+.reveal td { padding: 9px 14px; border-bottom: 1px solid var(--bordure); vertical-align: top; }
+.reveal tr:nth-child(even) td { background: var(--clair); }
+.reveal td.num, .reveal th.num { text-align: right; white-space: nowrap; }
+.reveal tr.total td { font-weight: 700; border-top: 2px solid var(--nuit); background: var(--blanc); }
+.reveal table.serre { font-size: 19px; }
+.reveal table.serre td, .reveal table.serre th { padding: 7px 12px; }
+
+.reveal .encadre {
+  background: var(--accent-clair); border-left: 6px solid var(--accent);
+  padding: 14px 20px; border-radius: 0 8px 8px 0; font-size: .85em; line-height: 1.4;
+}
+.reveal .encadre.corail { background: var(--corail-clair); border-left-color: var(--corail); }
+.reveal .encadre.neutre { background: var(--clair); border-left-color: var(--nuit); }
+.reveal .encadre > :last-child { margin-bottom: 0; }
+
+.reveal .carte { border: 2px solid var(--bordure); border-radius: 14px; padding: 16px 20px; font-size: .85em; line-height: 1.35; background: var(--blanc); }
+.reveal .carte h3 { font-size: 1.1em; color: var(--nuit); margin-bottom: 10px; }
+.reveal .carte.pleine { background: var(--nuit); border-color: var(--nuit); color: var(--blanc); }
+.reveal .carte.pleine h3 { color: var(--accent); }
+.reveal .carte.accent { border-color: var(--accent); background: var(--accent-clair); }
+.reveal .carte.corail { border-color: var(--corail); background: var(--corail-clair); }
+
+.reveal .etiquette {
+  display: inline-block; font-size: .7em; font-weight: 700; padding: 2px 10px; border-radius: 20px;
+  background: var(--nuit); color: var(--blanc); vertical-align: .12em; letter-spacing: .02em;
+}
+.reveal .etiquette.accent { background: var(--accent); color: var(--nuit); }
+.reveal .etiquette.corail { background: var(--corail); color: var(--nuit); }
+
+.reveal .chiffre { font-size: 2.2em; font-weight: 800; color: var(--nuit); line-height: 1; }
+.reveal .chiffre.accent { color: var(--accent-texte); }
+.reveal .chiffre.corail { color: var(--corail-texte); }
+
+.reveal .frise { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.reveal .frise .etape { border-top: 6px solid var(--accent); padding-top: 10px; font-size: .74em; line-height: 1.35; }
+.reveal .frise .etape.corail { border-top-color: var(--corail); }
+.reveal .frise .etape.neutre { border-top-color: var(--nuit); }
+.reveal .frise .date { font-weight: 700; font-size: 1.15em; color: var(--nuit); margin-bottom: 6px; }
+.reveal .frise ul > li { margin-bottom: 5px; padding-left: 22px; }
+.reveal .frise ul > li::before { width: 8px; height: 8px; top: .5em; }
+
+.reveal .reponse { border-left: 6px solid var(--corail); background: var(--corail-clair); padding: 12px 18px;
+  border-radius: 0 8px 8px 0; font-size: .82em; margin-bottom: 12px; line-height: 1.35; }
+.reveal .ko, .reveal .ok { font-weight: 700; margin: 0 0 8px; font-size: .85em; }
+.reveal .ko { color: #B42318; }
+.reveal .ok { color: #1E7B3A; }
+.reveal .dense { font-size: .8em; }
+.reveal .dense ul > li { margin-bottom: 8px; }
+
+/* ==========================================================================
+   Code — texte éditable, coloration aux couleurs de la charte
+   ========================================================================== */
+.reveal pre {
+  position: relative; margin: 0 0 18px; width: 100%;
+  background: var(--code-fond); border-radius: 12px; box-shadow: 0 8px 22px rgba(18, 20, 42, .28);
+  font-size: 19px; line-height: 1.5; overflow: hidden;
+}
+.reveal pre::before {
+  content: ""; display: block; height: 34px; background: var(--nuit);
+  background-image:
+    radial-gradient(circle at 20px 17px, var(--corail) 6px, transparent 6.5px),
+    radial-gradient(circle at 40px 17px, var(--accent) 6px, transparent 6.5px),
+    radial-gradient(circle at 60px 17px, rgba(255,255,255,.45) 6px, transparent 6.5px);
+}
+.reveal pre[data-titre]::after {
+  content: attr(data-titre); position: absolute; top: 0; left: 0; right: 0; height: 34px; line-height: 34px;
+  text-align: center; font-family: var(--police-code); font-size: 14px; color: rgba(255,255,255,.7);
+}
+.reveal pre code {
+  display: block; padding: 16px 22px; max-height: 430px; overflow: auto;
+  font-family: var(--police-code); color: #E6E8F5; background: transparent; white-space: pre; tab-size: 2;
+}
+.reveal code { font-family: var(--police-code); }
+.reveal :not(pre) > code { font-size: .86em; background: var(--clair); color: var(--nuit); padding: 1px 7px; border-radius: 5px; }
+.reveal h1 code, .reveal h2 code { background: none; color: inherit; padding: 0; font-size: .95em; }
+.reveal pre.compact { font-size: 16.5px; }
+.reveal pre.compact code { padding: 12px 18px; }
+.reveal pre.mini { font-size: 14.5px; line-height: 1.45; }
+.reveal pre.mini code { padding: 10px 16px; }
+.reveal .colonnes pre { font-size: 16.5px; }
+.reveal .colonnes pre code { padding: 12px 18px; }
+
+.reveal .hljs-keyword, .reveal .hljs-meta .hljs-keyword { color: #FF9C7F; font-weight: 700; }
+.reveal .hljs-string, .reveal .hljs-regexp { color: #A8EBC9; }
+.reveal .hljs-number, .reveal .hljs-literal { color: #FFC66D; }
+.reveal .hljs-built_in, .reveal .hljs-type { color: #7FE3D8; }
+.reveal .hljs-title, .reveal .hljs-title.function_, .reveal .hljs-title.class_ { color: #8FC2FF; font-weight: 700; }
+.reveal .hljs-name, .reveal .hljs-tag { color: #7FE3D8; }
+.reveal .hljs-attr, .reveal .hljs-property, .reveal .hljs-variable { color: #C6CCF0; }
+.reveal .hljs-params, .reveal .hljs-subst { color: #E6E8F5; }
+.reveal .hljs-comment { color: #8A90B8; font-style: italic; }
+.reveal .hljs-meta { color: #FFC66D; }
+.reveal .hljs-operator, .reveal .hljs-punctuation { color: #C6CCF0; }
+.reveal .hljs-prompt, .reveal .invite { color: var(--accent); user-select: none; }
+.reveal pre code .hljs-ln-line.highlight-line { background: rgba(46, 196, 182, .14); }
+.reveal .hljs-ln-numbers { color: #5D6390; padding-right: 14px; text-align: right; user-select: none; }
+.reveal .hljs.has-highlights tr:not(.highlight-line) { opacity: .45; }
+
+.reveal pre .copier {
+  position: absolute; top: 5px; right: 8px; z-index: 2; pointer-events: auto;
+  font: 700 12px var(--police); color: var(--nuit); background: var(--accent);
+  border: 0; border-radius: 5px; padding: 5px 10px; cursor: pointer; opacity: .85;
+}
+.reveal pre .copier:hover { opacity: 1; }
+
+/* ---------- Interface reveal ---------- */
+.reveal .controls { color: var(--accent); }
+.reveal .progress { color: var(--accent); height: 5px; }
+.reveal .slide-number { display: none; }
+
+@media print {
+  .reveal pre .copier { display: none; }
+  .reveal pre code { max-height: none; overflow: visible; }
+}
