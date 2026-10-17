@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Supports React Native</title>
+  <link rel="stylesheet" href="positionnement/positionnement.css">
+  <style>
+    .supports { display: flex; flex-direction: column; gap: 0; }
+    .support { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: center; padding: 12px 0; border-top: 1px solid var(--bordure); }
+    .support:first-of-type { border-top: 0; }
+    .support .nom { font-weight: 600; }
+    .support .detail { grid-column: 1; color: var(--texte-doux); font-size: 15px; }
+    .liens { grid-column: 2; grid-row: 1 / span 2; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .liens a { font-weight: 600; font-size: 15px; color: var(--texte); text-decoration: none; border: 2px solid var(--accent); border-radius: 8px; padding: 5px 12px; }
+    .liens a.pdf { border-color: var(--bordure); }
+    .liens a:hover { background: var(--accent-clair); }
+  </style>
+</head>
+<body>
+
+<header class="bandeau">
+  <div class="interieur">
+    <div class="sur-titre">Mastère 1 ingénierie du web</div>
+    <h1>React Native</h1>
+    <p>Supports du module : cours, énoncés de TP et projet. Chris CHEVALIER · chevalier@chris-freelance.com</p>
+  </div>
+</header>
+
+<main>
+  <section class="bloc">
+    <h2>Premier cours</h2>
+    <div class="supports">
+      <div class="support">
+        <span class="nom">Test de positionnement</span>
+        <span class="detail">Anonyme et non noté, à faire en début de module</span>
+        <span class="liens"><a href="positionnement/index.html">Répondre</a></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloc">
+    <h2>Cours</h2>
+    <div class="supports">
+      <div class="support">
+        <span class="nom">0 · Organisation du module</span>
+        <span class="detail">Programme, calendrier, projet et évaluation</span>
+        <span class="liens"><a href="cours/0-organisation-du-module.html">Présentation</a><a class="pdf" href="pdf/0-organisation-du-module.pdf">PDF</a></span>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

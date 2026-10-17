@@ -148,7 +148,8 @@
   const firebase = await connecter();
   if (firebase) {
     firebase.onSnapshot(firebase.collection(firebase.db, COLLECTION), (instantane) => {
-      toutes = instantane.docs.map((d) => d.data()).filter((r) => Array.isArray(r.reponses) && r.reponses.length === QUESTIONS.length);
+      // Les documents « sonde-… » servent à tester les règles : ils ne comptent pas
+      toutes = instantane.docs.filter((d) => !d.id.startsWith("sonde-")).map((d) => d.data()).filter((r) => Array.isArray(r.reponses) && r.reponses.length === QUESTIONS.length);
       afficher();
     });
   } else {
