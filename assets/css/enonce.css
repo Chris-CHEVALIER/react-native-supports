@@ -1,0 +1,175 @@
+@import url("../fonts/outfit.css");
+/* ==========================================================================
+   Pages d'énoncé (défis, TP) — charte neutre (sans logo)
+   Page qu'on fait défiler, lisible à l'écran comme à l'impression
+   ========================================================================== */
+
+:root {
+  --marine: #1B1E3C;
+  --marine-code: #101227;
+  --ambre: #2EC4B6;
+  --jaune: #FF7A59;
+  --gris-clair: #F2F3F9;
+  --ambre-clair: #E2F7F4;
+  --bordure: #D9DCEA;
+  --police: "Outfit", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --police-code: "JetBrains Mono", "Cascadia Code", "SF Mono", Menlo, Consolas, "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--police); font-size: 17px; line-height: 1.6; color: var(--marine); background: #fff; }
+
+/* ---------- En-tête ---------- */
+.entete { background: var(--marine); color: #fff; display: flex; min-height: 190px; }
+.entete { position: relative; overflow: hidden; }
+.entete::after { content: ""; position: absolute; right: 6%; top: 26px; width: 96px; height: 190px; border: 5px solid var(--ambre); border-radius: 20px; box-shadow: 8px 8px 0 var(--jaune); opacity: .9; }
+.entete .titre { max-width: 900px; margin: 0 auto; width: 100%; padding-right: 150px !important; }
+.entete .titre { padding: 26px 32px; display: flex; flex-direction: column; justify-content: center; }
+.entete h1 { margin: 0 0 6px; font-size: clamp(28px, 5vw, 40px); line-height: 1.15; }
+.entete p { margin: 0; font-size: 18px; }
+.entete .code-module { color: var(--ambre); font-weight: 700; }
+
+main { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+a { color: var(--marine); text-decoration-color: var(--ambre); text-underline-offset: 3px; }
+strong { font-weight: 700; }
+
+/* ---------- Titres ---------- */
+h2 { font-size: 28px; line-height: 1.2; margin: 48px 0 16px; display: flex; align-items: center; gap: 14px; scroll-margin-top: 16px; }
+h2 .num {
+  flex: 0 0 auto; width: 48px; height: 48px; display: inline-flex; align-items: center; justify-content: center;
+  background: var(--ambre); color: var(--marine); font-size: 22px;
+  border-radius: 12px;
+}
+h3 { font-size: 19px; margin: 26px 0 8px; padding-left: 12px; border-left: 5px solid var(--ambre); }
+.defi { border-top: 2px solid var(--gris-clair); }
+.defi:first-of-type { border-top: 0; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 14px; }
+
+/* ---------- Étiquettes ---------- */
+.etiquette { display: inline-block; font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 4px; background: var(--marine); color: #fff; }
+.etiquette.ambre { background: var(--ambre); color: var(--marine); }
+.etiquette.clair { background: var(--gris-clair); color: var(--marine); }
+
+/* ---------- Listes ---------- */
+ul { list-style: none; padding: 0; margin: 0 0 14px; }
+ul > li { position: relative; padding-left: 26px; margin-bottom: 6px; }
+ul > li::before { content: ""; position: absolute; left: 3px; top: .55em; width: 10px; height: 10px; border-radius: 3px; background: var(--ambre); }
+ol { padding-left: 1.4em; margin: 0 0 14px; }
+ol > li { margin-bottom: 6px; }
+ol > li::marker { font-weight: 700; }
+
+/* ---------- Encadrés ---------- */
+.encadre { background: var(--ambre-clair); border-left: 6px solid var(--ambre); padding: 14px 18px; border-radius: 0 6px 6px 0; margin: 16px 0; }
+.encadre.marine { background: var(--gris-clair); border-left-color: var(--marine); }
+.encadre > :first-child { margin-top: 0; }
+.encadre > :last-child { margin-bottom: 0; }
+.encadre .intitule { display: block; font-weight: 700; margin-bottom: 6px; }
+
+.sommaire { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 18px 0; }
+.sommaire a { display: block; border: 2px solid var(--marine); border-radius: 8px; padding: 12px 16px; text-decoration: none; }
+.sommaire a:hover { background: var(--gris-clair); }
+.sommaire .n { font-weight: 700; color: var(--ambre); }
+
+/* ---------- Indices dépliables ---------- */
+details { border: 1px solid var(--bordure); border-radius: 6px; padding: 10px 16px; margin: 14px 0; background: #fff; }
+details summary { cursor: pointer; font-weight: 700; }
+details[open] summary { margin-bottom: 8px; }
+
+/* ---------- Tableaux ---------- */
+table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 12px 0 16px; }
+th { background: var(--marine); color: #fff; text-align: left; padding: 8px 12px; }
+td { padding: 8px 12px; border-bottom: 1px solid var(--bordure); vertical-align: top; }
+tr:nth-child(even) td { background: var(--gris-clair); }
+
+/* ---------- Code ---------- */
+code { font-family: var(--police-code); }
+:not(pre) > code { font-size: .88em; background: var(--gris-clair); padding: 1px 6px; border-radius: 4px; }
+pre {
+  position: relative; margin: 12px 0 18px; background: var(--marine-code); border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(19, 43, 82, .2); overflow: hidden; font-size: 14.5px; line-height: 1.55;
+}
+pre::before {
+  content: ""; display: block; height: 30px; background: var(--marine);
+  background-image:
+    radial-gradient(circle at 18px 15px, var(--ambre) 5px, transparent 5.5px),
+    radial-gradient(circle at 36px 15px, var(--jaune) 5px, transparent 5.5px),
+    radial-gradient(circle at 54px 15px, rgba(255,255,255,.55) 5px, transparent 5.5px);
+}
+pre[data-titre]::after {
+  content: attr(data-titre); position: absolute; top: 0; left: 70px; right: 70px; height: 30px; line-height: 30px;
+  text-align: center; font-family: var(--police); font-size: 13px; color: rgba(255,255,255,.75);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+pre code { display: block; padding: 14px 18px; overflow-x: auto; color: #E8EEF8; white-space: pre; tab-size: 4; }
+pre .copier {
+  position: absolute; top: 4px; right: 8px; font: 700 12px var(--police); color: var(--marine); background: var(--ambre);
+  border: 0; border-radius: 4px; padding: 4px 10px; cursor: pointer; opacity: .85;
+}
+pre .copier:hover { opacity: 1; }
+
+.hljs-keyword, .hljs-meta .hljs-keyword { color: #FF9C7F; font-weight: 700; }
+.hljs-string { color: #A8EBC9; }
+.hljs-number, .hljs-literal { color: #FFC66D; }
+.hljs-built_in, .hljs-title, .hljs-title.function_, .hljs-title.class_, .hljs-name { color: #8FC2FF; }
+.hljs-attr, .hljs-property { color: #C6CCF0; }
+.hljs-comment { color: #8FA3C4; font-style: italic; }
+.hljs-meta { color: var(--jaune); }
+.hljs-params, .hljs-subst { color: #E8EEF8; }
+.hljs-operator { color: #C6CCF0; }
+
+/* ---------- Pied de page ---------- */
+.pied { text-align: center; font-size: 14px; opacity: .7; padding: 24px 16px; border-top: 1px solid var(--gris-clair); }
+
+@media (max-width: 640px) {
+  .entete::after { display: none; }
+  .entete .titre { padding-right: 32px !important; }
+  h2 { font-size: 23px; }
+}
+
+@media print {
+  body { font-size: 14px; }
+  .entete { min-height: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  pre, .encadre, h2 .num, th, tr:nth-child(even) td, .etiquette { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  pre .copier { display: none; }
+  pre code { white-space: pre-wrap; word-break: break-all; }
+  details { border: 0; padding: 0; }
+  details > summary { list-style: none; }
+  .defi { break-before: page; border-top: 0; }
+  h3, pre, .encadre, table { break-inside: avoid; }
+  pre.donnees { break-inside: auto; }
+  pre.donnees code { font-size: 8.6px; }
+  h3 { break-after: avoid; }
+  main { padding-top: 12px; }
+  .sommaire { display: none; }
+  details > p:last-child { break-before: avoid; }
+}
+
+/* Code dans les tableaux : lisible sur les lignes grisées */
+td code { background: #fff !important; border: 1px solid var(--bordure); }
+
+/* Blocs de données larges (journaux) : police réduite pour éviter le défilement horizontal */
+pre.donnees { font-size: 11.6px; }
+
+/* Illustration pleine largeur */
+.illustration { margin: 18px 0; }
+.illustration img { display: block; width: 100%; max-height: 340px; object-fit: cover; border-radius: 10px; }
+.illustration figcaption { font-size: 13px; opacity: .7; margin-top: 4px; }
+
+/* Liste d'auto-évaluation */
+ul.checklist > li::before { content: "☐"; color: var(--marine); font-size: 1em; top: 0; }
+
+/* Tableau compact (jeu de données) */
+table.compact { font-size: 14px; }
+table.compact td, table.compact th { padding: 5px 10px; }
+.deux-colonnes { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+@media (max-width: 640px) { .deux-colonnes { grid-template-columns: 1fr; } }
+@media print { .illustration img { max-height: 220px; } }
+.muet { opacity: .75; }
+
+/* Code dans un en-tête de tableau : lisible sur fond marine */
+th code { background: rgba(255, 255, 255, .18) !important; color: #fff; border: 0 !important; }
+
+/* Charte neutre : texte accentué lisible sur fond blanc */
+.sommaire .n, .entete .sur-titre { color: #0B7A70; }
+.entete .code-module { color: #2EC4B6; }

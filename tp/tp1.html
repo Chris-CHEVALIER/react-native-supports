@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TP1 – Fondations – React Native</title>
+  <link rel="stylesheet" href="../assets/css/enonce.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="titre">
+    <h1>TP1 – Le catalogue du disquaire</h1>
+    <p><span class="code-module">React Native</span> · TP individuel · Fondations</p>
+  </div>
+</header>
+
+<main>
+
+  <p>
+    Un disquaire indépendant veut une application pour présenter ses vinyles. Elle doit fonctionner sur le téléphone des clients
+    et sur l'écran de la boutique, avec le même code. Vous construisez son <strong>catalogue</strong> : une grille d'albums sur grand écran,
+    une liste sur téléphone, une recherche, un filtre par genre et un panier.
+  </p>
+
+  <div class="encadre neutre">
+    <span class="intitule">Ce TP en bref</span>
+    <ul>
+      <li><strong>Objectifs</strong> : créer un projet Expo en TypeScript, modéliser des données, écrire des composants aux props typées, gérer l'état et rendre l'interface responsive.</li>
+      <li><strong>Individuel et non noté</strong>. Il prépare le CC1 et le projet : prenez le temps de comprendre chaque ligne.</li>
+      <li>L'IA est autorisée, à une condition : <strong>comprendre chaque ligne</strong> que vous gardez. Le CC1 se fera sans IA.</li>
+      <li>Testez à chaque étape <strong>sur le web et sur votre téléphone</strong> (Expo Go).</li>
+    </ul>
+  </div>
+
+  <nav class="sommaire">
+    <a href="#etape-0"><span class="n">Étape 0</span><br>Le projet et le dépôt</a>
+    <a href="#etape-1"><span class="n">Étape 1</span><br>Le modèle et les données</a>
+    <a href="#etape-2"><span class="n">Étape 2</span><br>La carte d'un album</a>
+    <a href="#etape-3"><span class="n">Étape 3</span><br>Un catalogue responsive</a>
+    <a href="#etape-4"><span class="n">Étape 4</span><br>Le panier</a>
+    <a href="#etape-5"><span class="n">Étape 5</span><br>Recherche et filtre</a>
+    <a href="#bonus"><span class="n">Bonus</span><br>Pour aller plus loin</a>
+    <a href="#validation"><span class="n">Checklist</span><br>Avant de rendre</a>
+  </nav>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-0">
+    <h2><span class="num">0</span> Le projet et le dépôt</h2>
+    <div class="meta"><span class="etiquette clair">Expo · Git</span></div>
+
+    <ol>
+      <li>Créez le projet, videz l'exemple fourni puis lancez-le :
+        <pre data-titre="Terminal"><code class="language-bash">
+          npx create-expo-app@latest rn-tp1
+          cd rn-tp1
+          npm run reset-project
+          npx expo start
+        </code></pre>
+        À la question de <code>reset-project</code>, répondez <code>n</code> : l'exemple est supprimé au lieu d'être déplacé.
+      </li>
+      <li>Dans <code>app.json</code>, remplacez <code>"output": "server"</code> par <code>"output": "single"</code> (rubrique <code>web</code>), puis relancez avec <code>npx expo start --clear</code>.</li>
+      <li>Appuyez sur <code>w</code> pour ouvrir la version web, puis scannez le QR code avec <a href="https://expo.dev/go" target="_blank">Expo Go</a>. Le même écran s'affiche des deux côtés.</li>
+      <li>Sur GitHub, <a href="https://github.com/new" target="_blank">créez un dépôt</a> <strong>privé</strong> nommé <code>rn-tp1-nom-prenom</code>, reliez-le à votre projet et poussez un premier commit.</li>
+      <li>Dans <strong>Settings → Collaborators</strong>, invitez <strong>Chris-CHEVALIER</strong> dès aujourd'hui.</li>
+    </ol>
+
+    <details>
+      <summary>Le téléphone ne se connecte pas au projet</summary>
+      <p>Le téléphone et l'ordinateur doivent être sur le même réseau. Si le Wi-Fi de l'école bloque la connexion, lancez <code>npx expo start --tunnel</code>.</p>
+    </details>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-1">
+    <h2><span class="num">1</span> Le modèle et les données</h2>
+    <div class="meta"><span class="etiquette clair">TypeScript · types · unions</span></div>
+
+    <p>Dans le fichier <code>src/models/album.ts</code>, écrivez et exportez :</p>
+    <ul>
+      <li>le type <code>Genre</code>, une <strong>union</strong> des valeurs <code>"rock"</code>, <code>"jazz"</code>, <code>"pop"</code>, <code>"hip-hop"</code> et <code>"electro"</code> ;</li>
+      <li>le type <code>Album</code>, décrit par le tableau ci-dessous ;</li>
+      <li>la constante <code>GENRES</code>, un tableau de type <code>Genre[]</code> qui contient les cinq genres.</li>
+    </ul>
+    <table>
+      <tr><th>Propriété</th><th>Contenu</th><th>Type</th></tr>
+      <tr><td><code>id</code></td><td>identifiant unique</td><td><code>string</code></td></tr>
+      <tr><td><code>title</code></td><td>titre de l'album</td><td><code>string</code></td></tr>
+      <tr><td><code>artist</code></td><td>artiste ou groupe</td><td><code>string</code></td></tr>
+      <tr><td><code>year</code></td><td>année de sortie</td><td><code>number</code></td></tr>
+      <tr><td><code>genre</code></td><td>genre musical</td><td><code>Genre</code></td></tr>
+      <tr><td><code>price</code></td><td>prix en euros</td><td><code>number</code></td></tr>
+      <tr><td><code>inStock</code></td><td>disponible en boutique</td><td><code>boolean</code></td></tr>
+      <tr><td><code>coverUrl</code></td><td>adresse de la pochette</td><td><code>string</code></td></tr>
+    </table>
+
+    <p>Dans le fichier <code>src/data/albums.ts</code>, copiez les données du disquaire :</p>
+    <pre class="donnees" data-titre="src/data/albums.ts"><code class="language-typescript">
+      import { Album } from "@/models/album";
+
+      export const ALBUMS: Album[] = [
+        { id: "a1", title: "Kind of Blue", artist: "Miles Davis", year: 1959, genre: "jazz", price: 24.9, inStock: true, coverUrl: "https://picsum.photos/id/100/400/400" },
+        { id: "a2", title: "Random Access Memories", artist: "Daft Punk", year: 2013, genre: "electro", price: 34.9, inStock: true, coverUrl: "https://picsum.photos/id/101/400/400" },
+        { id: "a3", title: "Rumours", artist: "Fleetwood Mac", year: 1977, genre: "rock", price: 27.5, inStock: false, coverUrl: "https://picsum.photos/id/102/400/400" },
+        { id: "a4", title: "To Pimp a Butterfly", artist: "Kendrick Lamar", year: 2015, genre: "hip-hop", price: 32, inStock: true, coverUrl: "https://picsum.photos/id/103/400/400" },
+        { id: "a5", title: "Thriller", artist: "Michael Jackson", year: 1982, genre: "pop", price: 22.9, inStock: true, coverUrl: "https://picsum.photos/id/104/400/400" },
+        { id: "a6", title: "A Love Supreme", artist: "John Coltrane", year: 1965, genre: "jazz", price: 26, inStock: true, coverUrl: "https://picsum.photos/id/106/400/400" },
+        { id: "a7", title: "OK Computer", artist: "Radiohead", year: 1997, genre: "rock", price: 29.9, inStock: true, coverUrl: "https://picsum.photos/id/107/400/400" },
+        { id: "a8", title: "Discovery", artist: "Daft Punk", year: 2001, genre: "electro", price: 31.5, inStock: false, coverUrl: "https://picsum.photos/id/108/400/400" },
+        { id: "a9", title: "Illmatic", artist: "Nas", year: 1994, genre: "hip-hop", price: 25, inStock: true, coverUrl: "https://picsum.photos/id/109/400/400" },
+        { id: "a10", title: "L'Homme à tête de chou", artist: "Serge Gainsbourg", year: 1976, genre: "pop", price: 23.5, inStock: true, coverUrl: "https://picsum.photos/id/110/400/400" },
+        { id: "a11", title: "Moanin'", artist: "Art Blakey", year: 1958, genre: "jazz", price: 21.9, inStock: true, coverUrl: "https://picsum.photos/id/111/400/400" },
+        { id: "a12", title: "Homework", artist: "Daft Punk", year: 1997, genre: "electro", price: 28.9, inStock: true, coverUrl: "https://picsum.photos/id/112/400/400" },
+      ];
+    </code></pre>
+    <p class="muet">Les pochettes sont des photos d'illustration de <a href="https://picsum.photos" target="_blank">picsum.photos</a>.</p>
+
+    <div class="encadre">
+      <span class="intitule">Vérifiez votre type</span>
+      Changez temporairement le genre d'un album en <code>"classique"</code> : votre éditeur doit souligner l'erreur.
+      Lancez aussi <code>npx tsc --noEmit</code> dans le terminal. Il ne doit rien afficher une fois l'erreur corrigée.
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-2">
+    <h2><span class="num">2</span> La carte d'un album</h2>
+    <div class="meta"><span class="etiquette clair">Composants · props typées · Image · StyleSheet</span></div>
+
+    <p>Dans le fichier <code>src/components/album-card.tsx</code>, écrivez le composant <code>AlbumCard</code>.</p>
+    <ul>
+      <li>Il reçoit une prop <code>album</code> de type <code>Album</code>. Déclarez le type de ses props (<code>AlbumCardProps</code>).</li>
+      <li>Il affiche la pochette carrée, le genre, le titre, « artiste · année » et le prix au format français (<code>34,90 €</code>).</li>
+      <li>Ses styles sont regroupés dans un <code>StyleSheet.create</code>, en bas du fichier.</li>
+    </ul>
+
+    <details>
+      <summary>Indice : afficher un prix en euros</summary>
+      <pre data-titre="Formatage d'un prix"><code class="language-typescript">
+        new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(34.9); // "34,90 €"
+      </code></pre>
+    </details>
+    <details>
+      <summary>Indice : la pochette reste invisible</summary>
+      <p>Une image distante n'a pas de taille par défaut. Donnez-lui une largeur et un rapport de proportions : <code>{ width: "100%", aspectRatio: 1 }</code>.</p>
+    </details>
+
+    <p>Pour tester, affichez la carte du premier album dans <code>src/app/index.tsx</code> : <code>&lt;AlbumCard album={ALBUMS[0]} /&gt;</code>.</p>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-3">
+    <h2><span class="num">3</span> Un catalogue responsive</h2>
+    <div class="meta"><span class="etiquette clair">FlatList · useWindowDimensions · hooks</span></div>
+
+    <ol>
+      <li>Dans <code>src/app/index.tsx</code>, affichez <strong>tous</strong> les albums avec une <code>FlatList</code>.</li>
+      <li>Dans le fichier <code>src/hooks/use-columns.ts</code>, écrivez le hook <code>useColumns()</code>. Il renvoie le nombre de colonnes selon la largeur de la fenêtre :
+        <table class="compact">
+          <tr><th>Largeur de la fenêtre</th><th>Colonnes</th></tr>
+          <tr><td>moins de 600 px</td><td>1</td></tr>
+          <tr><td>de 600 à 899 px</td><td>2</td></tr>
+          <tr><td>de 900 à 1 199 px</td><td>3</td></tr>
+          <tr><td>1 200 px et plus</td><td>4</td></tr>
+        </table>
+      </li>
+      <li>Utilisez ce hook pour passer la liste en grille. Redimensionnez la fenêtre du navigateur : le nombre de colonnes doit changer <strong>sans recharger la page</strong>.</li>
+      <li>Sur un très grand écran, le catalogue ne doit pas dépasser <strong>1 280 px de large</strong> et doit rester centré.</li>
+    </ol>
+
+    <details>
+      <summary>Indice : « Changing numColumns on the fly is not supported »</summary>
+      <p><code>FlatList</code> ne sait pas changer de nombre de colonnes après son premier affichage. Donnez-lui une prop <code>key</code> qui dépend du nombre de colonnes : elle sera recréée à chaque changement.</p>
+    </details>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-4">
+    <h2><span class="num">4</span> Le panier</h2>
+    <div class="meta"><span class="etiquette clair">useState · Pressable · état remonté</span></div>
+
+    <ol>
+      <li>Ajoutez à chaque carte un bouton <strong>« Ajouter au panier »</strong> (<code>Pressable</code>). Un nouvel appui retire l'album du panier.</li>
+      <li>Le bouton donne un <strong>retour visuel</strong> pendant l'appui. Son libellé et sa couleur changent quand l'album est dans le panier (« Dans le panier ✓ »).</li>
+      <li>Un album épuisé (<code>inStock: false</code>) affiche un bouton <strong>« Épuisé »</strong> grisé, qui ne réagit pas.</li>
+      <li>En haut de l'écran, affichez le nombre d'albums du panier et leur <strong>prix total</strong> : <code>Panier : 2 · 59,80 €</code>.</li>
+    </ol>
+
+    <div class="encadre">
+      <span class="intitule">Où placer l'état du panier ?</span>
+      La carte affiche l'état du panier, l'en-tête aussi. L'état doit donc vivre dans leur <strong>parent commun</strong>, l'écran.
+      La carte reçoit seulement deux props de plus : <code>inCart</code> (un booléen) et <code>onToggleCart</code> (une fonction qui reçoit l'identifiant de l'album).
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-5">
+    <h2><span class="num">5</span> Recherche et filtre</h2>
+    <div class="meta"><span class="etiquette clair">TextInput · état dérivé · ScrollView horizontale</span></div>
+
+    <ol>
+      <li>Ajoutez un champ de recherche (<code>TextInput</code>). Il filtre les albums dont le <strong>titre ou l'artiste</strong> contient le texte saisi, sans tenir compte des majuscules.</li>
+      <li>Dans le fichier <code>src/components/genre-filter.tsx</code>, écrivez le composant <code>GenreFilter</code>. Il affiche une rangée de boutons « Tous », « rock », « jazz »… Le genre choisi est mis en évidence.</li>
+      <li>La recherche et le filtre se <strong>combinent</strong> : « daft » avec le genre « electro » affiche les trois albums de Daft Punk.</li>
+      <li>Quand aucun album ne correspond, la liste affiche un message (prop <code>ListEmptyComponent</code>).</li>
+    </ol>
+
+    <details>
+      <summary>Indice : faut-il un état pour la liste filtrée ?</summary>
+      <p>Non. La liste affichée se <strong>calcule</strong> à chaque rendu à partir de <code>ALBUMS</code>, du texte recherché et du genre choisi. Seuls ces deux derniers sont des états.</p>
+    </details>
+    <details>
+      <summary>Indice : le type du genre choisi</summary>
+      <p>« Tous » correspond à l'absence de filtre : <code>useState&lt;Genre | null&gt;(null)</code>.</p>
+    </details>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="bonus">
+    <h2><span class="num">+</span> Pour aller plus loin</h2>
+    <ul>
+      <li>Un tri par prix ou par année, choisi par l'utilisateur.</li>
+      <li>Un thème sombre qui suit le réglage du téléphone, avec <a href="https://reactnative.dev/docs/usecolorscheme" target="_blank"><code>useColorScheme()</code></a>.</li>
+      <li>Un retour haptique (une petite vibration) à l'ajout au panier, avec <a href="https://docs.expo.dev/versions/latest/sdk/haptics/" target="_blank"><code>expo-haptics</code></a>. Sur le web, il ne se passe rien : vérifiez que l'application ne plante pas.</li>
+      <li>Sur le web, un curseur en forme de main au survol des boutons.</li>
+    </ul>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="validation">
+    <h2><span class="num">✓</span> Avant de rendre</h2>
+    <ul class="checklist">
+      <li><code>npx tsc --noEmit</code> n'affiche aucune erreur.</li>
+      <li>Le catalogue s'affiche en 1 colonne sur votre téléphone et en 3 ou 4 colonnes sur l'ordinateur.</li>
+      <li>Les types sont dans <code>src/models/</code>, les données dans <code>src/data/</code>, les composants dans <code>src/components/</code>, le hook dans <code>src/hooks/</code>.</li>
+      <li>Aucune propriété de style n'est écrite directement dans le JSX : tout passe par <code>StyleSheet.create</code>.</li>
+      <li>Le panier, le total, la recherche et le filtre fonctionnent ensemble.</li>
+      <li>Votre dépôt contient plusieurs commits et <strong>Chris-CHEVALIER</strong> y est invité.</li>
+    </ul>
+    <div class="encadre neutre">
+      <span class="intitule">Rendu</span>
+      Envoyez le lien de votre dépôt à <a href="mailto:chevalier@chris-freelance.com">chevalier@chris-freelance.com</a> avec l'objet
+      <code>[RN-IWB1] TP1 – NOM Prénom</code> (ou <code>IWB2</code>). Je vous fais un retour sur votre code, sans note.
+    </div>
+  </section>
+
+</main>
+
+<footer class="pied">React Native · TP1 · Chris CHEVALIER</footer>
+
+<script src="../assets/vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="../assets/js/enonce.js"></script>
+</body>
+</html>

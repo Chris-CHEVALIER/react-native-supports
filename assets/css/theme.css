@@ -241,6 +241,9 @@
 .reveal .hljs-meta { color: #FFC66D; }
 .reveal .hljs-operator, .reveal .hljs-punctuation { color: #C6CCF0; }
 .reveal .hljs-prompt, .reveal .invite { color: var(--accent); user-select: none; }
+/* Les numéros de ligne de highlight.js sont un tableau : on neutralise le style des tableaux */
+.reveal pre table { width: auto; font-size: inherit; }
+.reveal pre table td, .reveal pre tr:nth-child(even) td { padding: 0; border: 0; background: transparent; }
 .reveal pre code .hljs-ln-line.highlight-line { background: rgba(46, 196, 182, .14); }
 .reveal .hljs-ln-numbers { color: #5D6390; padding-right: 14px; text-align: right; user-select: none; }
 .reveal .hljs.has-highlights tr:not(.highlight-line) { opacity: .45; }
