@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projet – React Native</title>
+  <link rel="stylesheet" href="../assets/css/enonce.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="titre">
+    <h1>Projet – Une application multiplateforme</h1>
+    <p><span class="code-module">React Native</span> · En trinôme · Du 27 octobre au 17 décembre</p>
+  </div>
+</header>
+
+<main>
+
+  <p>
+    En trinôme, vous concevez une application React Native <strong>sur le sujet de votre choix</strong>. Elle fonctionne avec le même code
+    dans un navigateur de bureau et sur un téléphone. Le projet avance à chaque TP : chaque TP est un <strong>jalon</strong> du projet final.
+  </p>
+
+  <div class="encadre neutre">
+    <span class="intitule">Le projet en bref</span>
+    <ul>
+      <li><strong>Groupes de trois</strong>, formés le premier jour. Un binôme est possible si l'effectif l'impose, jamais une personne seule.</li>
+      <li><strong>Sujet libre</strong>, validé par moi avant le TP2.</li>
+      <li>Il compte pour <strong>25 %</strong> de la note du module (contrôle continu). La note du groupe est modulée selon la contribution de chacun.</li>
+      <li>Rendu : dernier commit poussé <strong>le mercredi 16 décembre à 23h59</strong>. Démo le 17 décembre.</li>
+    </ul>
+  </div>
+
+  <nav class="sommaire">
+    <a href="#exigences"><span class="n">1</span><br>Ce que l'application doit contenir</a>
+    <a href="#idees"><span class="n">2</span><br>Des idées de sujets</a>
+    <a href="#jalons"><span class="n">3</span><br>Les jalons</a>
+    <a href="#rendu"><span class="n">4</span><br>Le dépôt et le rendu</a>
+    <a href="#evaluation"><span class="n">5</span><br>L'évaluation</a>
+    <a href="#ia"><span class="n">6</span><br>L'IA générative</a>
+  </nav>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="exigences">
+    <h2><span class="num">1</span> Ce que l'application doit contenir</h2>
+
+    <h3>Obligatoire</h3>
+    <ul>
+      <li><strong>Au moins 4 écrans</strong>, organisés avec Expo Router : des onglets, une pile et au moins une route dynamique (par exemple <code>/items/[id]</code>).</li>
+      <li>Sur le web, <strong>l'URL suit la navigation</strong> : une page de détail s'ouvre directement depuis son adresse.</li>
+      <li>Un <strong>catalogue responsive</strong> : une grille sur ordinateur, une liste fluide sur téléphone, avec des <strong>filtres</strong> dont la logique vit dans un hook.</li>
+      <li>Une <strong>API publique</strong> consommée avec <code>fetch()</code>, avec les états de chargement et d'erreur.</li>
+      <li><strong>Firebase</strong> : authentification par e-mail et <strong>deux CRUD</strong> (créer, lire, modifier, supprimer) sur deux collections différentes.</li>
+      <li>Une <strong>architecture MVC</strong> en TypeScript : modèles typés, services, hooks contrôleurs, composants d'affichage purs.</li>
+      <li>Une interface <strong>lisible et cohérente</strong> : hiérarchie visuelle, contrastes suffisants, retours visuels au toucher.</li>
+      <li>Un <code>README.md</code> complet (voir la partie 4).</li>
+    </ul>
+    <div class="encadre">
+      Une application qui ne se lance pas sur le web <strong>ou</strong> sur Expo Go ne peut pas être évaluée. Testez les deux à chaque commit important.
+    </div>
+
+    <h3>Valorisé (bonus)</h3>
+    <ul>
+      <li>Une API native du téléphone : caméra, localisation, notifications, retour haptique…</li>
+      <li>Des animations soignées.</li>
+      <li>Un cache ou un mode hors ligne.</li>
+      <li>Des tests automatisés des fonctions du modèle.</li>
+      <li>La version web déployée en ligne.</li>
+      <li>Une bibliothèque d'état (Zustand, TanStack Query…), si vous savez expliquer ce choix.</li>
+    </ul>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="idees">
+    <h2><span class="num">2</span> Des idées de sujets</h2>
+    <p>Ces quatre sujets s'appuient sur des API <strong>gratuites et sans clé</strong>. Vous pouvez en proposer un autre : il doit se prêter à un catalogue et à deux CRUD.</p>
+    <table>
+      <tr><th>Sujet</th><th>API publique</th><th>Idées de CRUD Firebase</th></tr>
+      <tr><td><strong>Carnet de recettes</strong></td><td><a href="https://www.themealdb.com/api.php" target="_blank">TheMealDB</a></td><td>Mes recettes personnelles, ma liste de courses</td></tr>
+      <tr><td><strong>Bibliothèque personnelle</strong></td><td><a href="https://openlibrary.org/developers/api" target="_blank">Open Library</a></td><td>Mes lectures (lu, en cours, à lire), mes avis</td></tr>
+      <tr><td><strong>Carnet de voyage</strong></td><td><a href="https://restcountries.com" target="_blank">REST Countries</a> et <a href="https://open-meteo.com" target="_blank">Open-Meteo</a></td><td>Mes voyages, les étapes d'un voyage</td></tr>
+      <tr><td><strong>Garde-manger anti-gaspi</strong></td><td><a href="https://world.openfoodfacts.org/data" target="_blank">Open Food Facts</a></td><td>Mes produits et leurs dates de péremption, mes listes de courses</td></tr>
+    </table>
+    <p class="muet">Deux groupes d'une même classe ne peuvent pas choisir le même sujet. Le premier qui me l'envoie le garde.</p>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="jalons">
+    <h2><span class="num">3</span> Les jalons</h2>
+    <table>
+      <tr><th>Quand</th><th>Jalon</th><th>Ce qui doit exister</th></tr>
+      <tr><td>Mar. 27 oct.</td><td><strong>Lancement</strong></td><td>Trinôme formé, sujet proposé, dépôt commun créé, Chris-CHEVALIER invité</td></tr>
+      <tr><td>Mer. 28 oct.</td><td><strong>TP2</strong></td><td>Arborescence MVC, modèles typés, service de données factices, hook contrôleur, catalogue responsive, un Context</td></tr>
+      <tr><td>Du 29 oct. au 25 nov.</td><td><strong>TP3</strong></td><td>Navigation complète (onglets, pile, détail), API publique, filtres, URL synchronisée sur le web</td></tr>
+      <tr><td>Mer. 25 nov.</td><td><strong>TP4</strong></td><td>Authentification Firebase et deux CRUD</td></tr>
+      <tr><td>Mer. 16 déc. 23h59</td><td><strong>Rendu final</strong></td><td>Application complète, README, bonus éventuels</td></tr>
+      <tr><td>Jeu. 17 déc.</td><td><strong>Démo</strong></td><td>8 minutes par groupe : 5 min de démo sur le web et sur mobile, puis 3 min de questions</td></tr>
+    </table>
+    <p>Le 25 novembre, je fais un <strong>point d'étape</strong> avec chaque groupe sur le jalon du TP3.</p>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="rendu">
+    <h2><span class="num">4</span> Le dépôt et le rendu</h2>
+    <ul>
+      <li>Un dépôt GitHub <strong>privé</strong> nommé <code>rn-projet-nom1-nom2-nom3</code>, avec <strong>Chris-CHEVALIER</strong> invité dès le premier jour.</li>
+      <li><strong>Chacun commite avec son propre compte</strong>, régulièrement. L'historique me sert à mesurer la contribution de chacun.</li>
+      <li>Le projet se lance avec <code>npm install</code> puis <code>npx expo start</code>, sans autre manipulation. Aucun fichier APK ou IPA n'est demandé.</li>
+    </ul>
+    <h3>Le README contient</h3>
+    <ul>
+      <li>le sujet, les membres du groupe et la répartition du travail ;</li>
+      <li>les fonctionnalités, avec des captures d'écran sur le web et sur mobile ;</li>
+      <li>l'API publique utilisée et le schéma des collections Firebase ;</li>
+      <li>le parcours de navigation (la liste des écrans et leurs URL) ;</li>
+      <li>les instructions de lancement, dont la configuration Firebase à fournir ;</li>
+      <li>les bonus réalisés ;</li>
+      <li>la déclaration d'usage de l'IA.</li>
+    </ul>
+    <div class="encadre neutre">
+      <span class="intitule">Rendu final</span>
+      Le 16 décembre au plus tard, envoyez à <a href="mailto:chevalier@chris-freelance.com">chevalier@chris-freelance.com</a> un e-mail avec l'objet
+      <code>[RN-IWB1] Projet – NOM1, NOM2, NOM3</code> (ou <code>IWB2</code>) et le lien du dépôt. Je corrige le dernier commit poussé avant 23h59.
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="evaluation">
+    <h2><span class="num">5</span> L'évaluation</h2>
+    <table>
+      <tr><th>Critère</th><th>Ce que je regarde</th><th>Points</th></tr>
+      <tr><td><strong>Fonctionnalités</strong></td><td>Les exigences obligatoires sont présentes et fonctionnent sur le web et sur mobile</td><td>6</td></tr>
+      <tr><td><strong>Architecture</strong></td><td>Séparation MVC, types, hooks, composants purs, un fichier par domaine</td><td>4</td></tr>
+      <tr><td><strong>Interface</strong></td><td>Responsive, lisible, cohérente, états de chargement, d'erreur et de liste vide</td><td>3</td></tr>
+      <tr><td><strong>Qualité</strong></td><td>Code lisible, <code>npx tsc --noEmit</code> sans erreur, commits réguliers, README complet</td><td>3</td></tr>
+      <tr><td><strong>Démo et questions</strong></td><td>Démo fluide, réponses justes de <strong>chaque</strong> membre sur le code</td><td>4</td></tr>
+      <tr><td colspan="2"><strong>Bonus</strong> (dans la limite de 20)</td><td>+2</td></tr>
+    </table>
+    <p>La note est celle du groupe, <strong>modulée individuellement</strong> d'après l'historique Git et les réponses aux questions. Un membre qui n'a pas contribué peut avoir 0.</p>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="ia">
+    <h2><span class="num">6</span> L'IA générative</h2>
+    <ul>
+      <li>L'IA (ChatGPT, Claude, Copilot…) est <strong>autorisée</strong> pour le projet.</li>
+      <li>Chaque membre doit <strong>comprendre et savoir expliquer</strong> chaque partie du code. Une fonctionnalité que personne ne sait expliquer pendant la démo n'est pas comptée.</li>
+      <li>Déclarez votre usage dans le README : quels outils, pour quelles tâches.</li>
+      <li>Méfiez-vous des réponses qui datent : <code>expo eject</code>, <code>expo-cli</code> global ou React Navigation configuré à la main ne correspondent pas à la version d'Expo utilisée dans ce module.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="pied">React Native · Projet · Chris CHEVALIER</footer>
+
+<script src="../assets/vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="../assets/js/enonce.js"></script>
+</body>
+</html>

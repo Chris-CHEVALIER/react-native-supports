@@ -264,3 +264,9 @@
   .reveal pre .copier { display: none; }
   .reveal pre code { max-height: none; overflow: visible; }
 }
+
+/* Tailles de code : placées après les règles des colonnes pour l'emporter */
+.reveal .corps pre.compact { font-size: 16px; }
+.reveal .corps pre.mini { font-size: 14px; line-height: 1.42; }
+.reveal .corps pre.mini code, .reveal .corps pre.compact code { padding: 10px 16px; max-height: 436px; }
+.reveal .colonnes.code-large { grid-template-columns: 2.1fr 1fr; gap: 26px; align-items: start; }

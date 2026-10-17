@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TP2 – Projet, jalon 1 – React Native</title>
+  <link rel="stylesheet" href="../assets/css/enonce.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="titre">
+    <h1>TP2 – Les fondations du projet</h1>
+    <p><span class="code-module">React Native</span> · En trinôme · Projet, jalon 1</p>
+  </div>
+</header>
+
+<main>
+
+  <p>
+    Votre sujet est choisi, votre dépôt commun existe. Ce TP pose l'<strong>architecture MVC</strong> de votre projet :
+    tout ce que vous ajouterez ensuite (navigation, API, Firebase) viendra s'y brancher sans tout réécrire.
+  </p>
+
+  <div class="encadre neutre">
+    <span class="intitule">Ce TP en bref</span>
+    <ul>
+      <li><strong>Objectifs</strong> : organiser le code en modèles, services, hooks contrôleurs et vues, typer les données, gérer un chargement asynchrone et partager un état global.</li>
+      <li>En trinôme, dans le <strong>dépôt du projet</strong>. Ce jalon compte dans la note du projet.</li>
+      <li>Le cours 2 (catalogue de séjours) vous sert de <strong>modèle</strong> : appliquez la même structure à <strong>votre</strong> sujet.</li>
+      <li>L'IA est autorisée, à une condition : chaque membre doit pouvoir expliquer chaque fichier.</li>
+    </ul>
+  </div>
+
+  <nav class="sommaire">
+    <a href="#etape-0"><span class="n">Étape 0</span><br>Le dépôt et l'équipe</a>
+    <a href="#etape-1"><span class="n">Étape 1</span><br>Le modèle</a>
+    <a href="#etape-2"><span class="n">Étape 2</span><br>Le service</a>
+    <a href="#etape-3"><span class="n">Étape 3</span><br>Les hooks contrôleurs</a>
+    <a href="#etape-4"><span class="n">Étape 4</span><br>Les vues et l'écran</a>
+    <a href="#etape-5"><span class="n">Étape 5</span><br>Un état global</a>
+    <a href="#validation"><span class="n">Checklist</span><br>Avant de rendre</a>
+  </nav>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-0">
+    <h2><span class="num">0</span> Le dépôt et l'équipe</h2>
+    <div class="meta"><span class="etiquette clair">Git · organisation</span></div>
+    <ol>
+      <li>Un seul membre crée le projet Expo (<code>npx create-expo-app@latest</code>, puis <code>npm run reset-project</code> et <code>"output": "single"</code> dans <code>app.json</code>), le pousse sur le dépôt <code>rn-projet-nom1-nom2-nom3</code>, puis invite les deux autres et <strong>Chris-CHEVALIER</strong>.</li>
+      <li>Les deux autres clonent le dépôt et lancent <code>npm install</code> puis <code>npx expo start</code>.</li>
+      <li>Créez le <code>README.md</code> : le sujet en trois phrases, l'API publique envisagée, les membres et <strong>qui fait quoi</strong> dans ce TP.</li>
+    </ol>
+    <div class="encadre">
+      <span class="intitule">Travailler à trois sans se marcher dessus</span>
+      Répartissez-vous les fichiers : un membre sur le modèle et le service, un sur les hooks, un sur les composants.
+      Faites des commits courts et faites <code>git pull</code> avant chaque <code>git push</code>. Chacun commite avec son propre compte.
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-1">
+    <h2><span class="num">1</span> Le modèle</h2>
+    <div class="meta"><span class="etiquette clair">TypeScript · fonctions pures</span></div>
+    <p>Dans <code>src/models/</code>, un fichier par entité principale de votre sujet (par exemple <code>recipe.ts</code>).</p>
+    <ol>
+      <li>Écrivez le <strong>type</strong> de votre entité : au moins six propriétés, dont un identifiant, une union de valeurs (une catégorie, un statut…) et une propriété facultative.</li>
+      <li>Écrivez le type de ses <strong>filtres</strong> : au moins une recherche textuelle et un filtre par catégorie.</li>
+      <li>Écrivez une <strong>fonction pure</strong> <code>matchesFilters(item, filters)</code> qui renvoie un booléen.</li>
+    </ol>
+    <p>Dans <code>src/data/</code>, créez <strong>au moins 10 éléments</strong> réalistes. Ils seront remplacés par l'API au TP3.</p>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-2">
+    <h2><span class="num">2</span> Le service</h2>
+    <div class="meta"><span class="etiquette clair">async · Promise</span></div>
+    <p>Dans <code>src/services/</code>, écrivez une fonction asynchrone qui renvoie vos données, par exemple <code>fetchRecipes(): Promise&lt;Recipe[]&gt;</code>.</p>
+    <ul>
+      <li>Elle attend <strong>800 ms</strong> avant de répondre, pour simuler le réseau.</li>
+      <li>Ajoutez temporairement une ligne qui <strong>lève une erreur</strong> : vous en aurez besoin pour tester l'étape 4. Retirez-la ensuite.</li>
+    </ul>
+    <details>
+      <summary>Indice : simuler une attente</summary>
+      <pre data-titre="Simuler le réseau"><code class="language-typescript">
+        const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+      </code></pre>
+    </details>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-3">
+    <h2><span class="num">3</span> Les hooks contrôleurs</h2>
+    <div class="meta"><span class="etiquette clair">Hooks personnalisés · union discriminée</span></div>
+    <ol>
+      <li>Dans <code>src/hooks/</code>, écrivez le hook qui charge vos données (par exemple <code>useRecipes()</code>).
+        <ul>
+          <li>Son état est une <strong>union discriminée</strong> à trois cas : <code>"loading"</code>, <code>"error"</code> (avec un message) et <code>"success"</code> (avec les données).</li>
+          <li>Il renvoie cet état et une fonction <code>reload</code>.</li>
+        </ul>
+      </li>
+      <li>Écrivez le hook des filtres (par exemple <code>useRecipeFilters(items)</code>). Il renvoie les filtres, une fonction pour les modifier et la liste filtrée, <strong>calculée</strong> avec <code>matchesFilters</code>.</li>
+    </ol>
+    <div class="encadre">
+      La liste filtrée n'est pas un état. Si vous écrivez <code>useState</code> pour elle, c'est qu'une donnée est stockée deux fois.
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-4">
+    <h2><span class="num">4</span> Les vues et l'écran</h2>
+    <div class="meta"><span class="etiquette clair">Composants purs · responsive</span></div>
+    <ol>
+      <li>Dans <code>src/components/</code>, écrivez au moins <strong>trois composants purs</strong> : la carte d'un élément, la barre de filtres et un message d'état (chargement, erreur avec un bouton « Réessayer »).</li>
+      <li>Dans <code>src/app/index.tsx</code>, l'écran <strong>assemble</strong> les hooks et les composants. Il affiche :
+        <ul>
+          <li>un indicateur pendant le chargement ;</li>
+          <li>un message et un bouton « Réessayer » en cas d'erreur (testez-le avec l'erreur de l'étape 2) ;</li>
+          <li>le catalogue responsive (grille sur ordinateur, liste sur téléphone), avec un message quand aucun élément ne correspond.</li>
+        </ul>
+      </li>
+    </ol>
+    <div class="encadre">
+      <span class="intitule">Vérifiez vos vues</span>
+      Aucun fichier de <code>src/components/</code> ne doit importer un service, appeler <code>fetch</code> ou contenir un <code>useEffect</code> qui charge des données.
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-5">
+    <h2><span class="num">5</span> Un état global</h2>
+    <div class="meta"><span class="etiquette clair">Context · Provider</span></div>
+    <ol>
+      <li>Choisissez une donnée que <strong>plusieurs écrans</strong> partageront : des favoris, une sélection, des préférences d'affichage…</li>
+      <li>Dans <code>src/context/</code>, créez le Context typé, son Provider et un hook d'accès qui lève une erreur hors du Provider.</li>
+      <li>Placez le Provider dans <code>src/app/_layout.tsx</code>.</li>
+      <li>Créez un <strong>deuxième écran</strong> (par exemple <code>src/app/favorites.tsx</code>) qui lit cet état. Reliez-le au catalogue avec <code>&lt;Link href="/favorites"&gt;</code>, importé depuis <code>expo-router</code>.</li>
+    </ol>
+    <p class="muet">La navigation complète (onglets, détail, URL) est l'objet du cours 3 et du TP3.</p>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="validation">
+    <h2><span class="num">✓</span> Avant de rendre</h2>
+    <ul class="checklist">
+      <li>L'arborescence contient <code>models/</code>, <code>data/</code>, <code>services/</code>, <code>hooks/</code>, <code>context/</code>, <code>components/</code> et <code>app/</code>.</li>
+      <li><code>npx tsc --noEmit</code> n'affiche aucune erreur.</li>
+      <li>Les trois états (chargement, erreur, succès) s'affichent correctement.</li>
+      <li>Le catalogue est une grille sur ordinateur et une liste sur téléphone.</li>
+      <li>Une modification de l'état global se voit sur les deux écrans.</li>
+      <li>Les trois membres ont commité, et le README indique qui a fait quoi.</li>
+    </ul>
+    <div class="encadre neutre">
+      <span class="intitule">Rendu</span>
+      Poussez votre travail en fin de séance. Je relis l'état du dépôt à la fin de la journée : pas besoin d'e-mail, le lien m'a été envoyé au lancement du projet.
+    </div>
+  </section>
+
+</main>
+
+<footer class="pied">React Native · TP2 · Chris CHEVALIER</footer>
+
+<script src="../assets/vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="../assets/js/enonce.js"></script>
+</body>
+</html>
