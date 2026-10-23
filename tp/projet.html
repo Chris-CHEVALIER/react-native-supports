@@ -27,18 +27,19 @@
     <ul>
       <li><strong>Groupes de trois</strong>, formés le premier jour. Un binôme est possible si l'effectif l'impose, jamais une personne seule.</li>
       <li><strong>Sujet libre</strong>, validé par moi avant le TP2.</li>
-      <li>Il compte pour <strong>25 %</strong> de la note du module (contrôle continu). La note du groupe est modulée selon la contribution de chacun.</li>
+      <li>Il compte pour <strong>25 %</strong> de la note du module (contrôle continu). <strong>Chaque membre est propriétaire d'une partie</strong> : la note du groupe est modulée selon la sienne.</li>
       <li>Rendu : dernier commit poussé <strong>le mercredi 16 décembre à 23h59</strong>. Démo le 17 décembre.</li>
     </ul>
   </div>
 
   <nav class="sommaire">
     <a href="#exigences"><span class="n">1</span><br>Ce que l'application doit contenir</a>
-    <a href="#idees"><span class="n">2</span><br>Des idées de sujets</a>
-    <a href="#jalons"><span class="n">3</span><br>Les jalons</a>
-    <a href="#rendu"><span class="n">4</span><br>Le dépôt et le rendu</a>
-    <a href="#evaluation"><span class="n">5</span><br>L'évaluation</a>
-    <a href="#ia"><span class="n">6</span><br>L'IA générative</a>
+    <a href="#parties"><span class="n">2</span><br>Un propriétaire par partie</a>
+    <a href="#idees"><span class="n">3</span><br>Des idées de sujets</a>
+    <a href="#jalons"><span class="n">4</span><br>Les jalons</a>
+    <a href="#rendu"><span class="n">5</span><br>Le dépôt et le rendu</a>
+    <a href="#evaluation"><span class="n">6</span><br>L'évaluation</a>
+    <a href="#ia"><span class="n">7</span><br>L'IA générative</a>
   </nav>
 
   <!-- ================================================================== -->
@@ -72,8 +73,27 @@
   </section>
 
   <!-- ================================================================== -->
+  <section class="defi" id="parties">
+    <h2><span class="num">2</span> Un propriétaire par partie</h2>
+    <p>
+      Chaque membre est <strong>propriétaire</strong> d'une partie de l'application. Il la conçoit, l'écrit et en répond
+      au point d'étape comme à la démo. Les deux autres l'aident et relisent son code.
+    </p>
+    <table>
+      <tr><th>Partie</th><th>Contenu</th><th>Au fil des TP</th></tr>
+      <tr><td><strong>A · Catalogue</strong></td><td>Modèle et service de l'API publique, catalogue responsive, filtres</td><td>TP2 : modèle, service factice et catalogue. TP3 : API publique et filtres</td></tr>
+      <tr><td><strong>B · Navigation et compte</strong></td><td>Structure de navigation, écran de détail, authentification, premier CRUD</td><td>TP2 : modèle et service de la première collection. TP3 : navigation et détail. TP4 : authentification et premier CRUD</td></tr>
+      <tr><td><strong>C · Données partagées</strong></td><td>État partagé (Context), écran groupé (<code>SectionList</code>), rafraîchissement au focus, second CRUD</td><td>TP2 : Context et deuxième écran. TP3 : <code>SectionList</code> et cycle de vie. TP4 : second CRUD</td></tr>
+    </table>
+    <div class="encadre">
+      Indiquez le propriétaire de chaque partie dans le README <strong>dès le TP2</strong>. En binôme, répartissez les trois parties entre vous deux et indiquez-le de la même façon.
+      Chacun doit aussi comprendre le reste de l'application : je peux poser une question sur une autre partie.
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
   <section class="defi" id="idees">
-    <h2><span class="num">2</span> Des idées de sujets</h2>
+    <h2><span class="num">3</span> Des idées de sujets</h2>
     <p>Ces quatre sujets s'appuient sur des API <strong>gratuites et sans clé</strong>. Vous pouvez en proposer un autre : il doit se prêter à un catalogue et à deux CRUD.</p>
     <table>
       <tr><th>Sujet</th><th>API publique</th><th>Idées de CRUD Firebase</th></tr>
@@ -87,7 +107,7 @@
 
   <!-- ================================================================== -->
   <section class="defi" id="jalons">
-    <h2><span class="num">3</span> Les jalons</h2>
+    <h2><span class="num">4</span> Les jalons</h2>
     <table>
       <tr><th>Quand</th><th>Jalon</th><th>Ce qui doit exister</th></tr>
       <tr><td>Mar. 27 oct.</td><td><strong>Lancement</strong></td><td>Trinôme formé, sujet proposé, dépôt commun créé, Chris-CHEVALIER invité</td></tr>
@@ -97,12 +117,12 @@
       <tr><td>Mer. 16 déc. 23h59</td><td><strong>Rendu final</strong></td><td>Application complète, README, bonus éventuels</td></tr>
       <tr><td>Jeu. 17 déc.</td><td><strong>Démo</strong></td><td>8 minutes par groupe : 5 min de démo sur le web et sur mobile, puis 3 min de questions</td></tr>
     </table>
-    <p>Le 25 novembre, pendant le TP4, je fais un <strong>point d'étape</strong> avec chaque groupe : 5 minutes de démo du jalon 2 et une question à chaque membre. Ce jalon est <strong>noté</strong> (voir l'énoncé du TP3).</p>
+    <p>Le 25 novembre, pendant le TP4, je fais un <strong>point d'étape</strong> avec chaque groupe : 5 minutes de démo du jalon 2, où chacun montre sa partie, et une question à chaque membre. Ce jalon est <strong>noté</strong> (voir l'énoncé du TP3).</p>
   </section>
 
   <!-- ================================================================== -->
   <section class="defi" id="rendu">
-    <h2><span class="num">4</span> Le dépôt et le rendu</h2>
+    <h2><span class="num">5</span> Le dépôt et le rendu</h2>
     <ul>
       <li>Un dépôt GitHub <strong>privé</strong> nommé <code>rn-projet-nom1-nom2-nom3</code>, avec <strong>Chris-CHEVALIER</strong> invité dès le premier jour.</li>
       <li><strong>Chacun commite avec son propre compte</strong>, régulièrement. L'historique me sert à mesurer la contribution de chacun.</li>
@@ -110,7 +130,7 @@
     </ul>
     <h3>Le README contient</h3>
     <ul>
-      <li>le sujet, les membres du groupe et la répartition du travail ;</li>
+      <li>le sujet, les membres du groupe et le <strong>propriétaire de chaque partie</strong> ;</li>
       <li>les fonctionnalités, avec des captures d'écran sur le web et sur mobile ;</li>
       <li>l'API publique utilisée et le schéma des collections Firebase ;</li>
       <li>le parcours de navigation (la liste des écrans et leurs URL) ;</li>
@@ -127,7 +147,7 @@
 
   <!-- ================================================================== -->
   <section class="defi" id="evaluation">
-    <h2><span class="num">5</span> L'évaluation</h2>
+    <h2><span class="num">6</span> L'évaluation</h2>
     <table>
       <tr><th>Critère</th><th>Ce que je regarde</th><th>Points</th></tr>
       <tr><td><strong>Fonctionnalités</strong></td><td>Les exigences obligatoires sont présentes et fonctionnent sur le web et sur mobile</td><td>5</td></tr>
@@ -135,15 +155,15 @@
       <tr><td><strong>Architecture</strong></td><td>Séparation MVC, types, hooks, composants purs, un fichier par domaine</td><td>3</td></tr>
       <tr><td><strong>Interface</strong></td><td>Responsive, lisible, cohérente, états de chargement, d'erreur et de liste vide</td><td>3</td></tr>
       <tr><td><strong>Qualité</strong></td><td>Code lisible, <code>npx tsc --noEmit</code> sans erreur, commits réguliers, README complet</td><td>2</td></tr>
-      <tr><td><strong>Démo et questions</strong></td><td>Démo fluide, réponses justes de <strong>chaque</strong> membre sur le code</td><td>4</td></tr>
+      <tr><td><strong>Démo et questions</strong></td><td>Démo fluide, chaque membre présente sa partie et répond juste à une question sur son code</td><td>4</td></tr>
       <tr><td colspan="2"><strong>Bonus</strong> (dans la limite de 20)</td><td>+2</td></tr>
     </table>
-    <p>La note est celle du groupe, <strong>modulée individuellement</strong> d'après l'historique Git et les réponses aux questions. Un membre qui n'a pas contribué peut avoir 0.</p>
+    <p>La note est celle du groupe, <strong>modulée individuellement</strong> d'après la partie dont chacun est propriétaire : son état, ses commits et ses réponses. Un membre qui n'a pas contribué peut avoir 0.</p>
   </section>
 
   <!-- ================================================================== -->
   <section class="defi" id="ia">
-    <h2><span class="num">6</span> L'IA générative</h2>
+    <h2><span class="num">7</span> L'IA générative</h2>
     <ul>
       <li>L'IA (ChatGPT, Claude, Copilot…) est <strong>autorisée</strong> pour le projet.</li>
       <li>Chaque membre doit <strong>comprendre et savoir expliquer</strong> chaque partie du code. Une fonctionnalité que personne ne sait expliquer pendant la démo n'est pas comptée.</li>

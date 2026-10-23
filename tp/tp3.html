@@ -32,6 +32,15 @@
     </ul>
   </div>
 
+  <div class="encadre">
+    <span class="intitule">Qui fait quoi ?</span>
+    <ul>
+      <li><strong>A · Catalogue</strong> : étape 2 (API publique) et étape 4 (catalogue et filtres).</li>
+      <li><strong>B · Navigation et compte</strong> : étape 1 (navigation) et étape 3 (détail).</li>
+      <li><strong>C · Données partagées</strong> : la <code>SectionList</code> de l'étape 4 et l'étape 5 (cycle de vie).</li>
+    </ul>
+  </div>
+
   <nav class="sommaire">
     <a href="#etape-1"><span class="n">Étape 1</span><br>La navigation</a>
     <a href="#etape-2"><span class="n">Étape 2</span><br>L'API publique</a>
@@ -134,7 +143,7 @@
       <li><code>npx tsc --noEmit</code> et <code>npx expo lint</code> n'affichent aucune erreur.</li>
       <li>L'application se lance sur le web et sur Expo Go.</li>
       <li>Le README liste les écrans et leurs URL, l'API utilisée et l'explication de l'étape 5.</li>
-      <li>Les trois membres ont commité pendant ce jalon.</li>
+      <li>Chaque membre a commité sur sa partie pendant ce jalon.</li>
     </ul>
     <ol>
       <li>Quand le jalon est prêt, créez un <strong>tag Git</strong> et poussez-le, <strong>au plus tard le mardi 24 novembre à 23h59</strong> :
@@ -144,7 +153,7 @@
         </code></pre>
       </li>
       <li>Envoyez un e-mail à <a href="mailto:chevalier@chris-freelance.com">chevalier@chris-freelance.com</a> avec l'objet <code>[RN-IWB1] Jalon 2 – NOM1, NOM2, NOM3</code> (ou <code>IWB2</code>).</li>
-      <li>Le mercredi 25 novembre, pendant le TP4, je passe voir chaque groupe pour le <strong>point d'étape</strong> : 5 minutes de démonstration, puis une question à chaque membre.</li>
+      <li>Le mercredi 25 novembre, pendant le TP4, je passe voir chaque groupe pour le <strong>point d'étape</strong> : 5 minutes de démonstration où chacun montre sa partie, puis une question à chaque membre sur son code.</li>
     </ol>
     <p class="muet">Je corrige le commit pointé par le tag <code>jalon-2</code>. Les commits suivants comptent pour le rendu final, pas pour ce jalon.</p>
   </section>
@@ -159,10 +168,11 @@
       <tr><td><strong>API publique</strong></td><td>Service avec <code>fetch</code>, test de <code>response.ok</code>, réponse typée et convertie en modèle, états de chargement et d'erreur</td><td>5</td></tr>
       <tr><td><strong>Catalogue et listes</strong></td><td>Grille ou liste selon la largeur, deux filtres combinables dans un hook, une <code>SectionList</code></td><td>3</td></tr>
       <tr><td><strong>Cycle de vie</strong></td><td><code>useFocusEffect</code> utilisé à bon escient et expliqué dans le README</td><td>2</td></tr>
-      <tr><td><strong>Architecture et qualité</strong></td><td>MVC respecté (aucun service dans un composant), aucune erreur TypeScript, commits des trois membres</td><td>3</td></tr>
+      <tr><td><strong>Architecture et qualité</strong></td><td>MVC respecté (aucun service dans un composant), aucune erreur TypeScript, chaque membre a commité sur sa partie</td><td>3</td></tr>
       <tr><td colspan="2"><strong>Total</strong></td><td><strong>20</strong></td></tr>
     </table>
     <p>Un critère est noté en entier s'il fonctionne <strong>sur le web et sur mobile</strong>. Une fonctionnalité que personne ne sait expliquer au point d'étape n'est pas comptée.</p>
+    <p>La note du jalon est celle du groupe, <strong>modulée pour chaque membre</strong> selon l'état de sa partie et sa réponse au point d'étape.</p>
   </section>
 
 </main>

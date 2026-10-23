@@ -49,11 +49,11 @@
     <ol>
       <li>Un seul membre crée le projet Expo (<code>npx create-expo-app@latest</code>, puis <code>npm run reset-project</code> et <code>"output": "single"</code> dans <code>app.json</code>), le pousse sur le dépôt <code>rn-projet-nom1-nom2-nom3</code>, puis invite les deux autres et <strong>Chris-CHEVALIER</strong>.</li>
       <li>Les deux autres clonent le dépôt et lancent <code>npm install</code> puis <code>npx expo start</code>.</li>
-      <li>Créez le <code>README.md</code> : le sujet en trois phrases, l'API publique envisagée, les membres et <strong>qui fait quoi</strong> dans ce TP.</li>
+      <li>Répartissez les <strong>trois parties</strong> du projet (A · Catalogue, B · Navigation et compte, C · Données partagées : voir le sujet du projet). Créez le <code>README.md</code> : le sujet en trois phrases, l'API publique envisagée, les membres et le <strong>propriétaire de chaque partie</strong>.</li>
     </ol>
     <div class="encadre">
       <span class="intitule">Travailler à trois sans se marcher dessus</span>
-      Répartissez-vous les fichiers : un membre sur le modèle et le service, un sur les hooks, un sur les composants.
+      Chacun travaille sur sa partie : <strong>A</strong> sur les étapes 1 à 4 (modèle, service, hooks et catalogue), <strong>B</strong> sur le modèle et le service de votre première collection, <strong>C</strong> sur l'étape 5 (Context et deuxième écran).
       Faites des commits courts et faites <code>git pull</code> avant chaque <code>git push</code>. Chacun commite avec son propre compte.
     </div>
   </section>
@@ -69,6 +69,10 @@
       <li>Écrivez une <strong>fonction pure</strong> <code>matchesFilters(item, filters)</code> qui renvoie un booléen.</li>
     </ol>
     <p>Dans <code>src/data/</code>, créez <strong>au moins 10 éléments</strong> réalistes. Ils seront remplacés par l'API au TP3.</p>
+    <div class="encadre neutre">
+      <span class="intitule">Partie B</span>
+      Sur le même modèle, écrivez le type, les données factices et le service de votre <strong>première collection</strong> Firebase (par exemple vos recettes personnelles). Firebase la remplacera au TP4.
+    </div>
   </section>
 
   <!-- ================================================================== -->
@@ -148,7 +152,7 @@
       <li>Les trois états (chargement, erreur, succès) s'affichent correctement.</li>
       <li>Le catalogue est une grille sur ordinateur et une liste sur téléphone.</li>
       <li>Une modification de l'état global se voit sur les deux écrans.</li>
-      <li>Les trois membres ont commité, et le README indique qui a fait quoi.</li>
+      <li>Le README indique le propriétaire de chaque partie, et chacun a commité sur la sienne.</li>
     </ul>
     <div class="encadre neutre">
       <span class="intitule">Rendu</span>
