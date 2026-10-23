@@ -11,7 +11,6 @@
 <body data-pied="React Native · Cours 1 · Fondations">
 <div class="reveal">
 <div class="slides">
-
   <!-- ================================================================== -->
   <section data-layout="titre">
     <h1>Fondations de React Native</h1>
@@ -20,25 +19,20 @@
       Chris CHEVALIER
     </div>
   </section>
-
   <section data-layout="sommaire">
     <h1>Sommaire</h1>
     <ol>
       <li>De React à React Native</li>
-      <li>Expo, Expo Router et TypeScript</li>
-      <li>Les composants primitifs</li>
-      <li>Styles et Flexbox</li>
-      <li>Une interface responsive</li>
+      <li>Expo et TypeScript</li>
+      <li>Composants, styles et responsive</li>
     </ol>
   </section>
-
   <!-- ================================================================== -->
   <section data-layout="section">
     <div class="numero">01</div>
     <h2>De React à React Native</h2>
     <div class="sous-titre">Ce que vous savez déjà, ce qui change</div>
   </section>
-
   <section>
     <h2>Le même modèle, une autre cible</h2>
     <div class="corps">
@@ -55,7 +49,6 @@
       </div>
     </div>
   </section>
-
   <section>
     <h2>Comment JavaScript devient une vue native</h2>
     <div class="corps">
@@ -80,7 +73,6 @@
       La nouvelle architecture est activée par défaut depuis React Native 0.76. Le message à retenir : il n'y a plus de pont asynchrone entre JS et natif.
     </aside>
   </section>
-
   <section>
     <h2>React Native for Web</h2>
     <div class="corps">
@@ -126,56 +118,44 @@
       </div>
     </div>
   </section>
-
-  <!-- ================================================================== -->
   <section data-layout="section">
     <div class="numero">02</div>
-    <h2>Expo, Expo Router et TypeScript</h2>
+    <h2>Expo et TypeScript</h2>
     <div class="sous-titre">Créer et lancer un projet</div>
   </section>
-
   <section>
-    <h2>Expo : le framework recommandé</h2>
-    <div class="corps">
-      <ul>
-        <li><a href="https://expo.dev" target="_blank"><strong>Expo</strong></a> est le framework que <a href="https://reactnative.dev/docs/environment-setup" target="_blank">l'équipe de React Native recommande</a> pour démarrer un projet</li>
-        <li>Il fournit une CLI (<code>npx expo</code>), des modules natifs (caméra, localisation, notifications…) et <strong>Expo Router</strong> pour la navigation</li>
-        <li><a href="https://expo.dev/go" target="_blank"><strong>Expo Go</strong></a> : une application à installer sur votre téléphone pour tester votre code sans rien compiler</li>
-        <li>Les dossiers natifs <code>ios/</code> et <code>android/</code> sont générés à la demande. Vous ne les écrivez jamais à la main</li>
-      </ul>
-      <div class="encadre corail" style="margin-top: 18px;">
-        Méfiez-vous des tutoriels anciens et des réponses d'IA. <code>expo eject</code>, <code>expo-cli</code> installé globalement ou « workflow managed » sont des notions <strong>disparues</strong>.
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Créer et lancer le projet</h2>
+    <h2>Expo : créer et lancer le projet</h2>
     <div class="corps">
       <div class="colonnes">
         <div>
-          <pre class="terminal" data-titre="Terminal"><code class="language-bash" data-trim>
+          <pre class="terminal compact" data-titre="Terminal"><code class="language-bash" data-trim>
 npx create-expo-app@latest mon-app
 cd mon-app
 npm run reset-project
 npx expo start
           </code></pre>
-          <p class="petit muet"><code>reset-project</code> retire l'exemple fourni et laisse un projet vide.</p>
-        </div>
-        <div>
           <ul class="dense">
-            <li><strong>Sur le web</strong> : appuyez sur <code>w</code> dans le terminal</li>
-            <li><strong>Sur votre téléphone</strong> : scannez le QR code avec Expo Go (Android) ou l'appareil photo (iOS)</li>
-            <li><strong>Sauvegardez un fichier</strong> : l'écran se met à jour aussitôt (<em>Fast Refresh</em>)</li>
+            <li><a href="https://expo.dev" target="_blank"><strong>Expo</strong></a> est le framework <a href="https://reactnative.dev/docs/environment-setup" target="_blank">recommandé par l'équipe de React Native</a></li>
+            <li><code>w</code> ouvre la version web. Le QR code s'ouvre avec <a href="https://expo.dev/go" target="_blank">Expo Go</a> sur votre téléphone</li>
+            <li>Chaque sauvegarde met l'écran à jour (<em>Fast Refresh</em>)</li>
           </ul>
         </div>
-      </div>
-      <div class="encadre neutre" style="margin-top: 14px;">
-        Le Wi-Fi de l'école bloque la connexion du téléphone ? Lancez <code>npx expo start --tunnel</code>.
+        <div>
+          <div class="encadre corail">
+            <strong>Un réglage pour le web.</strong> Dans <code>app.json</code>, remplacez <code>"output": "server"</code> par <code>"output": "single"</code>.
+            Le rendu sur serveur ne connaît pas la taille de la fenêtre : un écran responsive y provoque une erreur d'<strong>hydratation</strong>.
+          </div>
+          <div class="encadre neutre" style="margin-top: 14px;">
+            Méfiez-vous des tutoriels anciens et des réponses d'IA : <code>expo eject</code> ou <code>expo-cli</code> installé globalement ont <strong>disparu</strong>.
+          </div>
+          <div class="encadre neutre" style="margin-top: 14px;">
+            Le Wi-Fi bloque le téléphone ? <code>npx expo start --tunnel</code>.
+          </div>
+        </div>
       </div>
     </div>
+    <aside class="notes">Les dossiers ios/ et android/ sont générés à la demande : on ne les écrit jamais à la main. Hydratation : React rattache ses événements au HTML reçu du serveur ; si le premier rendu diffère, il échoue.</aside>
   </section>
-
   <section>
     <h2>L'arborescence du projet</h2>
     <div class="corps">
@@ -204,36 +184,6 @@ tsconfig.json         configuration TypeScript
     </div>
     <aside class="notes">Les dossiers models, data et hooks n'existent pas après reset-project : on les crée. On détaillera Expo Router au cours 3.</aside>
   </section>
-
-  <section>
-    <h2>Un réglage pour le web : <code>web.output</code></h2>
-    <div class="corps">
-      <div class="colonnes texte-code">
-        <div>
-          <ul class="dense">
-            <li>Le modèle actuel d'Expo rend les pages <strong>sur un serveur</strong> (<code>"server"</code>) avant de les envoyer au navigateur</li>
-            <li>Le serveur ne connaît pas la taille de la fenêtre. Un écran responsive y est calculé différemment : React signale alors une erreur d'<strong>hydratation</strong></li>
-            <li>Dans ce module, on produit une <strong>application</strong> (SPA) : réglez <code>"single"</code></li>
-          </ul>
-        </div>
-        <pre data-titre="app.json (extrait)"><code class="language-json" data-trim data-line-numbers="4">
-{
-  "expo": {
-    "web": {
-      "output": "single",
-      "favicon": "./assets/images/favicon.png"
-    }
-  }
-}
-        </code></pre>
-      </div>
-      <div class="encadre neutre" style="margin-top: 14px;">
-        <strong>Hydratation</strong> : React rattache ses événements au HTML reçu du serveur. Si le HTML ne correspond pas au premier rendu dans le navigateur, l'hydratation échoue.
-      </div>
-    </div>
-    <aside class="notes">J'ai rencontré l'erreur en préparant le cours : useWindowDimensions renvoie une largeur différente côté serveur. "single" est aussi la valeur par défaut d'Expo quand le champ est absent.</aside>
-  </section>
-
   <section>
     <h2>TypeScript : ce qui nous servira</h2>
     <div class="corps">
@@ -263,38 +213,11 @@ export type Stay = {
     </div>
     <aside class="notes">Faire le lien avec le test de positionnement. Pas de génériques avancés dans ce module : types de données, props, paramètres de route et réponses d'API suffisent.</aside>
   </section>
-
-  <section>
-    <h2>Des données typées</h2>
-    <div class="corps">
-      <pre class="compact" data-titre="src/data/stays.ts"><code class="language-typescript" data-trim>
-import { Stay } from "@/models/stay";
-
-export const STAYS: Stay[] = [
-  {
-    id: "s1", title: "Studio lumineux", city: "Paris",
-    type: "apartment", pricePerNight: 95, available: true,
-  },
-  {
-    id: "s9", title: "Yourte", city: "Nantes",
-    type: "tent", pricePerNight: 70, available: true,
-    // ↑ erreur : "tent" n'est pas un StayType
-  },
-];
-      </code></pre>
-      <div class="encadre" style="margin-top: 10px;">
-        Une faute de frappe ou un champ oublié est signalé <strong>dans l'éditeur</strong>, avant même de lancer l'application.
-      </div>
-    </div>
-  </section>
-
-  <!-- ================================================================== -->
   <section data-layout="section">
     <div class="numero">03</div>
-    <h2>Les composants primitifs</h2>
+    <h2>Composants, styles et responsive</h2>
     <div class="sous-titre">Les briques de toute interface</div>
   </section>
-
   <section>
     <h2>Les briques de base</h2>
     <div class="corps">
@@ -311,7 +234,6 @@ export const STAYS: Stay[] = [
       <p class="petit muet" style="margin-top: 10px;">Tous s'importent depuis <code>react-native</code> : <code>import { View, Text } from "react-native";</code></p>
     </div>
   </section>
-
   <section>
     <h2><code>View</code> et <code>Text</code></h2>
     <div class="corps">
@@ -340,40 +262,28 @@ function Greeting({ firstName, unread = 0 }: GreetingProps) {
       </div>
     </div>
   </section>
-
   <section>
-    <h2><code>Image</code></h2>
+    <h2><code>Image</code> et <code>TextInput</code></h2>
     <div class="corps">
-      <div class="colonnes code-texte">
-        <pre data-titre="Deux sources possibles"><code class="language-tsx" data-trim>
-// Image locale : intégrée à l'application
+      <div class="colonnes">
+        <div>
+          <pre class="mini" data-titre="Deux sources d'image"><code class="language-tsx" data-trim>
+// Image locale, intégrée à l'application
 &lt;Image
   source={require("@/assets/images/icon.png")}
   style={{ width: 64, height: 64 }}
 /&gt;
 
-// Image distante : téléchargée à l'affichage
+// Image distante, téléchargée à l'affichage
 &lt;Image
   source={{ uri: stay.imageUrl }}
   style={{ width: "100%", aspectRatio: 4 / 3 }}
 /&gt;
-        </code></pre>
-        <div>
-          <ul class="dense">
-            <li>Une image distante n'a <strong>pas de taille par défaut</strong>. Sans largeur ni hauteur, elle reste invisible</li>
-            <li><code>aspectRatio</code> fixe la hauteur à partir de la largeur</li>
-            <li>Pour des besoins avancés (cache, transitions), Expo propose <a href="https://docs.expo.dev/versions/latest/sdk/image/" target="_blank"><code>expo-image</code></a></li>
-          </ul>
+          </code></pre>
+          <p class="petit">Une image distante n'a <strong>pas de taille par défaut</strong> : sans largeur ni hauteur, elle reste invisible.</p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2><code>TextInput</code> : un champ contrôlé</h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre data-titre="name-form.tsx"><code class="language-tsx" data-trim>
+        <div>
+          <pre class="mini" data-titre="name-form.tsx"><code class="language-tsx" data-trim>
 function NameForm() {
   const [name, setName] = useState("");
   return (
@@ -388,50 +298,12 @@ function NameForm() {
     &lt;/View&gt;
   );
 }
-        </code></pre>
-        <div>
-          <ul class="dense">
-            <li>Même principe qu'en React : l'état est la <strong>source de vérité</strong></li>
-            <li><code>onChangeText</code> reçoit directement le texte, sans objet événement</li>
-            <li>Props utiles : <code>keyboardType</code>, <code>secureTextEntry</code>, <code>autoCapitalize</code></li>
-          </ul>
+          </code></pre>
+          <p class="petit">Un champ <strong>contrôlé</strong>, comme en React. <code>onChangeText</code> reçoit directement le texte.</p>
         </div>
       </div>
     </div>
   </section>
-
-  <section>
-    <h2><code>Pressable</code> et le cycle de vie</h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre data-titre="counter.tsx"><code class="language-tsx" data-trim>
-function Counter() {
-  const [count, setCount] = useState(0);
-
-  useEffect(() =&gt; {
-    console.log("Counter affiché");
-    return () =&gt; console.log("Counter retiré");
-  }, []);
-
-  return (
-    &lt;Pressable onPress={() =&gt; setCount((c) =&gt; c + 1)}&gt;
-      &lt;Text&gt;Appuyé {count} fois&lt;/Text&gt;
-    &lt;/Pressable&gt;
-  );
-}
-        </code></pre>
-        <div>
-          <ul class="dense">
-            <li><code>onPress</code> remplace <code>onClick</code></li>
-            <li>Un composant est <strong>monté</strong>, <strong>mis à jour</strong> à chaque changement d'état, puis <strong>démonté</strong></li>
-            <li><code>useEffect(…, [])</code> s'exécute après le premier affichage. La fonction renvoyée s'exécute au démontage</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <aside class="notes">En développement, React monte deux fois les composants (Strict Mode) : le message peut apparaître deux fois. Le cycle de vie des écrans (focus, arrière-plan) arrive au cours 3.</aside>
-  </section>
-
   <section>
     <h2>Un retour visuel au toucher</h2>
     <div class="corps">
@@ -459,7 +331,6 @@ function Counter() {
       </div>
     </div>
   </section>
-
   <section>
     <h2>Afficher une liste : <code>FlatList</code></h2>
     <div class="corps">
@@ -489,85 +360,32 @@ function Counter() {
     </div>
     <aside class="notes">Les listes volumineuses (SectionList, optimisations) sont au programme du cours 3.</aside>
   </section>
-
-  <!-- ================================================================== -->
-  <section data-layout="section">
-    <div class="numero">04</div>
-    <h2>Styles et Flexbox</h2>
-    <div class="sous-titre">Du CSS sans CSS</div>
-  </section>
-
   <section>
-    <h2><code>StyleSheet</code></h2>
+    <h2><code>StyleSheet</code> et Flexbox</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre data-titre="stay-card.tsx (extrait)"><code class="language-tsx" data-trim>
+        <pre class="compact" data-titre="Exemple de styles"><code class="language-tsx" data-trim>
 const styles = StyleSheet.create({
   card: {
     flex: 1,
     backgroundColor: "#fff",
     borderRadius: 12,
-    overflow: "hidden",
     margin: 8,
   },
-  title: { fontSize: 18, fontWeight: "700" },
-  price: { fontSize: 16, color: "#0B7A70" },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
 });
         </code></pre>
         <div>
           <ul class="dense">
-            <li>Des propriétés CSS en <strong>camelCase</strong> : <code>backgroundColor</code>, <code>borderRadius</code></li>
-            <li>Des nombres <strong>sans unité</strong> : des points indépendants de la densité de l'écran</li>
-            <li><strong>Aucune cascade</strong> ni sélecteur. Chaque composant reçoit son style</li>
-            <li>TypeScript vérifie les noms et les valeurs</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Flexbox : les différences avec le web</h2>
-    <div class="corps">
-      <table>
-        <tr><th>Propriété</th><th>Web (CSS)</th><th>React Native</th></tr>
-        <tr><td><code>display</code></td><td><code>block</code> par défaut</td><td><code>flex</code> partout, toujours</td></tr>
-        <tr><td><code>flexDirection</code></td><td><code>row</code></td><td><strong><code>column</code></strong></td></tr>
-        <tr><td><code>alignContent</code></td><td><code>normal</code></td><td><code>flex-start</code></td></tr>
-        <tr><td><code>flex: 1</code></td><td>Raccourci de <code>flex-grow</code>, <code>flex-shrink</code> et <code>flex-basis</code></td><td>« Prends toute la place disponible »</td></tr>
-      </table>
-      <div class="encadre" style="margin-top: 20px;">
-        Les éléments s'empilent <strong>verticalement</strong> par défaut. Pour les aligner sur une ligne, écrivez <code>flexDirection: "row"</code>.
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Une hiérarchie en zones</h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre data-titre="Écran découpé en zones"><code class="language-tsx" data-trim>
-&lt;View style={{ flex: 1 }}&gt;
-  &lt;View style={styles.header}&gt;
-    &lt;Text style={styles.bold}&gt;Titre&lt;/Text&gt;
-    &lt;Text&gt;Action&lt;/Text&gt;
-  &lt;/View&gt;
-  &lt;View style={{ flex: 1 }}&gt;{/* contenu */}&lt;/View&gt;
-&lt;/View&gt;
-
-header: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: 12,
-},
-        </code></pre>
-        <div>
-          <ul class="dense">
-            <li><code>justifyContent</code> : alignement sur l'<strong>axe principal</strong> (vertical par défaut)</li>
-            <li><code>alignItems</code> : alignement sur l'<strong>axe secondaire</strong></li>
+            <li>Des propriétés CSS en <strong>camelCase</strong>, des nombres <strong>sans unité</strong></li>
+            <li><strong>Aucune cascade</strong> : seul un <code>&lt;Text&gt;</code> transmet son style à un <code>&lt;Text&gt;</code> enfant</li>
+            <li>Flexbox partout, mais <code>flexDirection</code> vaut <strong><code>column</code></strong> par défaut</li>
+            <li><code>flex: 1</code> : « prends toute la place disponible »</li>
             <li><code>gap</code> espace les enfants sans marges</li>
-            <li>Une zone de titre, une zone de contenu, une zone d'actions : l'utilisateur comprend l'écran en quelques secondes</li>
           </ul>
         </div>
       </div>
@@ -583,14 +401,6 @@ header: {
       <div class="reponse fragment">Non. Il n'y a pas de cascade : seul un <code>&lt;Text&gt;</code> parent transmet son style à un <code>&lt;Text&gt;</code> enfant.</div>
     </div>
   </section>
-
-  <!-- ================================================================== -->
-  <section data-layout="section">
-    <div class="numero">05</div>
-    <h2>Une interface responsive</h2>
-    <div class="sous-titre">Du téléphone à l'écran de bureau</div>
-  </section>
-
   <section>
     <h2>Pas de media queries : un hook</h2>
     <div class="corps">
@@ -616,7 +426,6 @@ export function useColumns(): number {
       </div>
     </div>
   </section>
-
   <section>
     <h2>Une grille sur le web, une liste sur mobile</h2>
     <div class="corps">
@@ -648,65 +457,6 @@ export default function CatalogScreen() {
       </div>
     </div>
   </section>
-
-  <section>
-    <h2>Adapter le code à la plateforme</h2>
-    <div class="corps">
-      <div class="colonnes">
-        <div>
-          <pre data-titre="Platform"><code class="language-tsx" data-trim>
-import { Platform } from "react-native";
-
-const label = Platform.select({
-  ios: "iPhone",
-  android: "Android",
-  web: "navigateur",
-  default: "autre",
-});
-
-if (Platform.OS === "web") { /* … */ }
-          </code></pre>
-        </div>
-        <div>
-          <ul class="dense">
-            <li><code>Platform.OS</code> vaut <code>"ios"</code>, <code>"android"</code> ou <code>"web"</code></li>
-            <li>Pour un composant très différent, créez deux fichiers : <code>map.tsx</code> et <code>map.web.tsx</code>. Le bon est choisi à la compilation</li>
-            <li>Utilisez-les avec parcimonie. <strong>Le but reste un seul code</strong></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Les zones sûres de l'écran</h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre class="compact" data-titre="Écran plein écran"><code class="language-tsx" data-trim>
-import { SafeAreaView } from "react-native-safe-area-context";
-
-export default function PrimitivesScreen() {
-  return (
-    &lt;SafeAreaView style={{ flex: 1 }}&gt;
-      &lt;ScrollView contentContainerStyle={styles.content}&gt;
-        {/* … */}
-      &lt;/ScrollView&gt;
-    &lt;/SafeAreaView&gt;
-  );
-}
-        </code></pre>
-        <div>
-          <ul class="dense">
-            <li>Encoche, île dynamique, barre de gestes : certaines zones de l'écran ne doivent pas recevoir de contenu</li>
-            <li><code>SafeAreaView</code> ajoute les marges nécessaires</li>
-            <li>Importez-la depuis <code>react-native-safe-area-context</code> (déjà installé par Expo)</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <aside class="notes">Quand un écran a un en-tête de navigation (Stack), l'en-tête gère déjà la zone du haut.</aside>
-  </section>
-
   <section>
     <h2>Démo : le catalogue de séjours</h2>
     <div class="corps">
@@ -727,21 +477,21 @@ export default function PrimitivesScreen() {
     </div>
     <aside class="notes">Projet de démo : demos/cours1 dans le dépôt de la refonte (npx expo start, puis w). Les photos viennent de picsum.photos (illustration).</aside>
   </section>
-
   <section>
     <h2>À retenir</h2>
     <div class="corps">
       <ul>
         <li>React Native affiche de <strong>vraies vues natives</strong>. React Native for Web les traduit en DOM</li>
-        <li><strong>Expo</strong> crée, lance et teste le projet. <strong>Expo Router</strong> associe chaque fichier de <code>src/app/</code> à un écran</li>
-        <li>Tout texte est dans un <code>&lt;Text&gt;</code>. Les styles sont des objets, sans cascade</li>
-        <li>Flexbox est partout, en <strong>colonne</strong> par défaut</li>
+        <li><strong>Expo</strong> crée, lance et teste le projet. Chaque fichier de <code>src/app/</code> est un écran</li>
+        <li>TypeScript décrit vos données et vos props, et vérifie avant l'exécution (<code>npx tsc --noEmit</code>)</li>
+        <li>Tout texte est dans un <code>&lt;Text&gt;</code>. Les styles sont des objets, sans cascade, en colonne par défaut</li>
         <li>Le responsive passe par <code>useWindowDimensions()</code> et des points de rupture</li>
-        <li>TypeScript décrit vos données et vos props, et vérifie avant l'exécution</li>
       </ul>
+      <div class="encadre corail" style="margin-top: 18px;">
+        Place à la pratique : le <strong>TP1</strong> occupe les deux créneaux suivants.
+      </div>
     </div>
   </section>
-
   <section data-layout="titre">
     <h1>Des questions ?</h1>
     <div class="sous-titre">
