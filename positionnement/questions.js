@@ -18,6 +18,20 @@ export const QUESTIONS = [
     bonne: 0,
   },
   {
+    theme: "JavaScript",
+    intitule: "Que vaut <code>result</code> ?",
+    code: `const prices = [12, 5, 30, 8];\nconst result = prices.filter((p) => p > 10).map((p) => p * 2);`,
+    choix: ["[24, 60]", "[12, 30]", "[24, 10, 60, 16]", "[true, false, true, false]"],
+    bonne: 0,
+  },
+  {
+    theme: "JavaScript",
+    intitule: "<code>fetchUser()</code> renvoie une promesse qui se résout. Dans quel ordre s'affichent les lettres ?",
+    code: `async function main() {\n  console.log("A");\n  await fetchUser();\n  console.log("C");\n}\nmain();\nconsole.log("B");`,
+    choix: ["A, B, C", "A, C, B", "B, A, C", "A puis C, mais jamais B"],
+    bonne: 0,
+  },
+  {
     theme: "React",
     intitule: "<code>count</code> vaut 0. Que vaut <code>count</code> au rendu suivant ?",
     code: `function handlePress() {\n  setCount(count + 1);\n  setCount(count + 1);\n}`,
@@ -82,6 +96,20 @@ export const QUESTIONS = [
     bonne: 0,
   },
   {
+    theme: "TypeScript",
+    intitule: "Quel appel de ce composant TypeScript refuse-t-il ?",
+    code: `type BadgeProps = { label: string; count?: number };\n\nfunction Badge({ label, count = 0 }: BadgeProps) { … }`,
+    choix: [`<Badge count={3} />`, `<Badge label="Nouveau" />`, `<Badge label="Promo" count={2} />`, `<Badge label="" />`],
+    bonne: 0,
+  },
+  {
+    theme: "TypeScript",
+    intitule: "Quel est le type de <code>value</code> à la dernière ligne ?",
+    code: `function format(value: string | number) {\n  if (typeof value === "number") {\n    return value.toFixed(2);\n  }\n  return value.toUpperCase();\n}`,
+    choix: ["string", "string | number", "number", "any"],
+    bonne: 0,
+  },
+  {
     theme: "Mobile",
     intitule: "Qu'affiche une application React Native sur un téléphone ?",
     choix: [
@@ -96,6 +124,30 @@ export const QUESTIONS = [
     theme: "Mobile",
     intitule: "En React Native, quelle est la valeur par défaut de <code>flexDirection</code> ?",
     choix: ["column", "row", "row-reverse", "Aucune : Flexbox est désactivé par défaut"],
+    bonne: 0,
+  },
+  {
+    theme: "Mobile",
+    intitule: "Que se passe-t-il sur un téléphone avec ce code React Native ?",
+    code: `<View>Bonjour</View>`,
+    choix: [
+      "Une erreur : un texte doit être placé dans un composant <Text>",
+      "Le texte s'affiche normalement, comme dans une <div>",
+      "Le texte s'affiche, mais sans aucun style",
+      "Le texte est ignoré, sans erreur",
+    ],
+    bonne: 0,
+  },
+  {
+    theme: "Mobile",
+    intitule: "Que représente la valeur <code>16</code> de <code>padding</code> ?",
+    code: `const styles = StyleSheet.create({\n  card: { padding: 16, borderRadius: 8 },\n});`,
+    choix: [
+      "16 pixels indépendants de la densité de l'écran",
+      "16 pixels physiques de l'écran",
+      "16 % de la largeur de l'écran",
+      "16 rem, comme en CSS",
+    ],
     bonne: 0,
   },
 ];

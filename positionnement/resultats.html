@@ -29,6 +29,11 @@
   </div>
 
   <section class="bloc">
+    <h2>Réussite par thème</h2>
+    <div id="par-theme"></div>
+  </section>
+
+  <section class="bloc">
     <h2>Réussite par question</h2>
     <div class="legende"><span><i style="background: var(--accent)"></i>Bonne réponse</span><span><i style="background: var(--corail)"></i>Mauvaise réponse</span><span><i style="background: var(--bordure)"></i>Je ne sais pas</span></div>
     <div id="par-question"></div>
@@ -98,6 +103,21 @@
         </div>
       </div>`).join("");
 
+    const parTheme = [...new Set(QUESTIONS.map((q) => q.theme))].map((theme) => {
+      const liste = parQuestion.filter(({ q }) => q.theme === theme);
+      const total = n * liste.length;
+      const somme = (cle) => liste.reduce((s, x) => s + x[cle], 0);
+      return { theme, nbQuestions: liste.length, ok: somme("ok"), ko: somme("ko"), nsp: somme("nsp"), total };
+    });
+    document.getElementById("par-theme").innerHTML = parTheme.map(({ theme, nbQuestions, ok, ko, nsp, total }) => `
+      <div class="ligne-q">
+        <div class="intitule"><strong>${theme}</strong> · ${nbQuestions} questions</div>
+        <div class="taux">${n ? pourcent(ok, total) + " %" : "–"}</div>
+        <div class="barre" aria-hidden="true">
+          <span class="ok" style="width: ${pourcent(ok, total)}%"></span><span class="ko" style="width: ${pourcent(ko, total)}%"></span><span class="nsp" style="width: ${pourcent(nsp, total)}%"></span>
+        </div>
+      </div>`).join("");
+
     document.getElementById("experience").innerHTML = AUTO.map((a) => {
       const repondu = lignes.filter((r) => r.auto && r.auto[a.cle] !== null && r.auto[a.cle] !== undefined);
       return `<div class="ligne-q"><div class="intitule"><strong>${a.intitule}</strong> · ${repondu.length} réponse(s)</div><div></div>
@@ -111,6 +131,7 @@
       ? `Test de positionnement React Native – ${titre}\n` +
         `${n} réponses anonymes · moyenne ${format(moyenne)}/20 · médiane ${format(mediane)}/20\n` +
         `« Je ne sais pas » : ${pourcent(nspTotal, n * QUESTIONS.length)} % des réponses\n` +
+        `Réussite par thème : ${parTheme.map(({ theme, ok, total }) => `${theme} ${pourcent(ok, total)} %`).join(" ; ")}\n` +
         `Notions les moins maîtrisées : ${plusFaibles.join(" ; ")}\n`
       : `Aucune réponse pour l'instant (${titre}).`;
   }
@@ -136,7 +157,7 @@
       for (let e = 0; e < (k ? 14 : 11); e++) {
         lignes.push({
           classe: c,
-          reponses: QUESTIONS.map((q, i) => { const t = hasard(); return t < 0.75 - i * 0.05 ? q.bonne : t < 0.88 ? (q.bonne + 1) % q.choix.length : JE_NE_SAIS_PAS; }),
+          reponses: QUESTIONS.map((q, i) => { const t = hasard(); return t < 0.8 - i * 0.03 ? q.bonne : t < 0.88 ? (q.bonne + 1) % q.choix.length : JE_NE_SAIS_PAS; }),
           auto: { react: Math.floor(hasard() * 2) + 2, typescript: Math.floor(hasard() * 4), mobile: Math.floor(hasard() * 2) },
         });
       }
