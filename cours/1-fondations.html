@@ -76,22 +76,95 @@
   <section>
     <h2>React Native for Web</h2>
     <div class="corps">
-      <div class="colonnes texte-code">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-surligne="&lt;View style={styles.card}&gt;..&lt;Text style={styles.city}&gt;" data-fichier="demos/cours1/src/components/stay-card.tsx" data-titre="src/components/stay-card.tsx"><code class="language-tsx" data-line-numbers="30-34">import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
+import { Stay } from "@/models/stay";
+
+type StayCardProps = {
+  stay: Stay;
+  isFavorite: boolean;
+  onToggleFavorite: (id: string) =&gt; void;
+};
+
+const formatPrice = (price: number) =&gt;
+  new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(price);
+
+export function StayCard({
+  stay,
+  isFavorite,
+  onToggleFavorite,
+}: StayCardProps) {
+  return (
+    &lt;View style={styles.card}&gt;
+      &lt;Image source={{ uri: stay.imageUrl }} style={styles.image} /&gt;
+      &lt;View style={styles.body}&gt;
+        &lt;Text style={styles.title}&gt;{stay.title}&lt;/Text&gt;
+        &lt;Text style={styles.city}&gt;{stay.city}&lt;/Text&gt;
+        &lt;Text style={styles.price}&gt;
+          {formatPrice(stay.pricePerNight)} / nuit
+        &lt;/Text&gt;
+        {!stay.available &amp;&amp; (
+          &lt;Text style={styles.unavailable}&gt;Complet&lt;/Text&gt;
+        )}
+        &lt;Pressable
+          onPress={() =&gt; onToggleFavorite(stay.id)}
+          style={({ pressed }) =&gt; [
+            styles.button,
+            pressed &amp;&amp; styles.buttonPressed,
+          ]}
+        &gt;
+          &lt;Text style={styles.buttonLabel}&gt;
+            {isFavorite ? "★ Favori" : "☆ Ajouter aux favoris"}
+          &lt;/Text&gt;
+        &lt;/Pressable&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    overflow: "hidden",
+    margin: 8,
+  },
+  image: { width: "100%", aspectRatio: 4 / 3 },
+  body: { padding: 12, gap: 4 },
+  title: { fontSize: 18, fontWeight: "700" },
+  city: { fontSize: 15, color: "#5A5F80" },
+  price: { fontSize: 16, color: "#0B7A70" },
+  unavailable: { fontSize: 14, color: "#B42318" },
+  button: {
+    marginTop: 8,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: "#E2F7F4",
+    alignItems: "center",
+  },
+  buttonPressed: { opacity: 0.6 },
+  buttonLabel: { fontSize: 15, fontWeight: "600" },
+});</code></pre>
         <div>
-          <ul>
+          <ul class="dense">
             <li><a href="https://necolas.github.io/react-native-web/" target="_blank">React Native for Web</a> réimplémente les composants de React Native avec <strong>React DOM</strong></li>
             <li><code>&lt;View&gt;</code> devient une <code>&lt;div&gt;</code>, <code>&lt;TextInput&gt;</code> un <code>&lt;input&gt;</code></li>
             <li><code>StyleSheet</code> génère des <strong>classes CSS</strong> optimisées</li>
             <li>Un seul code pour trois plateformes</li>
           </ul>
-        </div>
-        <div>
-          <pre data-titre="Ce que vous écrivez"><code class="language-tsx" data-trim>
-&lt;View style={styles.card}&gt;
-  &lt;Text&gt;Studio lumineux&lt;/Text&gt;
-&lt;/View&gt;
-          </code></pre>
-          <pre data-titre="Ce que le navigateur reçoit"><code class="language-html" data-trim>
+          <pre class="mini" data-titre="Ce que le navigateur reçoit"><code class="language-html" data-trim>
 &lt;div class="css-view-g5y9jx r-…"&gt;
   &lt;div dir="auto" class="css-text-…"&gt;
     Studio lumineux
@@ -189,8 +262,7 @@ tsconfig.json         configuration TypeScript
     <h2>TypeScript : ce qui nous servira</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre data-titre="src/models/stay.ts"><code class="language-typescript" data-trim>
-export type StayType = "apartment" | "house" | "cabin";
+        <pre class="mini" data-fichier="demos/cours1/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="">export type StayType = "apartment" | "house" | "cabin";
 
 export type Stay = {
   id: string;
@@ -200,8 +272,7 @@ export type Stay = {
   pricePerNight: number;
   available: boolean;
   imageUrl?: string;
-};
-        </code></pre>
+};</code></pre>
         <div>
           <ul class="dense">
             <li><code>type</code> décrit la <strong>forme</strong> d'une donnée</li>
@@ -239,8 +310,7 @@ export type Stay = {
     <h2><code>View</code> et <code>Text</code></h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-titre="src/components/greeting.tsx"><code class="language-tsx" data-trim>
-import { StyleSheet, Text } from "react-native";
+        <pre class="mini" data-fichier="demos/cours1/src/components/greeting.tsx" data-titre="src/components/greeting.tsx"><code class="language-tsx" data-line-numbers="">import { StyleSheet, Text } from "react-native";
 
 type GreetingProps = { firstName: string; unread?: number };
 
@@ -256,8 +326,7 @@ export function Greeting({ firstName, unread = 0 }: GreetingProps) {
 const styles = StyleSheet.create({
   greeting: { fontSize: 18 },
   bold: { fontWeight: "700" },
-});
-        </code></pre>
+});</code></pre>
         <div>
           <ul class="dense">
             <li><strong>Tout texte doit être dans un <code>&lt;Text&gt;</code></strong>. Un texte posé dans une <code>&lt;View&gt;</code> fait planter l'application</li>
@@ -273,20 +342,29 @@ const styles = StyleSheet.create({
     <h2><code>Image</code></h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="compact" data-titre="Deux sources d'image (extrait)"><code class="language-tsx" data-trim>
-&lt;View&gt;
-  {/* Image locale, intégrée à l'application */}
-  &lt;Image
-    source={require("@/assets/images/icon.png")}
-    style={{ width: 64, height: 64 }}
-  /&gt;
-  {/* Image distante, téléchargée à l'affichage */}
-  &lt;Image
-    source={{ uri: stay.imageUrl }}
-    style={{ width: "100%", aspectRatio: 4 / 3 }}
-  /&gt;
-&lt;/View&gt;
-        </code></pre>
+        <pre class="mini" data-surligne="{/* Image locale..style={styles.photo}" data-fichier="demos/cours1/src/components/image-examples.tsx" data-titre="src/components/image-examples.tsx"><code class="language-tsx" data-line-numbers="8-14">import { Image, StyleSheet, View } from "react-native";
+
+type ImageExamplesProps = { imageUrl: string };
+
+export function ImageExamples({ imageUrl }: ImageExamplesProps) {
+  return (
+    &lt;View style={styles.container}&gt;
+      {/* Image locale, intégrée à l'application */}
+      &lt;Image
+        source={require("@/assets/images/icon.png")}
+        style={styles.logo}
+      /&gt;
+      {/* Image distante, téléchargée à l'affichage */}
+      &lt;Image source={{ uri: imageUrl }} style={styles.photo} /&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { gap: 16 },
+  logo: { width: 64, height: 64 },
+  photo: { width: "100%", aspectRatio: 4 / 3, borderRadius: 12 },
+});</code></pre>
         <div>
           <ul class="dense">
             <li>Une image locale passe par <code>require()</code> : elle est intégrée à l'application au moment du build</li>
@@ -302,8 +380,7 @@ const styles = StyleSheet.create({
     <h2><code>TextInput</code> : un champ contrôlé</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-titre="src/components/name-form.tsx"><code class="language-tsx" data-trim style="max-height: none;">
-import { useState } from "react";
+        <pre class="mini" data-fichier="demos/cours1/src/components/name-form.tsx" data-titre="src/components/name-form.tsx"><code class="language-tsx" data-line-numbers="">import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 export function NameForm() {
@@ -322,9 +399,13 @@ export function NameForm() {
 }
 
 const styles = StyleSheet.create({
-  input: { borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 8 },
-});
-</code></pre>
+  input: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 8,
+  },
+});</code></pre>
         <div>
           <ul class="dense">
             <li>Un champ <strong>contrôlé</strong>, comme en React : sa valeur vient de l'état</li>
@@ -339,19 +420,86 @@ const styles = StyleSheet.create({
     <h2>Un retour visuel au toucher</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre data-titre="stay-card.tsx (extrait)"><code class="language-tsx" data-trim>
-&lt;Pressable
-  onPress={() =&gt; onToggleFavorite(stay.id)}
-  style={({ pressed }) =&gt; [
-    styles.button,
-    pressed &amp;&amp; styles.buttonPressed,
-  ]}
-&gt;
-  &lt;Text style={styles.buttonLabel}&gt;
-    {isFavorite ? "★ Favori" : "☆ Ajouter aux favoris"}
-  &lt;/Text&gt;
-&lt;/Pressable&gt;
-        </code></pre>
+        <pre class="mini" data-surligne="&lt;Pressable..&lt;/Pressable&gt;|button:..buttonPressed" data-fichier="demos/cours1/src/components/stay-card.tsx" data-titre="src/components/stay-card.tsx"><code class="language-tsx" data-line-numbers="41-51|71-78">import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
+import { Stay } from "@/models/stay";
+
+type StayCardProps = {
+  stay: Stay;
+  isFavorite: boolean;
+  onToggleFavorite: (id: string) =&gt; void;
+};
+
+const formatPrice = (price: number) =&gt;
+  new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(price);
+
+export function StayCard({
+  stay,
+  isFavorite,
+  onToggleFavorite,
+}: StayCardProps) {
+  return (
+    &lt;View style={styles.card}&gt;
+      &lt;Image source={{ uri: stay.imageUrl }} style={styles.image} /&gt;
+      &lt;View style={styles.body}&gt;
+        &lt;Text style={styles.title}&gt;{stay.title}&lt;/Text&gt;
+        &lt;Text style={styles.city}&gt;{stay.city}&lt;/Text&gt;
+        &lt;Text style={styles.price}&gt;
+          {formatPrice(stay.pricePerNight)} / nuit
+        &lt;/Text&gt;
+        {!stay.available &amp;&amp; (
+          &lt;Text style={styles.unavailable}&gt;Complet&lt;/Text&gt;
+        )}
+        &lt;Pressable
+          onPress={() =&gt; onToggleFavorite(stay.id)}
+          style={({ pressed }) =&gt; [
+            styles.button,
+            pressed &amp;&amp; styles.buttonPressed,
+          ]}
+        &gt;
+          &lt;Text style={styles.buttonLabel}&gt;
+            {isFavorite ? "★ Favori" : "☆ Ajouter aux favoris"}
+          &lt;/Text&gt;
+        &lt;/Pressable&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    overflow: "hidden",
+    margin: 8,
+  },
+  image: { width: "100%", aspectRatio: 4 / 3 },
+  body: { padding: 12, gap: 4 },
+  title: { fontSize: 18, fontWeight: "700" },
+  city: { fontSize: 15, color: "#5A5F80" },
+  price: { fontSize: 16, color: "#0B7A70" },
+  unavailable: { fontSize: 14, color: "#B42318" },
+  button: {
+    marginTop: 8,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: "#E2F7F4",
+    alignItems: "center",
+  },
+  buttonPressed: { opacity: 0.6 },
+  buttonLabel: { fontSize: 15, fontWeight: "600" },
+});</code></pre>
         <div>
           <ul class="dense">
             <li>Sur mobile, il n'y a pas de survol. L'utilisateur doit <strong>voir</strong> que son doigt a été pris en compte</li>
@@ -366,23 +514,99 @@ const styles = StyleSheet.create({
     <h2>Afficher une liste : <code>FlatList</code></h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre data-titre="src/app/index.tsx (extrait)"><code class="language-tsx" data-trim>
-&lt;FlatList
-  data={visibleStays}
-  keyExtractor={(stay) =&gt; stay.id}
-  renderItem={({ item }) =&gt; (
-    &lt;StayCard
-      stay={item}
-      isFavorite={favorites.includes(item.id)}
-      onToggleFavorite={toggleFavorite}
-    /&gt;
-  )}
-  ListEmptyComponent={&lt;Text&gt;Aucun résultat&lt;/Text&gt;}
-/&gt;
-        </code></pre>
+        <pre class="mini" data-surligne="const [favorites..=    );|const visibleStays..=  );|&lt;FlatList..=        /&gt;" data-fichier="demos/cours1/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="17-24|27-31|45-62">import { useState } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+
+import { StayCard } from "@/components/stay-card";
+import { STAYS } from "@/data/stays";
+import { useColumns } from "@/hooks/use-columns";
+
+export default function CatalogScreen() {
+  const columns = useColumns();
+  const [query, setQuery] = useState("");
+  const [favorites, setFavorites] = useState&lt;string[]&gt;([]);
+
+  const toggleFavorite = (id: string) =&gt;
+    setFavorites((current) =&gt;
+      current.includes(id)
+        ? current.filter((f) =&gt; f !== id)
+        : [...current, id],
+    );
+
+  const search = query.trim().toLowerCase();
+  const visibleStays = STAYS.filter(
+    (stay) =&gt;
+      stay.title.toLowerCase().includes(search) ||
+      stay.city.toLowerCase().includes(search),
+  );
+
+  return (
+    &lt;View style={styles.screen}&gt;
+      &lt;View style={styles.container}&gt;
+        &lt;Text style={styles.heading}&gt;
+          Séjours · {favorites.length} favori(s)
+        &lt;/Text&gt;
+        &lt;TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Rechercher une ville ou un logement"
+          style={styles.search}
+        /&gt;
+        &lt;FlatList
+          key={columns}
+          data={visibleStays}
+          numColumns={columns}
+          keyExtractor={(stay) =&gt; stay.id}
+          renderItem={({ item }) =&gt; (
+            &lt;StayCard
+              stay={item}
+              isFavorite={favorites.includes(item.id)}
+              onToggleFavorite={toggleFavorite}
+            /&gt;
+          )}
+          ListEmptyComponent={
+            &lt;Text style={styles.empty}&gt;
+              Aucun logement ne correspond.
+            &lt;/Text&gt;
+          }
+        /&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: "#F2F3F9" },
+  container: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 1100,
+    alignSelf: "center",
+    padding: 8,
+  },
+  heading: { fontSize: 24, fontWeight: "800", margin: 8 },
+  search: {
+    margin: 8,
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#D9DCEA",
+    backgroundColor: "#fff",
+    fontSize: 16,
+  },
+  empty: { margin: 8, fontSize: 16 },
+});</code></pre>
         <div>
           <ul class="dense">
-            <li><code>FlatList</code> n'affiche que les éléments <strong>visibles</strong> (virtualisation)</li>
+            <li><strong>1.</strong> Les favoris sont un état : <code>toggleFavorite</code> ajoute ou retire un identifiant</li>
+            <li><strong>2.</strong> <code>visibleStays</code> se calcule à partir de la recherche : ce n'est pas un état</li>
+            <li><strong>3.</strong> <code>FlatList</code> n'affiche que les éléments <strong>visibles</strong> (virtualisation)</li>
             <li><code>keyExtractor</code> joue le rôle de la prop <code>key</code> de <code>map()</code></li>
             <li><code>ScrollView</code> affiche tout d'un coup : réservez-la aux contenus courts</li>
           </ul>
@@ -395,21 +619,86 @@ const styles = StyleSheet.create({
     <h2><code>StyleSheet</code> et Flexbox</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="compact" data-titre="Exemple de styles"><code class="language-tsx" data-trim>
+        <pre class="mini" data-surligne="const styles = StyleSheet.create..=});" data-fichier="demos/cours1/src/components/stay-card.tsx" data-titre="src/components/stay-card.tsx"><code class="language-tsx" data-line-numbers="57-80">import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
+import { Stay } from "@/models/stay";
+
+type StayCardProps = {
+  stay: Stay;
+  isFavorite: boolean;
+  onToggleFavorite: (id: string) =&gt; void;
+};
+
+const formatPrice = (price: number) =&gt;
+  new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(price);
+
+export function StayCard({
+  stay,
+  isFavorite,
+  onToggleFavorite,
+}: StayCardProps) {
+  return (
+    &lt;View style={styles.card}&gt;
+      &lt;Image source={{ uri: stay.imageUrl }} style={styles.image} /&gt;
+      &lt;View style={styles.body}&gt;
+        &lt;Text style={styles.title}&gt;{stay.title}&lt;/Text&gt;
+        &lt;Text style={styles.city}&gt;{stay.city}&lt;/Text&gt;
+        &lt;Text style={styles.price}&gt;
+          {formatPrice(stay.pricePerNight)} / nuit
+        &lt;/Text&gt;
+        {!stay.available &amp;&amp; (
+          &lt;Text style={styles.unavailable}&gt;Complet&lt;/Text&gt;
+        )}
+        &lt;Pressable
+          onPress={() =&gt; onToggleFavorite(stay.id)}
+          style={({ pressed }) =&gt; [
+            styles.button,
+            pressed &amp;&amp; styles.buttonPressed,
+          ]}
+        &gt;
+          &lt;Text style={styles.buttonLabel}&gt;
+            {isFavorite ? "★ Favori" : "☆ Ajouter aux favoris"}
+          &lt;/Text&gt;
+        &lt;/Pressable&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}
+
 const styles = StyleSheet.create({
   card: {
     flex: 1,
     backgroundColor: "#fff",
     borderRadius: 12,
+    overflow: "hidden",
     margin: 8,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  image: { width: "100%", aspectRatio: 4 / 3 },
+  body: { padding: 12, gap: 4 },
+  title: { fontSize: 18, fontWeight: "700" },
+  city: { fontSize: 15, color: "#5A5F80" },
+  price: { fontSize: 16, color: "#0B7A70" },
+  unavailable: { fontSize: 14, color: "#B42318" },
+  button: {
+    marginTop: 8,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: "#E2F7F4",
     alignItems: "center",
   },
-});
-        </code></pre>
+  buttonPressed: { opacity: 0.6 },
+  buttonLabel: { fontSize: 15, fontWeight: "600" },
+});</code></pre>
         <div>
           <ul class="dense">
             <li>Des propriétés CSS en <strong>camelCase</strong>, des nombres <strong>sans unité</strong></li>
@@ -436,17 +725,16 @@ const styles = StyleSheet.create({
     <h2>Pas de media queries : un hook</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre data-titre="src/hooks/use-columns.ts"><code class="language-typescript" data-trim>
-import { useWindowDimensions } from "react-native";
+        <pre class="mini" data-fichier="demos/cours1/src/hooks/use-columns.ts" data-titre="src/hooks/use-columns.ts"><code class="language-typescript" data-line-numbers="">import { useWindowDimensions } from "react-native";
 
-// Nombre de colonnes selon la largeur de la fenêtre
+// Nombre de colonnes selon la largeur de la fenêtre (points de
+// rupture)
 export function useColumns(): number {
   const { width } = useWindowDimensions();
   if (width &gt;= 1024) return 3;
   if (width &gt;= 600) return 2;
   return 1;
-}
-        </code></pre>
+}</code></pre>
         <div>
           <ul class="dense">
             <li><code>StyleSheet</code> ne connaît pas les <em>media queries</em> du CSS</li>
@@ -461,23 +749,94 @@ export function useColumns(): number {
     <h2>Une grille sur le web, une liste sur mobile</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="compact" data-titre="src/app/index.tsx (extrait)"><code class="language-tsx" data-trim data-line-numbers="2,7-8">
+        <pre class="mini" data-surligne="const columns = useColumns()+key={columns}+numColumns={columns}" data-fichier="demos/cours1/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="15,46,48">import { useState } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+
+import { StayCard } from "@/components/stay-card";
+import { STAYS } from "@/data/stays";
+import { useColumns } from "@/hooks/use-columns";
+
 export default function CatalogScreen() {
   const columns = useColumns();
-  // …
+  const [query, setQuery] = useState("");
+  const [favorites, setFavorites] = useState&lt;string[]&gt;([]);
+
+  const toggleFavorite = (id: string) =&gt;
+    setFavorites((current) =&gt;
+      current.includes(id)
+        ? current.filter((f) =&gt; f !== id)
+        : [...current, id],
+    );
+
+  const search = query.trim().toLowerCase();
+  const visibleStays = STAYS.filter(
+    (stay) =&gt;
+      stay.title.toLowerCase().includes(search) ||
+      stay.city.toLowerCase().includes(search),
+  );
+
   return (
-    &lt;View style={styles.container}&gt;
-      &lt;FlatList
-        key={columns}
-        numColumns={columns}
-        data={visibleStays}
-        keyExtractor={(stay) =&gt; stay.id}
-        renderItem={renderStay}
-      /&gt;
+    &lt;View style={styles.screen}&gt;
+      &lt;View style={styles.container}&gt;
+        &lt;Text style={styles.heading}&gt;
+          Séjours · {favorites.length} favori(s)
+        &lt;/Text&gt;
+        &lt;TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Rechercher une ville ou un logement"
+          style={styles.search}
+        /&gt;
+        &lt;FlatList
+          key={columns}
+          data={visibleStays}
+          numColumns={columns}
+          keyExtractor={(stay) =&gt; stay.id}
+          renderItem={({ item }) =&gt; (
+            &lt;StayCard
+              stay={item}
+              isFavorite={favorites.includes(item.id)}
+              onToggleFavorite={toggleFavorite}
+            /&gt;
+          )}
+          ListEmptyComponent={
+            &lt;Text style={styles.empty}&gt;
+              Aucun logement ne correspond.
+            &lt;/Text&gt;
+          }
+        /&gt;
+      &lt;/View&gt;
     &lt;/View&gt;
   );
 }
-        </code></pre>
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: "#F2F3F9" },
+  container: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 1100,
+    alignSelf: "center",
+    padding: 8,
+  },
+  heading: { fontSize: 24, fontWeight: "800", margin: 8 },
+  search: {
+    margin: 8,
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#D9DCEA",
+    backgroundColor: "#fff",
+    fontSize: 16,
+  },
+  empty: { margin: 8, fontSize: 16 },
+});</code></pre>
         <div>
           <ul class="dense">
             <li><code>numColumns</code> transforme la liste en grille</li>

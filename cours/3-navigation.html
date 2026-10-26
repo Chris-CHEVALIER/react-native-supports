@@ -108,25 +108,30 @@ src/app/
     <h2>La pile racine</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="compact" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-trim>
-import { Stack } from "expo-router";
+        <pre class="mini" data-fichier="demos/cours3/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="">import { Stack } from "expo-router";
 
 import { FavoritesProvider } from "@/context/favorites-context";
 
-// Ouvert par son URL, un séjour garde un retour vers les onglets
+// Ouvert directement par son URL, un séjour garde un retour vers les
+// onglets
 export const unstable_settings = { anchor: "(tabs)" };
 
 export default function RootLayout() {
   return (
     &lt;FavoritesProvider&gt;
       &lt;Stack&gt;
-        &lt;Stack.Screen name="(tabs)" options={{ headerShown: false }} /&gt;
-        &lt;Stack.Screen name="stays/[id]" options={{ title: "Séjour" }} /&gt;
+        &lt;Stack.Screen
+          name="(tabs)"
+          options={{ headerShown: false }}
+        /&gt;
+        &lt;Stack.Screen
+          name="stays/[id]"
+          options={{ title: "Séjour" }}
+        /&gt;
       &lt;/Stack&gt;
     &lt;/FavoritesProvider&gt;
   );
-}
-        </code></pre>
+}</code></pre>
         <div>
           <ul class="dense">
             <li>Les onglets forment <strong>un seul écran</strong> de la pile, sans en-tête (ils ont le leur)</li>
@@ -149,28 +154,49 @@ export default function RootLayout() {
     <h2>Les onglets</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-titre="src/app/(tabs)/_layout.tsx"><code class="language-tsx" data-trim>
-import Ionicons from "@expo/vector-icons/Ionicons";
+        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/_layout.tsx" data-titre="src/app/(tabs)/_layout.tsx"><code class="language-tsx" data-line-numbers="">import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router/js-tabs";
+
 const ACTIVE = "#0B7A70";
 const INACTIVE = "#8C90B4";
 
 export default function TabsLayout() {
   return (
-    &lt;Tabs screenOptions={{
-      tabBarActiveTintColor: ACTIVE, tabBarInactiveTintColor: INACTIVE }}&gt;
-      &lt;Tabs.Screen name="index" options={{
-        title: "Séjours",
-        tabBarIcon: ({ focused, size }) =&gt; (
-          &lt;Ionicons name="bed-outline" size={size}
-            color={focused ? ACTIVE : INACTIVE} /&gt;
-        ),
-      }} /&gt;
-      &lt;Tabs.Screen name="favorites" options={{ title: "Favoris" /* … */ }} /&gt;
+    &lt;Tabs
+      screenOptions={{
+        tabBarActiveTintColor: ACTIVE,
+        tabBarInactiveTintColor: INACTIVE,
+      }}
+    &gt;
+      &lt;Tabs.Screen
+        name="index"
+        options={{
+          title: "Séjours",
+          tabBarIcon: ({ focused, size }) =&gt; (
+            &lt;Ionicons
+              name="bed-outline"
+              size={size}
+              color={focused ? ACTIVE : INACTIVE}
+            /&gt;
+          ),
+        }}
+      /&gt;
+      &lt;Tabs.Screen
+        name="favorites"
+        options={{
+          title: "Favoris",
+          tabBarIcon: ({ focused, size }) =&gt; (
+            &lt;Ionicons
+              name="heart-outline"
+              size={size}
+              color={focused ? ACTIVE : INACTIVE}
+            /&gt;
+          ),
+        }}
+      /&gt;
     &lt;/Tabs&gt;
   );
-}
-        </code></pre>
+}</code></pre>
         <div>
           <ul class="dense">
             <li>Depuis le SDK 58, importez <code>Tabs</code> depuis <code>expo-router/js-tabs</code>. L'import depuis <code>expo-router</code> est <strong>déprécié</strong></li>
@@ -184,25 +210,152 @@ export default function TabsLayout() {
   </section>
 
   <section>
-    <h2>Naviguer : <code>Link</code> et <code>useRouter</code></h2>
+    <h2>Naviguer avec un lien : <code>Link</code></h2>
     <div class="corps">
-      <div class="colonnes" style="grid-template-columns: 1.25fr 1fr;">
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="&lt;Link..&lt;/Link&gt;" data-fichier="demos/cours3/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="36-41">import { Link, useFocusEffect } from "expo-router";
+import { useCallback } from "react";
+import { SectionList, StyleSheet, Text } from "react-native";
+
+import { StateMessage } from "@/components/state-message";
+import { useFavorites } from "@/context/favorites-context";
+import { useStays } from "@/hooks/use-stays";
+import { groupByCity } from "@/models/stay";
+
+export default function FavoritesScreen() {
+  const { state, reload } = useStays();
+  const { isFavorite } = useFavorites();
+
+  // À chaque fois que l'onglet redevient visible, on recharge les
+  // séjours
+  useFocusEffect(
+    useCallback(() =&gt; {
+      reload();
+    }, [reload]),
+  );
+
+  if (state.status !== "success")
+    return &lt;StateMessage loading={state.status === "loading"} /&gt;;
+  const sections = groupByCity(
+    state.stays.filter((stay) =&gt; isFavorite(stay.id)),
+  );
+
+  return (
+    &lt;SectionList
+      sections={sections}
+      keyExtractor={(stay) =&gt; stay.id}
+      renderSectionHeader={({ section }) =&gt; (
+        &lt;Text style={styles.city}&gt;{section.title}&lt;/Text&gt;
+      )}
+      renderItem={({ item }) =&gt; (
+        &lt;Link
+          href={{ pathname: "/stays/[id]", params: { id: item.id } }}
+          style={styles.item}
+        &gt;
+          {item.title}
+        &lt;/Link&gt;
+      )}
+      ListEmptyComponent={
+        &lt;Text style={styles.item}&gt;Aucun favori pour le moment.&lt;/Text&gt;
+      }
+      contentContainerStyle={styles.list}
+    /&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  list: { padding: 16 },
+  city: {
+    fontSize: 14,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    color: "#0B7A70",
+    marginTop: 16,
+  },
+  item: { fontSize: 17, paddingVertical: 8 },
+});</code></pre>
         <div>
-          <pre class="mini" data-titre="Un lien (dans favorites.tsx)"><code class="language-tsx" data-trim>
-&lt;Link href={{
-  pathname: "/stays/[id]",
-  params: { id: item.id },
-}}&gt;
-  {item.title}
-&lt;/Link&gt;
-          </code></pre>
-          <pre class="mini" data-titre="Par le code (dans index.tsx)"><code class="language-tsx" data-trim>
-const router = useRouter();
-const openStay = (id: string) =&gt;
-  router.push({ pathname: "/stays/[id]", params: { id } });
-          </code></pre>
+          <ul class="dense">
+            <li><code>&lt;Link&gt;</code> est l'équivalent de <code>&lt;a href&gt;</code> : sur le web, c'est un vrai lien</li>
+            <li><code>href</code> reçoit le chemin de la route et ses paramètres : ici l'identifiant du séjour</li>
+            <li>Les <strong>routes typées</strong> (<code>typedRoutes</code> dans <code>app.json</code>) font signaler par TypeScript un lien vers une page inexistante</li>
+          </ul>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Naviguer par le code : <code>useRouter</code></h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="const router = useRouter()|router.push" data-fichier="demos/cours3/src/app/(tabs)/index.tsx" data-titre="src/app/(tabs)/index.tsx"><code class="language-tsx" data-line-numbers="13|22">import { useRouter } from "expo-router";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+
+import { StateMessage } from "@/components/state-message";
+import { StayCard } from "@/components/stay-card";
+import { StayFiltersBar } from "@/components/stay-filters-bar";
+import { useFavorites } from "@/context/favorites-context";
+import { useColumns } from "@/hooks/use-columns";
+import { useStayFilters } from "@/hooks/use-stay-filters";
+import { useStays } from "@/hooks/use-stays";
+
+export default function CatalogScreen() {
+  const router = useRouter();
+  const columns = useColumns();
+  const { state, reload } = useStays();
+  const stays = state.status === "success" ? state.stays : [];
+  const { filters, updateFilters, visibleStays } =
+    useStayFilters(stays);
+  const { isFavorite, toggleFavorite } = useFavorites();
+
+  const openStay = (id: string) =&gt;
+    router.push({ pathname: "/stays/[id]", params: { id } });
+
+  if (state.status === "loading") return &lt;StateMessage loading /&gt;;
+  if (state.status === "error")
+    return &lt;StateMessage message={state.message} onRetry={reload} /&gt;;
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;StayFiltersBar filters={filters} onChange={updateFilters} /&gt;
+      &lt;FlatList
+        key={columns}
+        numColumns={columns}
+        data={visibleStays}
+        keyExtractor={(stay) =&gt; stay.id}
+        renderItem={({ item }) =&gt; (
+          &lt;StayCard
+            stay={item}
+            isFavorite={isFavorite(item.id)}
+            onToggleFavorite={toggleFavorite}
+            onPress={openStay}
+          /&gt;
+        )}
+        ListEmptyComponent={
+          &lt;Text style={styles.empty}&gt;
+            Aucun logement ne correspond.
+          &lt;/Text&gt;
+        }
+      /&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 1100,
+    alignSelf: "center",
+    padding: 8,
+  },
+  empty: { margin: 8, fontSize: 16 },
+});</code></pre>
         <div>
+          <ul class="dense">
+            <li>Pour naviguer après une action (un appui, un envoi de formulaire), sans lien visible</li>
+          </ul>
           <table class="serre">
             <tr><th>Méthode</th><th>Effet</th></tr>
             <tr><td><code>push(href)</code></td><td>Empile un écran</td></tr>
@@ -210,7 +363,6 @@ const openStay = (id: string) =&gt;
             <tr><td><code>replace(href)</code></td><td>Remplace l'écran actuel (après une connexion, par exemple)</td></tr>
             <tr><td><code>navigate(href)</code></td><td>Va à l'écran, sans l'empiler s'il existe déjà</td></tr>
           </table>
-          <p class="petit muet" style="margin-top: 10px;">Les <strong>routes typées</strong> (<code>typedRoutes</code> dans <code>app.json</code>) font signaler par TypeScript un lien vers une page inexistante.</p>
         </div>
       </div>
     </div>
@@ -220,7 +372,21 @@ const openStay = (id: string) =&gt;
     <h2>Une route dynamique</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-titre="src/app/stays/[id].tsx (extrait)"><code class="language-tsx" data-trim>
+        <pre class="mini" data-surligne="useLocalSearchParams&lt;|&lt;Stack.Screen" data-fichier="demos/cours3/src/app/stays/[id].tsx" data-titre="src/app/stays/[id].tsx"><code class="language-tsx" data-line-numbers="17|33">import { Stack, useLocalSearchParams } from "expo-router";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
+import { StateMessage } from "@/components/state-message";
+import { WeatherBadge } from "@/components/weather-badge";
+import { useStay } from "@/hooks/use-stay";
+import { Stay } from "@/models/stay";
+import { useWeather } from "@/hooks/use-weather";
+
 export default function StayScreen() {
   const { id } = useLocalSearchParams&lt;{ id: string }&gt;();
   const state = useStay(id);
@@ -231,17 +397,33 @@ export default function StayScreen() {
   return &lt;StayDetails stay={state.stay} /&gt;;
 }
 
+// Composant séparé : les hooks ne peuvent pas être appelés après un
+// return
 function StayDetails({ stay }: { stay: Stay }) {
   const weather = useWeather(stay.latitude, stay.longitude);
+
   return (
     &lt;ScrollView contentContainerStyle={styles.content}&gt;
       &lt;Stack.Screen options={{ title: stay.title }} /&gt;
-      {/* photo, titre, prix… */}
-      &lt;WeatherBadge state={weather} /&gt;
+      &lt;Image source={{ uri: stay.imageUrl }} style={styles.image} /&gt;
+      &lt;View style={styles.body}&gt;
+        &lt;Text style={styles.title}&gt;{stay.title}&lt;/Text&gt;
+        &lt;Text style={styles.city}&gt;
+          {stay.city} · {stay.pricePerNight} € / nuit
+        &lt;/Text&gt;
+        &lt;WeatherBadge state={weather} /&gt;
+      &lt;/View&gt;
     &lt;/ScrollView&gt;
   );
 }
-        </code></pre>
+
+const styles = StyleSheet.create({
+  content: { width: "100%", maxWidth: 800, alignSelf: "center" },
+  image: { width: "100%", aspectRatio: 16 / 9 },
+  body: { padding: 16, gap: 8 },
+  title: { fontSize: 26, fontWeight: "800" },
+  city: { fontSize: 17, color: "#5A5F80" },
+});</code></pre>
         <div>
           <ul class="dense">
             <li><code>useLocalSearchParams</code> lit <code>id</code> dans l'URL</li>
@@ -303,29 +485,37 @@ function StayDetails({ stay }: { stay: Stay }) {
     <h2>Un service qui appelle une API</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-titre="src/services/weather-service.ts (extrait)"><code class="language-typescript" data-trim>
+        <pre class="mini" data-surligne="type OpenMeteoResponse..=};|const response = await fetch..=}" data-fichier="demos/cours3/src/services/weather-service.ts" data-titre="src/services/weather-service.ts"><code class="language-typescript" data-line-numbers="4-10|21-31">import { Weather } from "@/models/weather";
+
 // Forme de la réponse de l'API, limitée à ce qu'on utilise
 type OpenMeteoResponse = {
-  current: { temperature_2m: number; wind_speed_10m: number; weather_code: number };
+  current: {
+    temperature_2m: number;
+    wind_speed_10m: number;
+    weather_code: number;
+  };
 };
+
 export async function fetchWeather(
-  latitude: number, longitude: number
+  latitude: number,
+  longitude: number,
 ): Promise&lt;Weather&gt; {
   const url =
     "https://api.open-meteo.com/v1/forecast" +
     `?latitude=${latitude}&amp;longitude=${longitude}` +
     "&amp;current=temperature_2m,wind_speed_10m,weather_code";
+
   const response = await fetch(url);
   if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
   const data: OpenMeteoResponse = await response.json();
+
   // On convertit la réponse de l'API en objet du modèle
   return {
     temperature: data.current.temperature_2m,
     windSpeed: data.current.wind_speed_10m,
     code: data.current.weather_code,
   };
-}
-        </code></pre>
+}</code></pre>
         <div>
           <ul class="dense">
             <li><code>fetch</code> fonctionne de la même façon sur le web et sur mobile</li>
@@ -339,49 +529,108 @@ export async function fetchWeather(
   </section>
 
   <section>
-    <h2>Le contrôleur et la vue</h2>
+    <h2>Le contrôleur : <code>useWeather</code></h2>
     <div class="corps">
-      <div class="colonnes">
-        <div>
-          <pre class="mini" data-titre="src/hooks/use-weather.ts (extrait)"><code class="language-typescript" data-trim>
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="export type WeatherState..status: &quot;success&quot;|export function useWeather..=}" data-fichier="demos/cours3/src/hooks/use-weather.ts" data-titre="src/hooks/use-weather.ts"><code class="language-typescript" data-line-numbers="7-10|14-40">import { useEffect, useState } from "react";
+
+import { useIsAppActive } from "@/hooks/use-is-app-active";
+import { Weather } from "@/models/weather";
+import { fetchWeather } from "@/services/weather-service";
+
 export type WeatherState =
   | { status: "loading" }
   | { status: "error"; message: string }
   | { status: "success"; weather: Weather };
 
-export function useWeather(
-  latitude: number, longitude: number
-) {
-  const [state, setState] =
-    useState&lt;WeatherState&gt;({ status: "loading" });
-  // … useEffect qui appelle fetchWeather()
+// Recharge la météo à l'ouverture de l'écran et à chaque retour au
+// premier plan
+export function useWeather(latitude: number, longitude: number) {
+  const [state, setState] = useState&lt;WeatherState&gt;({
+    status: "loading",
+  });
+  const isActive = useIsAppActive();
+
+  useEffect(() =&gt; {
+    if (!isActive) return;
+    let cancelled = false;
+    fetchWeather(latitude, longitude)
+      .then((weather) =&gt; {
+        if (!cancelled) setState({ status: "success", weather });
+      })
+      .catch(() =&gt; {
+        if (!cancelled)
+          setState({
+            status: "error",
+            message: "Météo indisponible",
+          });
+      });
+    return () =&gt; {
+      cancelled = true;
+    };
+  }, [latitude, longitude, isActive]);
+
   return state;
-}
-          </code></pre>
-        </div>
+}</code></pre>
         <div>
-          <pre class="mini" data-titre="src/components/weather-badge.tsx (extrait)"><code class="language-tsx" data-trim>
+          <ul class="dense">
+            <li>Le même modèle d'état que pour les séjours : chargement, erreur ou succès</li>
+            <li>Le hook appelle le service et tient l'état. Il ne sait pas comment il sera affiché</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>La vue : <code>WeatherBadge</code></h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="state.status === &quot;loading&quot;..state.status === &quot;success&quot;" data-fichier="demos/cours3/src/components/weather-badge.tsx" data-titre="src/components/weather-badge.tsx"><code class="language-tsx" data-line-numbers="17-19">import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
+import { WeatherState } from "@/hooks/use-weather";
+import { describeWeather } from "@/models/weather";
+
+type WeatherBadgeProps = { state: WeatherState };
+
+// Vue pure : elle affiche l'état de la météo qu'on lui donne
 export function WeatherBadge({ state }: WeatherBadgeProps) {
   return (
     &lt;View style={styles.badge}&gt;
-      {state.status === "loading" &amp;&amp;
-        &lt;ActivityIndicator /&gt;}
-      {state.status === "error" &amp;&amp;
-        &lt;Text&gt;{state.message}&lt;/Text&gt;}
+      {state.status === "loading" &amp;&amp; &lt;ActivityIndicator /&gt;}
+      {state.status === "error" &amp;&amp; &lt;Text&gt;{state.message}&lt;/Text&gt;}
       {state.status === "success" &amp;&amp; (
         &lt;Text style={styles.text}&gt;
           {describeWeather(state.weather.code)} ·{" "}
-          {Math.round(state.weather.temperature)} °C
+          {Math.round(state.weather.temperature)} °C · vent{" "}
+          {Math.round(state.weather.windSpeed)} km/h
         &lt;/Text&gt;
       )}
     &lt;/View&gt;
   );
 }
-          </code></pre>
+
+const styles = StyleSheet.create({
+  badge: {
+    alignSelf: "flex-start",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: "#E2F7F4",
+  },
+  text: { fontSize: 15, fontWeight: "600" },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>La vue reçoit l'état en props et affiche chaque cas</li>
+            <li>Le service parle à l'API, le hook tient l'état, la vue affiche ce qu'on lui donne</li>
+          </ul>
         </div>
-      </div>
-      <div class="encadre" style="margin-top: 6px;">
-        Même structure qu'au cours 2 : le service parle à l'API, le hook tient l'état, la vue affiche ce qu'on lui donne.
       </div>
     </div>
   </section>
@@ -413,20 +662,67 @@ export function WeatherBadge({ state }: WeatherBadgeProps) {
     <h2>Un écran ne se démonte pas toujours</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-titre="src/app/(tabs)/favorites.tsx (extrait)"><code class="language-tsx" data-trim>
+        <pre class="mini" data-surligne="useFocusEffect(..=  );" data-fichier="demos/cours3/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="16-20">import { Link, useFocusEffect } from "expo-router";
+import { useCallback } from "react";
+import { SectionList, StyleSheet, Text } from "react-native";
+
+import { StateMessage } from "@/components/state-message";
+import { useFavorites } from "@/context/favorites-context";
+import { useStays } from "@/hooks/use-stays";
+import { groupByCity } from "@/models/stay";
+
 export default function FavoritesScreen() {
   const { state, reload } = useStays();
   const { isFavorite } = useFavorites();
 
-  // À chaque fois que l'onglet redevient visible, on recharge les séjours
+  // À chaque fois que l'onglet redevient visible, on recharge les
+  // séjours
   useFocusEffect(
     useCallback(() =&gt; {
       reload();
-    }, [reload])
+    }, [reload]),
   );
-  // …
+
+  if (state.status !== "success")
+    return &lt;StateMessage loading={state.status === "loading"} /&gt;;
+  const sections = groupByCity(
+    state.stays.filter((stay) =&gt; isFavorite(stay.id)),
+  );
+
+  return (
+    &lt;SectionList
+      sections={sections}
+      keyExtractor={(stay) =&gt; stay.id}
+      renderSectionHeader={({ section }) =&gt; (
+        &lt;Text style={styles.city}&gt;{section.title}&lt;/Text&gt;
+      )}
+      renderItem={({ item }) =&gt; (
+        &lt;Link
+          href={{ pathname: "/stays/[id]", params: { id: item.id } }}
+          style={styles.item}
+        &gt;
+          {item.title}
+        &lt;/Link&gt;
+      )}
+      ListEmptyComponent={
+        &lt;Text style={styles.item}&gt;Aucun favori pour le moment.&lt;/Text&gt;
+      }
+      contentContainerStyle={styles.list}
+    /&gt;
+  );
 }
-        </code></pre>
+
+const styles = StyleSheet.create({
+  list: { padding: 16 },
+  city: {
+    fontSize: 14,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    color: "#0B7A70",
+    marginTop: 16,
+  },
+  item: { fontSize: 17, paddingVertical: 8 },
+});</code></pre>
         <div>
           <ul class="dense">
             <li>Un onglet quitté reste <strong>monté</strong> : son <code>useEffect(…, [])</code> ne s'exécutera plus</li>
@@ -443,25 +739,23 @@ export default function FavoritesScreen() {
     <h2>L'application passe en arrière-plan</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="compact" data-titre="src/hooks/use-is-app-active.ts"><code class="language-typescript" data-trim>
-import { useEffect, useState } from "react";
+        <pre class="mini" data-fichier="demos/cours3/src/hooks/use-is-app-active.ts" data-titre="src/hooks/use-is-app-active.ts"><code class="language-typescript" data-line-numbers="">import { useEffect, useState } from "react";
 import { AppState } from "react-native";
 
-// true au premier plan, false en arrière-plan
+// true quand l'application est au premier plan, false en arrière-plan
 export function useIsAppActive(): boolean {
   const [isActive, setIsActive] = useState(true);
 
   useEffect(() =&gt; {
     const subscription = AppState.addEventListener(
       "change",
-      (status) =&gt; setIsActive(status === "active")
+      (status) =&gt; setIsActive(status === "active"),
     );
     return () =&gt; subscription.remove();
   }, []);
 
   return isActive;
-}
-        </code></pre>
+}</code></pre>
         <div>
           <ul class="dense">
             <li><code>AppState</code> signale le premier plan (<code>"active"</code>) et l'arrière-plan (<code>"background"</code>)</li>
@@ -512,45 +806,142 @@ export function useIsAppActive(): boolean {
   </section>
 
   <section>
-    <h2><code>SectionList</code> : une liste par groupes</h2>
+    <h2><code>SectionList</code> : regrouper dans le modèle</h2>
     <div class="corps">
-      <div class="colonnes">
-        <pre class="mini" data-titre="src/models/stay.ts (extrait)"><code class="language-typescript" data-trim>
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="export type CitySection..=}" data-fichier="demos/cours3/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="43-52">export type StayType = "apartment" | "house" | "cabin";
+
+export type Stay = {
+  id: string;
+  title: string;
+  city: string;
+  type: StayType;
+  pricePerNight: number;
+  available: boolean;
+  latitude: number;
+  longitude: number;
+  imageUrl?: string;
+};
+
+export type StayFilters = {
+  query: string;
+  type: StayType | null;
+  onlyAvailable: boolean;
+};
+
+export const STAY_TYPE_LABELS: Record&lt;StayType, string&gt; = {
+  apartment: "Appartement",
+  house: "Maison",
+  cabin: "Cabane",
+};
+
+// Règle métier : une fonction pure, sans React, facile à tester
+export function matchesFilters(
+  stay: Stay,
+  filters: StayFilters,
+): boolean {
+  const search = filters.query.trim().toLowerCase();
+  const matchesQuery =
+    stay.title.toLowerCase().includes(search) ||
+    stay.city.toLowerCase().includes(search);
+  const matchesType =
+    filters.type === null || stay.type === filters.type;
+  const matchesAvailability =
+    !filters.onlyAvailable || stay.available;
+  return matchesQuery &amp;&amp; matchesType &amp;&amp; matchesAvailability;
+}
+
 export type CitySection = { title: string; data: Stay[] };
 
-// Regroupe des séjours par ville,
-// au format attendu par SectionList
-export function groupByCity(
-  stays: Stay[]
-): CitySection[] {
-  const cities =
-    [...new Set(stays.map((stay) =&gt; stay.city))].sort();
+// Regroupe des séjours par ville, au format attendu par SectionList
+export function groupByCity(stays: Stay[]): CitySection[] {
+  const cities = [...new Set(stays.map((stay) =&gt; stay.city))].sort();
   return cities.map((city) =&gt; ({
     title: city,
     data: stays.filter((stay) =&gt; stay.city === city),
   }));
-}
-        </code></pre>
-        <pre class="mini" data-titre="src/app/(tabs)/favorites.tsx (extrait)"><code class="language-tsx" data-trim>
-&lt;SectionList
-  sections={sections}
-  keyExtractor={(stay) =&gt; stay.id}
-  renderSectionHeader={({ section }) =&gt; (
-    &lt;Text style={styles.city}&gt;{section.title}&lt;/Text&gt;
-  )}
-  renderItem={({ item }) =&gt; (
-    &lt;Link href={{
-      pathname: "/stays/[id]",
-      params: { id: item.id },
-    }}&gt;
-      {item.title}
-    &lt;/Link&gt;
-  )}
-/&gt;
-        </code></pre>
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Chaque section a un <code>title</code> et un tableau <code>data</code></li>
+            <li>Le regroupement est une <strong>règle du modèle</strong>, pure et testable</li>
+          </ul>
+        </div>
       </div>
-      <div class="encadre" style="margin-top: 6px;">
-        Chaque section a un <code>title</code> et un tableau <code>data</code>. Le regroupement est une <strong>règle du modèle</strong>, pure et testable.
+    </div>
+  </section>
+
+  <section>
+    <h2><code>SectionList</code> : afficher les groupes</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="const sections = groupByCity..=  );|&lt;SectionList..=    /&gt;" data-fichier="demos/cours3/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="24-26|29-47">import { Link, useFocusEffect } from "expo-router";
+import { useCallback } from "react";
+import { SectionList, StyleSheet, Text } from "react-native";
+
+import { StateMessage } from "@/components/state-message";
+import { useFavorites } from "@/context/favorites-context";
+import { useStays } from "@/hooks/use-stays";
+import { groupByCity } from "@/models/stay";
+
+export default function FavoritesScreen() {
+  const { state, reload } = useStays();
+  const { isFavorite } = useFavorites();
+
+  // À chaque fois que l'onglet redevient visible, on recharge les
+  // séjours
+  useFocusEffect(
+    useCallback(() =&gt; {
+      reload();
+    }, [reload]),
+  );
+
+  if (state.status !== "success")
+    return &lt;StateMessage loading={state.status === "loading"} /&gt;;
+  const sections = groupByCity(
+    state.stays.filter((stay) =&gt; isFavorite(stay.id)),
+  );
+
+  return (
+    &lt;SectionList
+      sections={sections}
+      keyExtractor={(stay) =&gt; stay.id}
+      renderSectionHeader={({ section }) =&gt; (
+        &lt;Text style={styles.city}&gt;{section.title}&lt;/Text&gt;
+      )}
+      renderItem={({ item }) =&gt; (
+        &lt;Link
+          href={{ pathname: "/stays/[id]", params: { id: item.id } }}
+          style={styles.item}
+        &gt;
+          {item.title}
+        &lt;/Link&gt;
+      )}
+      ListEmptyComponent={
+        &lt;Text style={styles.item}&gt;Aucun favori pour le moment.&lt;/Text&gt;
+      }
+      contentContainerStyle={styles.list}
+    /&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  list: { padding: 16 },
+  city: {
+    fontSize: 14,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    color: "#0B7A70",
+    marginTop: 16,
+  },
+  item: { fontSize: 17, paddingVertical: 8 },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>sections</code> remplace le <code>data</code> d'une <code>FlatList</code></li>
+            <li><code>renderSectionHeader</code> affiche le titre de chaque groupe, <code>renderItem</code> chaque élément</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>

@@ -245,7 +245,7 @@
 .reveal pre table { width: auto; font-size: inherit; }
 .reveal pre table td, .reveal pre tr:nth-child(even) td { padding: 0; border: 0; background: transparent; }
 .reveal pre code .hljs-ln-line.highlight-line { background: rgba(46, 196, 182, .14); }
-.reveal .hljs-ln-numbers { color: #5D6390; padding-right: 14px; text-align: right; user-select: none; }
+.reveal pre td.hljs-ln-numbers, .reveal pre tr:nth-child(even) td.hljs-ln-numbers { color: #5D6390; padding: 0 14px 0 0; text-align: right; user-select: none; }
 .reveal .hljs.has-highlights tr:not(.highlight-line) { opacity: .45; }
 
 .reveal pre .copier {
@@ -269,4 +269,9 @@
 .reveal .corps pre.compact { font-size: 16px; }
 .reveal .corps pre.mini { font-size: 14px; line-height: 1.42; }
 .reveal .corps pre.mini code, .reveal .corps pre.compact code { padding: 10px 16px; max-height: 436px; }
+/* Étapes de surlignage : reveal.js empile une copie du code par étape, sous la barre de titre et sur un fond opaque */
+.reveal pre code.hljs.fragment { background: var(--code-fond); }
+.reveal pre code.hljs:not(:first-child).fragment { top: 34px; }
+/* Fichier complet : il défile dans son bloc, sans déborder sur le pied de page */
+.reveal .corps pre[data-fichier] code { max-height: 400px; }
 .reveal .colonnes.code-large { grid-template-columns: 2.1fr 1fr; gap: 26px; align-items: start; }

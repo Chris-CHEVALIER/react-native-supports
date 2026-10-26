@@ -43,29 +43,66 @@
     <h2>Un écran qui fait tout</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-titre="src/app/avant.tsx (à ne pas suivre)"><code class="language-tsx" data-trim>
+        <pre class="mini" data-fichier="demos/cours2/src/app/avant.tsx" data-titre="src/app/avant.tsx"><code class="language-tsx" data-line-numbers="">// AVANT le refactoring : tout est dans l'écran (exemple à ne pas
+// suivre)
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+
+import { STAYS } from "@/data/stays";
+import { Stay } from "@/models/stay";
+
 export default function CatalogScreenBefore() {
   const [stays, setStays] = useState&lt;Stay[]&gt;([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [favorites, setFavorites] = useState&lt;string[]&gt;([]);
+
   useEffect(() =&gt; {
-    setTimeout(() =&gt; { setStays(STAYS); setLoading(false); }, 600);
+    setTimeout(() =&gt; {
+      setStays(STAYS);
+      setLoading(false);
+    }, 600);
   }, []);
+
   if (loading) return &lt;ActivityIndicator /&gt;;
+
   return (
-    &lt;FlatList
-      data={stays.filter((s) =&gt; s.title.includes(query))}
-      renderItem={({ item }) =&gt; (
-        &lt;Pressable onPress={() =&gt; setFavorites(favorites.includes(item.id)
-          ? favorites.filter((f) =&gt; f !== item.id) : [...favorites, item.id])}&gt;
-          &lt;Text&gt;{item.title} · {item.pricePerNight} €&lt;/Text&gt;
-        &lt;/Pressable&gt;
-      )}
-    /&gt;
+    &lt;View style={{ flex: 1, padding: 8 }}&gt;
+      &lt;TextInput
+        value={query}
+        onChangeText={setQuery}
+        placeholder="Rechercher"
+      /&gt;
+      &lt;FlatList
+        data={stays.filter((s) =&gt; s.title.includes(query))}
+        keyExtractor={(s) =&gt; s.id}
+        renderItem={({ item }) =&gt; (
+          &lt;Pressable
+            onPress={() =&gt;
+              setFavorites(
+                favorites.includes(item.id)
+                  ? favorites.filter((f) =&gt; f !== item.id)
+                  : [...favorites, item.id],
+              )
+            }
+          &gt;
+            &lt;Text&gt;
+              {favorites.includes(item.id) ? "★" : "☆"} {item.title} ·{" "}
+              {item.pricePerNight} €
+            &lt;/Text&gt;
+          &lt;/Pressable&gt;
+        )}
+      /&gt;
+    &lt;/View&gt;
   );
-}
-        </code></pre>
+}</code></pre>
         <div>
           <ul class="dense">
             <li>Le chargement, les règles de recherche, les favoris et l'affichage sont <strong>mélangés</strong></li>
@@ -186,12 +223,16 @@ src/
     <h2>Modéliser les données</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-titre="src/models/stay.ts (début)"><code class="language-typescript" data-trim>
-export type StayType = "apartment" | "house" | "cabin";
+        <pre class="mini" data-surligne="export type StayType..=};|export type StayFilters..=};" data-fichier="demos/cours2/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="1-11|13-17">export type StayType = "apartment" | "house" | "cabin";
 
 export type Stay = {
-  id: string; title: string; city: string; type: StayType;
-  pricePerNight: number; available: boolean; imageUrl?: string;
+  id: string;
+  title: string;
+  city: string;
+  type: StayType;
+  pricePerNight: number;
+  available: boolean;
+  imageUrl?: string;
 };
 
 export type StayFilters = {
@@ -205,7 +246,22 @@ export const STAY_TYPE_LABELS: Record&lt;StayType, string&gt; = {
   house: "Maison",
   cabin: "Cabane",
 };
-        </code></pre>
+
+// Règle métier : une fonction pure, sans React, facile à tester
+export function matchesFilters(
+  stay: Stay,
+  filters: StayFilters,
+): boolean {
+  const search = filters.query.trim().toLowerCase();
+  const matchesQuery =
+    stay.title.toLowerCase().includes(search) ||
+    stay.city.toLowerCase().includes(search);
+  const matchesType =
+    filters.type === null || stay.type === filters.type;
+  const matchesAvailability =
+    !filters.onlyAvailable || stay.available;
+  return matchesQuery &amp;&amp; matchesType &amp;&amp; matchesAvailability;
+}</code></pre>
         <div>
           <ul class="dense">
             <li>Les types sont le <strong>contrat</strong> entre toutes les couches</li>
@@ -221,11 +277,34 @@ export const STAY_TYPE_LABELS: Record&lt;StayType, string&gt; = {
     <h2>Les règles métier : des fonctions pures</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="compact" data-titre="src/models/stay.ts (suite)"><code class="language-typescript" data-trim>
-// Règle métier : une fonction pure, sans React
+        <pre class="mini" data-surligne="export const STAY_TYPE_LABELS..=};|// Règle métier..=}" data-fichier="demos/cours2/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="19-23|25-39">export type StayType = "apartment" | "house" | "cabin";
+
+export type Stay = {
+  id: string;
+  title: string;
+  city: string;
+  type: StayType;
+  pricePerNight: number;
+  available: boolean;
+  imageUrl?: string;
+};
+
+export type StayFilters = {
+  query: string;
+  type: StayType | null;
+  onlyAvailable: boolean;
+};
+
+export const STAY_TYPE_LABELS: Record&lt;StayType, string&gt; = {
+  apartment: "Appartement",
+  house: "Maison",
+  cabin: "Cabane",
+};
+
+// Règle métier : une fonction pure, sans React, facile à tester
 export function matchesFilters(
   stay: Stay,
-  filters: StayFilters
+  filters: StayFilters,
 ): boolean {
   const search = filters.query.trim().toLowerCase();
   const matchesQuery =
@@ -236,8 +315,7 @@ export function matchesFilters(
   const matchesAvailability =
     !filters.onlyAvailable || stay.available;
   return matchesQuery &amp;&amp; matchesType &amp;&amp; matchesAvailability;
-}
-        </code></pre>
+}</code></pre>
         <div>
           <ul class="dense">
             <li><strong>Pure</strong> : le même résultat pour les mêmes paramètres, sans effet de bord</li>
@@ -260,20 +338,18 @@ export function matchesFilters(
     <h2>Le service : un contrat d'accès aux données</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre data-titre="src/services/stays-service.ts"><code class="language-typescript" data-trim>
-import { STAYS } from "@/data/stays";
+        <pre class="mini" data-fichier="demos/cours2/src/services/stays-service.ts" data-titre="src/services/stays-service.ts"><code class="language-typescript" data-line-numbers="">import { STAYS } from "@/data/stays";
 import { Stay } from "@/models/stay";
 
 const wait = (ms: number) =&gt;
   new Promise((resolve) =&gt; setTimeout(resolve, ms));
 
-// Aujourd'hui des données locales,
-// demain une API ou Firebase
+// Accès aux données : aujourd'hui des données locales, demain une API
+// ou Firebase
 export async function fetchStays(): Promise&lt;Stay[]&gt; {
   await wait(600);
   return STAYS;
-}
-        </code></pre>
+}</code></pre>
         <div>
           <ul class="dense">
             <li>Le service promet une chose : <code>Promise&lt;Stay[]&gt;</code></li>
@@ -289,23 +365,57 @@ export async function fetchStays(): Promise&lt;Stay[]&gt; {
     <h2>Un état qui ne peut pas mentir</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre data-titre="src/hooks/use-stays.ts (début)"><code class="language-typescript" data-trim>
+        <pre class="mini" data-surligne="export type StaysState..status: &quot;success&quot;" data-fichier="demos/cours2/src/hooks/use-stays.ts" data-titre="src/hooks/use-stays.ts"><code class="language-typescript" data-line-numbers="6-9">import { useEffect, useState } from "react";
+
+import { Stay } from "@/models/stay";
+import { fetchStays } from "@/services/stays-service";
+
 export type StaysState =
   | { status: "loading" }
   | { status: "error"; message: string }
   | { status: "success"; stays: Stay[] };
-        </code></pre>
+
+// Contrôleur : charge les séjours et expose un état que la vue sait
+// afficher
+export function useStays() {
+  const [state, setState] = useState&lt;StaysState&gt;({
+    status: "loading",
+  });
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() =&gt; {
+    let cancelled = false;
+    fetchStays()
+      .then((stays) =&gt; {
+        if (!cancelled) setState({ status: "success", stays });
+      })
+      .catch(() =&gt; {
+        if (!cancelled)
+          setState({
+            status: "error",
+            message: "Échec du chargement",
+          });
+      });
+    return () =&gt; {
+      cancelled = true;
+    };
+  }, [attempt]);
+
+  const reload = () =&gt; {
+    setState({ status: "loading" });
+    setAttempt((n) =&gt; n + 1);
+  };
+
+  return { state, reload };
+}</code></pre>
         <div>
           <ul class="dense">
             <li>Une <strong>union discriminée</strong> : la propriété <code>status</code> indique la forme de l'objet</li>
             <li>Impossible d'avoir à la fois une erreur et des données. Avec trois booléens (<code>loading</code>, <code>error</code>, <code>data</code>), huit combinaisons existent, dont cinq absurdes</li>
+            <li>Dans l'écran, après <code>if (state.status === "error") return …</code>, TypeScript sait que <code>state</code> ne peut plus être qu'en chargement ou en succès</li>
           </ul>
         </div>
       </div>
-      <pre class="compact" data-titre="Dans l'écran, TypeScript suit le raisonnement"><code class="language-tsx" data-trim>
-if (state.status === "error") return &lt;StateMessage message={state.message} onRetry={reload} /&gt;;
-// ici, TypeScript sait que state.status vaut "success" ou "loading"
-        </code></pre>
     </div>
   </section>
 
@@ -313,28 +423,49 @@ if (state.status === "error") return &lt;StateMessage message={state.message} on
     <h2>Le hook contrôleur <code>useStays</code></h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-titre="src/hooks/use-stays.ts (suite)"><code class="language-typescript" data-trim>
+        <pre class="mini" data-surligne="export function useStays..=}" data-fichier="demos/cours2/src/hooks/use-stays.ts" data-titre="src/hooks/use-stays.ts"><code class="language-typescript" data-line-numbers="13-43">import { useEffect, useState } from "react";
+
+import { Stay } from "@/models/stay";
+import { fetchStays } from "@/services/stays-service";
+
+export type StaysState =
+  | { status: "loading" }
+  | { status: "error"; message: string }
+  | { status: "success"; stays: Stay[] };
+
+// Contrôleur : charge les séjours et expose un état que la vue sait
+// afficher
 export function useStays() {
-  const [state, setState] = useState&lt;StaysState&gt;({ status: "loading" });
+  const [state, setState] = useState&lt;StaysState&gt;({
+    status: "loading",
+  });
   const [attempt, setAttempt] = useState(0);
+
   useEffect(() =&gt; {
     let cancelled = false;
     fetchStays()
-      .then((stays) =&gt; { if (!cancelled) setState({ status: "success", stays }); })
+      .then((stays) =&gt; {
+        if (!cancelled) setState({ status: "success", stays });
+      })
       .catch(() =&gt; {
         if (!cancelled)
-          setState({ status: "error", message: "Échec du chargement" });
+          setState({
+            status: "error",
+            message: "Échec du chargement",
+          });
       });
-    return () =&gt; { cancelled = true; };
+    return () =&gt; {
+      cancelled = true;
+    };
   }, [attempt]);
+
   const reload = () =&gt; {
     setState({ status: "loading" });
     setAttempt((n) =&gt; n + 1);
   };
 
   return { state, reload };
-}
-        </code></pre>
+}</code></pre>
         <div>
           <ul class="dense">
             <li>Un <strong>hook personnalisé</strong> est une fonction <code>useXxx</code> qui utilise d'autres hooks</li>
@@ -351,14 +482,17 @@ export function useStays() {
     <h2>Le hook <code>useStayFilters</code> : un état dérivé</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-titre="src/hooks/use-stay-filters.ts"><code class="language-typescript" data-trim>
-import { useState } from "react";
+        <pre class="mini" data-fichier="demos/cours2/src/hooks/use-stay-filters.ts" data-titre="src/hooks/use-stay-filters.ts"><code class="language-typescript" data-line-numbers="">import { useState } from "react";
+
 import { matchesFilters, Stay, StayFilters } from "@/models/stay";
 
 const INITIAL_FILTERS: StayFilters = {
-  query: "", type: null, onlyAvailable: false,
+  query: "",
+  type: null,
+  onlyAvailable: false,
 };
 
+// Contrôleur : l'état des filtres et la liste qui en découle
 export function useStayFilters(stays: Stay[]) {
   const [filters, setFilters] =
     useState&lt;StayFilters&gt;(INITIAL_FILTERS);
@@ -366,12 +500,12 @@ export function useStayFilters(stays: Stay[]) {
   const updateFilters = (changes: Partial&lt;StayFilters&gt;) =&gt;
     setFilters((current) =&gt; ({ ...current, ...changes }));
 
-  const visibleStays =
-    stays.filter((stay) =&gt; matchesFilters(stay, filters));
+  const visibleStays = stays.filter((stay) =&gt;
+    matchesFilters(stay, filters),
+  );
 
   return { filters, updateFilters, visibleStays };
-}
-        </code></pre>
+}</code></pre>
         <div>
           <ul class="dense">
             <li><code>visibleStays</code> n'est <strong>pas un état</strong> : il se calcule à chaque rendu</li>
@@ -405,28 +539,103 @@ export function useStayFilters(stays: Stay[]) {
     <h2>Un composant d'affichage pur</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-titre="src/components/stay-filters-bar.tsx (extrait)"><code class="language-tsx" data-trim>
+        <pre class="mini" data-surligne="type StayFiltersBarProps..=};|export function StayFiltersBar..}: StayFiltersBarProps" data-fichier="demos/cours2/src/components/stay-filters-bar.tsx" data-titre="src/components/stay-filters-bar.tsx"><code class="language-tsx" data-line-numbers="16-19|24-27">import {
+  Pressable,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+
+import {
+  STAY_TYPE_LABELS,
+  StayFilters,
+  StayType,
+} from "@/models/stay";
+
 type StayFiltersBarProps = {
   filters: StayFilters;
   onChange: (changes: Partial&lt;StayFilters&gt;) =&gt; void;
 };
 
-export function StayFiltersBar({ filters, onChange }: StayFiltersBarProps) {
+const TYPES = Object.keys(STAY_TYPE_LABELS) as StayType[];
+
+// Vue pure : affiche les filtres reçus et signale chaque changement
+export function StayFiltersBar({
+  filters,
+  onChange,
+}: StayFiltersBarProps) {
   return (
     &lt;View style={styles.bar}&gt;
       &lt;TextInput
         value={filters.query}
         onChangeText={(query) =&gt; onChange({ query })}
+        placeholder="Rechercher une ville ou un logement"
+        style={styles.search}
       /&gt;
-      &lt;Switch
-        value={filters.onlyAvailable}
-        onValueChange={(onlyAvailable) =&gt; onChange({ onlyAvailable })}
-      /&gt;
-      {/* … boutons de type … */}
+      &lt;View style={styles.row}&gt;
+        {TYPES.map((type) =&gt; (
+          &lt;Pressable
+            key={type}
+            onPress={() =&gt;
+              onChange({ type: filters.type === type ? null : type })
+            }
+            style={[
+              styles.chip,
+              filters.type === type &amp;&amp; styles.chipSelected,
+            ]}
+          &gt;
+            &lt;Text style={styles.chipLabel}&gt;
+              {STAY_TYPE_LABELS[type]}
+            &lt;/Text&gt;
+          &lt;/Pressable&gt;
+        ))}
+        &lt;View style={styles.switch}&gt;
+          &lt;Switch
+            value={filters.onlyAvailable}
+            onValueChange={(onlyAvailable) =&gt;
+              onChange({ onlyAvailable })
+            }
+          /&gt;
+          &lt;Text&gt;Disponibles&lt;/Text&gt;
+        &lt;/View&gt;
+      &lt;/View&gt;
     &lt;/View&gt;
   );
 }
-        </code></pre>
+
+const styles = StyleSheet.create({
+  bar: { gap: 8, margin: 8 },
+  search: {
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#D9DCEA",
+    backgroundColor: "#fff",
+    fontSize: 16,
+  },
+  row: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: 8,
+  },
+  chip: {
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#D9DCEA",
+    backgroundColor: "#fff",
+  },
+  chipSelected: {
+    backgroundColor: "#2EC4B6",
+    borderColor: "#2EC4B6",
+  },
+  chipLabel: { fontSize: 14, fontWeight: "600" },
+  switch: { flexDirection: "row", alignItems: "center", gap: 6 },
+});</code></pre>
         <div>
           <ul class="dense">
             <li>Il <strong>reçoit</strong> les filtres et <strong>signale</strong> les changements</li>
@@ -442,29 +651,80 @@ export function StayFiltersBar({ filters, onChange }: StayFiltersBarProps) {
     <h2>L'écran assemble</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-titre="src/app/index.tsx (extrait)"><code class="language-tsx" data-trim>
+        <pre class="mini" data-surligne="const columns = useColumns()..useFavorites();|if (state.status === &quot;loading&quot;)..onRetry={reload}" data-fichier="demos/cours2/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="15-20|22-24">import { Link } from "expo-router";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+
+import { StateMessage } from "@/components/state-message";
+import { StayCard } from "@/components/stay-card";
+import { StayFiltersBar } from "@/components/stay-filters-bar";
+import { useFavorites } from "@/context/favorites-context";
+import { useColumns } from "@/hooks/use-columns";
+import { useStayFilters } from "@/hooks/use-stay-filters";
+import { useStays } from "@/hooks/use-stays";
+
+// Écran : il assemble les contrôleurs (hooks) et les vues
+// (composants)
 export default function CatalogScreen() {
   const columns = useColumns();
   const { state, reload } = useStays();
   const stays = state.status === "success" ? state.stays : [];
-  const { filters, updateFilters, visibleStays } = useStayFilters(stays);
+  const { filters, updateFilters, visibleStays } =
+    useStayFilters(stays);
   const { favorites, isFavorite, toggleFavorite } = useFavorites();
+
   if (state.status === "loading") return &lt;StateMessage loading /&gt;;
   if (state.status === "error")
     return &lt;StateMessage message={state.message} onRetry={reload} /&gt;;
+
   return (
     &lt;View style={styles.container}&gt;
-      &lt;Link href="/favorites"&gt;Mes favoris ({favorites.length})&lt;/Link&gt;
+      &lt;View style={styles.header}&gt;
+        &lt;Text style={styles.heading}&gt;Séjours&lt;/Text&gt;
+        &lt;Link href="/favorites" style={styles.link}&gt;
+          Mes favoris ({favorites.length})
+        &lt;/Link&gt;
+      &lt;/View&gt;
       &lt;StayFiltersBar filters={filters} onChange={updateFilters} /&gt;
-      &lt;FlatList key={columns} numColumns={columns} data={visibleStays}
+      &lt;FlatList
+        key={columns}
+        numColumns={columns}
+        data={visibleStays}
+        keyExtractor={(stay) =&gt; stay.id}
         renderItem={({ item }) =&gt; (
-          &lt;StayCard stay={item} isFavorite={isFavorite(item.id)}
-            onToggleFavorite={toggleFavorite} /&gt;
-        )} /&gt;
+          &lt;StayCard
+            stay={item}
+            isFavorite={isFavorite(item.id)}
+            onToggleFavorite={toggleFavorite}
+          /&gt;
+        )}
+        ListEmptyComponent={
+          &lt;Text style={styles.empty}&gt;
+            Aucun logement ne correspond.
+          &lt;/Text&gt;
+        }
+      /&gt;
     &lt;/View&gt;
   );
 }
-        </code></pre>
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 1100,
+    alignSelf: "center",
+    padding: 8,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    margin: 8,
+  },
+  heading: { fontSize: 24, fontWeight: "800" },
+  link: { fontSize: 16, fontWeight: "600", color: "#0B7A70" },
+  empty: { margin: 8, fontSize: 16 },
+});</code></pre>
         <div>
           <ul class="dense">
             <li>L'écran ne contient <strong>aucune règle</strong> : il branche les hooks sur les composants</li>
@@ -530,27 +790,56 @@ export default function CatalogScreen() {
     <h2>Créer un Context typé</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-titre="src/context/favorites-context.tsx (début)"><code class="language-tsx" data-trim>
+        <pre class="mini" data-surligne="type FavoritesContextValue..=}" data-fichier="demos/cours2/src/context/favorites-context.tsx" data-titre="src/context/favorites-context.tsx"><code class="language-tsx" data-line-numbers="8-40">import {
+  createContext,
+  ReactNode,
+  useContext,
+  useState,
+} from "react";
+
 type FavoritesContextValue = {
   favorites: string[];
   isFavorite: (id: string) =&gt; boolean;
   toggleFavorite: (id: string) =&gt; void;
 };
 
-const FavoritesContext = createContext&lt;FavoritesContextValue | null&gt;(null);
-export function FavoritesProvider({ children }: { children: ReactNode }) {
+const FavoritesContext = createContext&lt;FavoritesContextValue | null&gt;(
+  null,
+);
+
+export function FavoritesProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [favorites, setFavorites] = useState&lt;string[]&gt;([]);
+
   const isFavorite = (id: string) =&gt; favorites.includes(id);
   const toggleFavorite = (id: string) =&gt;
-    setFavorites((current) =&gt; current.includes(id)
-      ? current.filter((f) =&gt; f !== id) : [...current, id]);
+    setFavorites((current) =&gt;
+      current.includes(id)
+        ? current.filter((f) =&gt; f !== id)
+        : [...current, id],
+    );
+
   return (
-    &lt;FavoritesContext.Provider value={{ favorites, isFavorite, toggleFavorite }}&gt;
+    &lt;FavoritesContext.Provider
+      value={{ favorites, isFavorite, toggleFavorite }}
+    &gt;
       {children}
     &lt;/FavoritesContext.Provider&gt;
   );
 }
-        </code></pre>
+
+export function useFavorites(): FavoritesContextValue {
+  const context = useContext(FavoritesContext);
+  if (!context) {
+    throw new Error(
+      "useFavorites doit être utilisé dans un FavoritesProvider",
+    );
+  }
+  return context;
+}</code></pre>
         <div>
           <ul class="dense">
             <li>Le type décrit ce que le Context <strong>met à disposition</strong></li>
@@ -566,17 +855,56 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     <h2>Lire le Context avec un hook</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="compact" data-titre="src/context/favorites-context.tsx (fin)"><code class="language-tsx" data-trim>
+        <pre class="mini" data-surligne="export function useFavorites..=}" data-fichier="demos/cours2/src/context/favorites-context.tsx" data-titre="src/context/favorites-context.tsx"><code class="language-tsx" data-line-numbers="42-50">import {
+  createContext,
+  ReactNode,
+  useContext,
+  useState,
+} from "react";
+
+type FavoritesContextValue = {
+  favorites: string[];
+  isFavorite: (id: string) =&gt; boolean;
+  toggleFavorite: (id: string) =&gt; void;
+};
+
+const FavoritesContext = createContext&lt;FavoritesContextValue | null&gt;(
+  null,
+);
+
+export function FavoritesProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const [favorites, setFavorites] = useState&lt;string[]&gt;([]);
+
+  const isFavorite = (id: string) =&gt; favorites.includes(id);
+  const toggleFavorite = (id: string) =&gt;
+    setFavorites((current) =&gt;
+      current.includes(id)
+        ? current.filter((f) =&gt; f !== id)
+        : [...current, id],
+    );
+
+  return (
+    &lt;FavoritesContext.Provider
+      value={{ favorites, isFavorite, toggleFavorite }}
+    &gt;
+      {children}
+    &lt;/FavoritesContext.Provider&gt;
+  );
+}
+
 export function useFavorites(): FavoritesContextValue {
   const context = useContext(FavoritesContext);
   if (!context) {
     throw new Error(
-      "useFavorites doit être utilisé dans un FavoritesProvider"
+      "useFavorites doit être utilisé dans un FavoritesProvider",
     );
   }
   return context;
-}
-        </code></pre>
+}</code></pre>
         <div>
           <ul class="dense">
             <li>Le hook <code>useFavorites()</code> est la seule porte d'entrée. Les écrans n'importent jamais le Context directement</li>
@@ -591,17 +919,9 @@ export function useFavorites(): FavoritesContextValue {
   <section>
     <h2>Fournir le Context à toute l'application</h2>
     <div class="corps">
-      <div class="colonnes" style="grid-template-columns: 1fr 1.75fr;">
-        <div>
-          <ul class="dense">
-            <li><code>_layout.tsx</code> enveloppe <strong>tous les écrans</strong> : c'est l'endroit du Provider</li>
-            <li>Le catalogue ajoute un favori, l'écran <code>favorites.tsx</code> le voit aussitôt</li>
-            <li>Chaque modification de la valeur affiche à nouveau <strong>tous</strong> les composants qui lisent ce Context. Ne mettez pas tout dedans</li>
-          </ul>
-        </div>
-        <div>
-          <pre class="compact" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-trim>
-import { Stack } from "expo-router";
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours2/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="">import { Stack } from "expo-router";
+
 import { FavoritesProvider } from "@/context/favorites-context";
 
 export default function RootLayout() {
@@ -610,13 +930,64 @@ export default function RootLayout() {
       &lt;Stack /&gt;
     &lt;/FavoritesProvider&gt;
   );
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>_layout.tsx</code> enveloppe <strong>tous les écrans</strong> : c'est l'endroit du Provider</li>
+            <li>Chaque modification de la valeur affiche à nouveau <strong>tous</strong> les composants qui lisent ce Context. Ne mettez pas tout dedans</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Lire le Context dans un autre écran</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="useFavorites();|isFavorite(stay.id)" data-fichier="demos/cours2/src/app/favorites.tsx" data-titre="src/app/favorites.tsx"><code class="language-tsx" data-line-numbers="9|14">import { FlatList, StyleSheet, Text } from "react-native";
+
+import { StateMessage } from "@/components/state-message";
+import { useFavorites } from "@/context/favorites-context";
+import { useStays } from "@/hooks/use-stays";
+
+export default function FavoritesScreen() {
+  const { state } = useStays();
+  const { isFavorite } = useFavorites();
+
+  if (state.status !== "success")
+    return &lt;StateMessage loading={state.status === "loading"} /&gt;;
+  const favoriteStays = state.stays.filter((stay) =&gt;
+    isFavorite(stay.id),
+  );
+
+  return (
+    &lt;FlatList
+      data={favoriteStays}
+      keyExtractor={(stay) =&gt; stay.id}
+      renderItem={({ item }) =&gt; (
+        &lt;Text style={styles.item}&gt;
+          {item.title} · {item.city}
+        &lt;/Text&gt;
+      )}
+      ListEmptyComponent={
+        &lt;Text style={styles.item}&gt;Aucun favori pour le moment.&lt;/Text&gt;
+      }
+      contentContainerStyle={styles.list}
+    /&gt;
+  );
 }
-          </code></pre>
-          <pre class="compact" data-titre="src/app/favorites.tsx (extrait)"><code class="language-tsx" data-trim>
-const { isFavorite } = useFavorites();
-const favoriteStays =
-  state.stays.filter((s) =&gt; isFavorite(s.id));
-          </code></pre>
+
+const styles = StyleSheet.create({
+  list: { padding: 16, gap: 8 },
+  item: { fontSize: 17 },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>useFavorites()</code> donne accès aux favoris, sans les recevoir en props</li>
+            <li>Le catalogue ajoute un favori, cet écran le voit aussitôt</li>
+            <li>La liste affichée se <strong>calcule</strong> à partir des séjours et des favoris : aucun état en double</li>
+          </ul>
         </div>
       </div>
     </div>

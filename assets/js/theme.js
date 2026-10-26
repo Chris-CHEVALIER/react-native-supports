@@ -15,6 +15,38 @@
     contenu: `<div class="lisere"></div><div class="puce-titre"></div>`,
   };
 
+  // Le bouton « Copier » d'un bloc relié à un fichier copie le fichier entier, tel qu'injecté
+  document.querySelectorAll(".reveal pre[data-fichier]").forEach((pre) => {
+    pre.dataset.source = pre.querySelector("code").textContent;
+  });
+
+  // Dans le PDF, un fichier plus long que son bloc continue sur des diapos « (suite) »
+  if (/print-pdf/.test(location.search)) {
+    document.querySelectorAll(".reveal pre[data-fichier]").forEach((pre) => {
+      const code = pre.querySelector("code");
+      const lignes = pre.dataset.source.split("\n");
+      const parPage = 20;
+      code.setAttribute("data-line-numbers", "");
+      if (lignes.length <= parPage) return;
+      code.textContent = lignes.slice(0, parPage).join("\n");
+      const diapo = pre.closest("section");
+      const titre = diapo.querySelector("h2").innerHTML;
+      let precedente = diapo;
+      for (let debut = parPage; debut < lignes.length; debut += parPage) {
+        const suite = document.createElement("section");
+        const bloc = pre.cloneNode(true);
+        bloc.className = "mini";
+        const morceau = bloc.querySelector("code");
+        morceau.textContent = lignes.slice(debut, debut + parPage).join("\n");
+        morceau.setAttribute("data-ln-start-from", String(debut + 1));
+        suite.innerHTML = `<h2>${titre} (suite)</h2><div class="corps"></div>`;
+        suite.querySelector(".corps").appendChild(bloc);
+        precedente.after(suite);
+        precedente = suite;
+      }
+    });
+  }
+
   const piedDePage = document.body.dataset.pied || "";
   const diapos = [...document.querySelectorAll(".reveal .slides section")].filter(
     (s) => !s.querySelector("section")
@@ -50,7 +82,7 @@
     bouton.type = "button";
     bouton.textContent = "Copier";
     bouton.addEventListener("click", async () => {
-      const code = pre.querySelector("code").innerText.replace(/^\$ /gm, "");
+      const code = pre.dataset.source ?? pre.querySelector("code").innerText.replace(/^\$ /gm, "");
       try {
         await navigator.clipboard.writeText(code);
         bouton.textContent = "Copié !";
