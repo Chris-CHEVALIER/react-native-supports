@@ -273,24 +273,26 @@ const styles = StyleSheet.create({
     <h2><code>Image</code></h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="compact" data-titre="Deux sources d'image"><code class="language-tsx" data-trim>
-// Image locale, intégrée à l'application
-&lt;Image
-  source={require("@/assets/images/icon.png")}
-  style={{ width: 64, height: 64 }}
-/&gt;
-
-// Image distante, téléchargée à l'affichage
-&lt;Image
-  source={{ uri: stay.imageUrl }}
-  style={{ width: "100%", aspectRatio: 4 / 3 }}
-/&gt;
-          </code></pre>
+        <pre class="compact" data-titre="Deux sources d'image (extrait)"><code class="language-tsx" data-trim>
+&lt;View&gt;
+  {/* Image locale, intégrée à l'application */}
+  &lt;Image
+    source={require("@/assets/images/icon.png")}
+    style={{ width: 64, height: 64 }}
+  /&gt;
+  {/* Image distante, téléchargée à l'affichage */}
+  &lt;Image
+    source={{ uri: stay.imageUrl }}
+    style={{ width: "100%", aspectRatio: 4 / 3 }}
+  /&gt;
+&lt;/View&gt;
+        </code></pre>
         <div>
           <ul class="dense">
             <li>Une image locale passe par <code>require()</code> : elle est intégrée à l'application au moment du build</li>
             <li>Une image distante n'a <strong>pas de taille par défaut</strong> : sans largeur ni hauteur, elle reste invisible</li>
             <li><code>aspectRatio</code> garde les proportions quand la largeur s'adapte à l'écran</li>
+            <li>Dans le JSX, un commentaire s'écrit <code style="white-space: nowrap;">{/* … */}</code>. Un <code>//</code> y deviendrait du texte, ce qui fait planter l'application</li>
           </ul>
         </div>
       </div>
