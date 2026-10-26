@@ -223,7 +223,7 @@ src/
     <h2>Modéliser les données</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-surligne="export type StayType..=};|export type StayFilters..=};" data-fichier="demos/cours2/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="1-11|13-17">export type StayType = "apartment" | "house" | "cabin";
+        <pre class="mini" data-surligne="export type StayType..=};|export type StayFilters..=};" data-fichier="demos/cours2/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="1-13|15-19">export type StayType = "apartment" | "house" | "cabin";
 
 export type Stay = {
   id: string;
@@ -232,6 +232,8 @@ export type Stay = {
   type: StayType;
   pricePerNight: number;
   available: boolean;
+  latitude: number;
+  longitude: number;
   imageUrl?: string;
 };
 
@@ -277,7 +279,7 @@ export function matchesFilters(
     <h2>Les règles métier : des fonctions pures</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-surligne="export const STAY_TYPE_LABELS..=};|// Règle métier..=}" data-fichier="demos/cours2/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="19-23|25-39">export type StayType = "apartment" | "house" | "cabin";
+        <pre class="mini" data-surligne="export const STAY_TYPE_LABELS..=};|// Règle métier..=}" data-fichier="demos/cours2/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="21-25|27-41">export type StayType = "apartment" | "house" | "cabin";
 
 export type Stay = {
   id: string;
@@ -286,6 +288,8 @@ export type Stay = {
   type: StayType;
   pricePerNight: number;
   available: boolean;
+  latitude: number;
+  longitude: number;
   imageUrl?: string;
 };
 
@@ -646,18 +650,80 @@ const styles = StyleSheet.create({
       </div>
     </div>
   </section>
+  <section>
+    <h2>Un autre composant pur : <code>StateMessage</code></h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="type StateMessageProps..=};|{loading &amp;&amp;..=      )}" data-fichier="demos/cours2/src/components/state-message.tsx" data-titre="src/components/state-message.tsx"><code class="language-tsx" data-line-numbers="9-13|22-28">import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
+type StateMessageProps = {
+  loading?: boolean;
+  message?: string;
+  onRetry?: () =&gt; void;
+};
+
+export function StateMessage({
+  loading = false,
+  message,
+  onRetry,
+}: StateMessageProps) {
+  return (
+    &lt;View style={styles.box}&gt;
+      {loading &amp;&amp; &lt;ActivityIndicator size="large" /&gt;}
+      {message &amp;&amp; &lt;Text style={styles.message}&gt;{message}&lt;/Text&gt;}
+      {onRetry &amp;&amp; (
+        &lt;Pressable onPress={onRetry} style={styles.button}&gt;
+          &lt;Text style={styles.buttonLabel}&gt;Réessayer&lt;/Text&gt;
+        &lt;/Pressable&gt;
+      )}
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  box: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
+    padding: 24,
+  },
+  message: { fontSize: 16, textAlign: "center" },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 8,
+    backgroundColor: "#E2F7F4",
+  },
+  buttonLabel: { fontWeight: "600" },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Trois affichages possibles : un indicateur de chargement, un message, un bouton « Réessayer »</li>
+            <li>Il ne sait pas <strong>pourquoi</strong> il s'affiche : c'est l'écran qui décide</li>
+            <li>Toutes les props sont facultatives : <code>&lt;StateMessage loading /&gt;</code> suffit pendant un chargement</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section>
     <h2>L'écran assemble</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-surligne="const columns = useColumns()..useFavorites();|if (state.status === &quot;loading&quot;)..onRetry={reload}" data-fichier="demos/cours2/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="15-20|22-24">import { Link } from "expo-router";
+        <pre class="mini" data-surligne="const columns = useColumns()..useStayFilters(stays);|const [favorites..=    );|if (state.status === &quot;loading&quot;)..onRetry={reload}" data-fichier="demos/etapes/cours2/catalogue-1/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="14-18|19-26|28-30">import { useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { StateMessage } from "@/components/state-message";
 import { StayCard } from "@/components/stay-card";
 import { StayFiltersBar } from "@/components/stay-filters-bar";
-import { useFavorites } from "@/context/favorites-context";
 import { useColumns } from "@/hooks/use-columns";
 import { useStayFilters } from "@/hooks/use-stay-filters";
 import { useStays } from "@/hooks/use-stays";
@@ -670,7 +736,14 @@ export default function CatalogScreen() {
   const stays = state.status === "success" ? state.stays : [];
   const { filters, updateFilters, visibleStays } =
     useStayFilters(stays);
-  const { favorites, isFavorite, toggleFavorite } = useFavorites();
+  const [favorites, setFavorites] = useState&lt;string[]&gt;([]);
+  const isFavorite = (id: string) =&gt; favorites.includes(id);
+  const toggleFavorite = (id: string) =&gt;
+    setFavorites((current) =&gt;
+      current.includes(id)
+        ? current.filter((f) =&gt; f !== id)
+        : [...current, id],
+    );
 
   if (state.status === "loading") return &lt;StateMessage loading /&gt;;
   if (state.status === "error")
@@ -680,9 +753,9 @@ export default function CatalogScreen() {
     &lt;View style={styles.container}&gt;
       &lt;View style={styles.header}&gt;
         &lt;Text style={styles.heading}&gt;Séjours&lt;/Text&gt;
-        &lt;Link href="/favorites" style={styles.link}&gt;
-          Mes favoris ({favorites.length})
-        &lt;/Link&gt;
+        &lt;Text style={styles.link}&gt;
+          {favorites.length} favori(s)
+        &lt;/Text&gt;
       &lt;/View&gt;
       &lt;StayFiltersBar filters={filters} onChange={updateFilters} /&gt;
       &lt;FlatList
@@ -729,6 +802,7 @@ const styles = StyleSheet.create({
           <ul class="dense">
             <li>L'écran ne contient <strong>aucune règle</strong> : il branche les hooks sur les composants</li>
             <li>Il gère les trois états : chargement, erreur, succès</li>
+            <li>Pour l'instant, les favoris sont un état local de l'écran</li>
             <li>Les hooks sont appelés <strong>avant</strong> tout <code>return</code> : c'est une règle de React</li>
           </ul>
         </div>
@@ -987,6 +1061,94 @@ const styles = StyleSheet.create({
             <li><code>useFavorites()</code> donne accès aux favoris, sans les recevoir en props</li>
             <li>Le catalogue ajoute un favori, cet écran le voit aussitôt</li>
             <li>La liste affichée se <strong>calcule</strong> à partir des séjours et des favoris : aucun état en double</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2>Le catalogue partage ses favoris</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="import { Link }+import { useFavorites }|useFavorites();|&lt;Link..&lt;/Link&gt;" data-fichier="demos/cours2/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="1,7|20|30-32">import { Link } from "expo-router";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+
+import { StateMessage } from "@/components/state-message";
+import { StayCard } from "@/components/stay-card";
+import { StayFiltersBar } from "@/components/stay-filters-bar";
+import { useFavorites } from "@/context/favorites-context";
+import { useColumns } from "@/hooks/use-columns";
+import { useStayFilters } from "@/hooks/use-stay-filters";
+import { useStays } from "@/hooks/use-stays";
+
+// Écran : il assemble les contrôleurs (hooks) et les vues
+// (composants)
+export default function CatalogScreen() {
+  const columns = useColumns();
+  const { state, reload } = useStays();
+  const stays = state.status === "success" ? state.stays : [];
+  const { filters, updateFilters, visibleStays } =
+    useStayFilters(stays);
+  const { favorites, isFavorite, toggleFavorite } = useFavorites();
+
+  if (state.status === "loading") return &lt;StateMessage loading /&gt;;
+  if (state.status === "error")
+    return &lt;StateMessage message={state.message} onRetry={reload} /&gt;;
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;View style={styles.header}&gt;
+        &lt;Text style={styles.heading}&gt;Séjours&lt;/Text&gt;
+        &lt;Link href="/favorites" style={styles.link}&gt;
+          Mes favoris ({favorites.length})
+        &lt;/Link&gt;
+      &lt;/View&gt;
+      &lt;StayFiltersBar filters={filters} onChange={updateFilters} /&gt;
+      &lt;FlatList
+        key={columns}
+        numColumns={columns}
+        data={visibleStays}
+        keyExtractor={(stay) =&gt; stay.id}
+        renderItem={({ item }) =&gt; (
+          &lt;StayCard
+            stay={item}
+            isFavorite={isFavorite(item.id)}
+            onToggleFavorite={toggleFavorite}
+          /&gt;
+        )}
+        ListEmptyComponent={
+          &lt;Text style={styles.empty}&gt;
+            Aucun logement ne correspond.
+          &lt;/Text&gt;
+        }
+      /&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 1100,
+    alignSelf: "center",
+    padding: 8,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    margin: 8,
+  },
+  heading: { fontSize: 24, fontWeight: "800" },
+  link: { fontSize: 16, fontWeight: "600", color: "#0B7A70" },
+  empty: { margin: 8, fontSize: 16 },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Les favoris ne sont plus un état local de l'écran : ils viennent du Context</li>
+            <li><code>&lt;Link href="/favorites"&gt;</code> ouvre l'autre écran, comme un <code>&lt;a href&gt;</code> sur le web</li>
+            <li>Ajoutez un favori, puis ouvrez « Mes favoris » : il y est déjà</li>
           </ul>
         </div>
       </div>

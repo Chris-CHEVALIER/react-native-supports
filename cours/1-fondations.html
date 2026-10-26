@@ -77,85 +77,31 @@
     <h2>React Native for Web</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-surligne="&lt;View style={styles.card}&gt;..&lt;Text style={styles.city}&gt;" data-fichier="demos/cours1/src/components/stay-card.tsx" data-titre="src/components/stay-card.tsx"><code class="language-tsx" data-line-numbers="30-34">import {
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+        <pre class="mini"  data-surligne="&lt;View&gt;..&lt;/View&gt;" data-fichier="demos/cours1/src/components/name-form.tsx" data-titre="src/components/name-form.tsx"><code class="language-tsx" data-line-numbers="7-15">import { useState } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
-import { Stay } from "@/models/stay";
-
-type StayCardProps = {
-  stay: Stay;
-  isFavorite: boolean;
-  onToggleFavorite: (id: string) =&gt; void;
-};
-
-const formatPrice = (price: number) =&gt;
-  new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 0,
-  }).format(price);
-
-export function StayCard({
-  stay,
-  isFavorite,
-  onToggleFavorite,
-}: StayCardProps) {
+export function NameForm() {
+  const [name, setName] = useState("");
   return (
-    &lt;View style={styles.card}&gt;
-      &lt;Image source={{ uri: stay.imageUrl }} style={styles.image} /&gt;
-      &lt;View style={styles.body}&gt;
-        &lt;Text style={styles.title}&gt;{stay.title}&lt;/Text&gt;
-        &lt;Text style={styles.city}&gt;{stay.city}&lt;/Text&gt;
-        &lt;Text style={styles.price}&gt;
-          {formatPrice(stay.pricePerNight)} / nuit
-        &lt;/Text&gt;
-        {!stay.available &amp;&amp; (
-          &lt;Text style={styles.unavailable}&gt;Complet&lt;/Text&gt;
-        )}
-        &lt;Pressable
-          onPress={() =&gt; onToggleFavorite(stay.id)}
-          style={({ pressed }) =&gt; [
-            styles.button,
-            pressed &amp;&amp; styles.buttonPressed,
-          ]}
-        &gt;
-          &lt;Text style={styles.buttonLabel}&gt;
-            {isFavorite ? "★ Favori" : "☆ Ajouter aux favoris"}
-          &lt;/Text&gt;
-        &lt;/Pressable&gt;
-      &lt;/View&gt;
+    &lt;View&gt;
+      &lt;TextInput
+        value={name}
+        onChangeText={setName}
+        placeholder="Votre prénom"
+        style={styles.input}
+      /&gt;
+      &lt;Text&gt;{name ? `Bonjour ${name} !` : "…"}&lt;/Text&gt;
     &lt;/View&gt;
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    flex: 1,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    overflow: "hidden",
-    margin: 8,
-  },
-  image: { width: "100%", aspectRatio: 4 / 3 },
-  body: { padding: 12, gap: 4 },
-  title: { fontSize: 18, fontWeight: "700" },
-  city: { fontSize: 15, color: "#5A5F80" },
-  price: { fontSize: 16, color: "#0B7A70" },
-  unavailable: { fontSize: 14, color: "#B42318" },
-  button: {
-    marginTop: 8,
-    paddingVertical: 10,
+  input: {
+    borderWidth: 1,
     borderRadius: 8,
-    backgroundColor: "#E2F7F4",
-    alignItems: "center",
+    padding: 10,
+    marginBottom: 8,
   },
-  buttonPressed: { opacity: 0.6 },
-  buttonLabel: { fontSize: 15, fontWeight: "600" },
 });</code></pre>
         <div>
           <ul class="dense">
@@ -165,10 +111,10 @@ const styles = StyleSheet.create({
             <li>Un seul code pour trois plateformes</li>
           </ul>
           <pre class="mini" data-titre="Ce que le navigateur reçoit"><code class="language-html" data-trim>
-&lt;div class="css-view-g5y9jx r-…"&gt;
-  &lt;div dir="auto" class="css-text-…"&gt;
-    Studio lumineux
-  &lt;/div&gt;
+&lt;div class="css-view-…"&gt;
+  &lt;input placeholder="Votre prénom"
+    class="css-textinput-… r-borderWidth-…"&gt;
+  &lt;div dir="auto" class="css-text-…"&gt;…&lt;/div&gt;
 &lt;/div&gt;
           </code></pre>
         </div>
@@ -271,6 +217,8 @@ export type Stay = {
   type: StayType;
   pricePerNight: number;
   available: boolean;
+  latitude: number;
+  longitude: number;
   imageUrl?: string;
 };</code></pre>
         <div>
@@ -339,6 +287,38 @@ const styles = StyleSheet.create({
     </div>
   </section>
   <section>
+    <h2>Afficher <code>Greeting</code> dans un écran</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="import { Greeting }+&lt;Greeting firstName=&quot;Manon&quot;..&lt;Greeting firstName=&quot;Cosmo&quot;" data-fichier="demos/etapes/cours1/primitives-1/src/app/primitives.tsx" data-titre="src/app/primitives.tsx"><code class="language-tsx" data-line-numbers="3,9-10">import { ScrollView, StyleSheet } from "react-native";
+
+import { Greeting } from "@/components/greeting";
+
+// Page /primitives : les composants de base du cours 1
+export default function PrimitivesScreen() {
+  return (
+    &lt;ScrollView contentContainerStyle={styles.content}&gt;
+      &lt;Greeting firstName="Manon" unread={3} /&gt;
+      &lt;Greeting firstName="Cosmo" /&gt;
+    &lt;/ScrollView&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  content: { padding: 16, gap: 16 },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Chaque fichier de <code>src/app/</code> est une page : celui-ci s'ouvre à l'adresse <code>/primitives</code></li>
+            <li>On importe le composant, puis on l'utilise comme une balise, avec ses props</li>
+            <li><code>ScrollView</code> fait défiler son contenu quand il dépasse l'écran</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">Sur le simulateur iOS : xcrun simctl openurl booted exp://127.0.0.1:8081/--/primitives. Dans Expo Go, ajouter /--/primitives à l'adresse du projet.</aside>
+  </section>
+  <section>
     <h2><code>Image</code></h2>
     <div class="corps">
       <div class="colonnes code-texte">
@@ -371,6 +351,38 @@ const styles = StyleSheet.create({
             <li>Une image distante n'a <strong>pas de taille par défaut</strong> : sans largeur ni hauteur, elle reste invisible</li>
             <li><code>aspectRatio</code> garde les proportions quand la largeur s'adapte à l'écran</li>
             <li>Dans le JSX, un commentaire s'écrit <code style="white-space: nowrap;">{/* … */}</code>. Un <code>//</code> y deviendrait du texte, ce qui fait planter l'application</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2>Afficher les images</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="import { ImageExamples }+&lt;ImageExamples" data-fichier="demos/etapes/cours1/primitives-2/src/app/primitives.tsx" data-titre="src/app/primitives.tsx"><code class="language-tsx" data-line-numbers="4,12">import { ScrollView, StyleSheet } from "react-native";
+
+import { Greeting } from "@/components/greeting";
+import { ImageExamples } from "@/components/image-examples";
+
+// Page /primitives : les composants de base du cours 1
+export default function PrimitivesScreen() {
+  return (
+    &lt;ScrollView contentContainerStyle={styles.content}&gt;
+      &lt;Greeting firstName="Manon" unread={3} /&gt;
+      &lt;Greeting firstName="Cosmo" /&gt;
+      &lt;ImageExamples imageUrl="https://picsum.photos/id/1067/400/300" /&gt;
+    &lt;/ScrollView&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  content: { padding: 16, gap: 16 },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>L'URL de l'image distante est une prop : le composant ne dépend d'aucune donnée</li>
+            <li>Comparez l'affichage sur le web et sur mobile : le même code, le même rendu</li>
           </ul>
         </div>
       </div>
@@ -411,6 +423,40 @@ const styles = StyleSheet.create({
             <li>Un champ <strong>contrôlé</strong>, comme en React : sa valeur vient de l'état</li>
             <li><code>onChangeText</code> reçoit directement le texte, sans objet d'événement</li>
             <li>Équivalent web : <code>&lt;input value onChange&gt;</code> et <code>event.target.value</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2>Afficher le formulaire</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="import { NameForm }+&lt;NameForm" data-fichier="demos/cours1/src/app/primitives.tsx" data-titre="src/app/primitives.tsx"><code class="language-tsx" data-line-numbers="5,14">import { ScrollView, StyleSheet } from "react-native";
+
+import { Greeting } from "@/components/greeting";
+import { ImageExamples } from "@/components/image-examples";
+import { NameForm } from "@/components/name-form";
+
+// Page /primitives : les composants de base du cours 1
+export default function PrimitivesScreen() {
+  return (
+    &lt;ScrollView contentContainerStyle={styles.content}&gt;
+      &lt;Greeting firstName="Manon" unread={3} /&gt;
+      &lt;Greeting firstName="Cosmo" /&gt;
+      &lt;ImageExamples imageUrl="https://picsum.photos/id/1067/400/300" /&gt;
+      &lt;NameForm /&gt;
+    &lt;/ScrollView&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  content: { padding: 16, gap: 16 },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Tapez un prénom : le texte se met à jour à chaque frappe</li>
+            <li>Chaque <code>NameForm</code> a son propre état : en afficher deux donne deux champs indépendants</li>
           </ul>
         </div>
       </div>
@@ -509,111 +555,6 @@ const styles = StyleSheet.create({
         </div>
       </div>
     </div>
-  </section>
-  <section>
-    <h2>Afficher une liste : <code>FlatList</code></h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre class="mini" data-surligne="const [favorites..=    );|const visibleStays..=  );|&lt;FlatList..=        /&gt;" data-fichier="demos/cours1/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="17-24|27-31|45-62">import { useState } from "react";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-
-import { StayCard } from "@/components/stay-card";
-import { STAYS } from "@/data/stays";
-import { useColumns } from "@/hooks/use-columns";
-
-export default function CatalogScreen() {
-  const columns = useColumns();
-  const [query, setQuery] = useState("");
-  const [favorites, setFavorites] = useState&lt;string[]&gt;([]);
-
-  const toggleFavorite = (id: string) =&gt;
-    setFavorites((current) =&gt;
-      current.includes(id)
-        ? current.filter((f) =&gt; f !== id)
-        : [...current, id],
-    );
-
-  const search = query.trim().toLowerCase();
-  const visibleStays = STAYS.filter(
-    (stay) =&gt;
-      stay.title.toLowerCase().includes(search) ||
-      stay.city.toLowerCase().includes(search),
-  );
-
-  return (
-    &lt;View style={styles.screen}&gt;
-      &lt;View style={styles.container}&gt;
-        &lt;Text style={styles.heading}&gt;
-          Séjours · {favorites.length} favori(s)
-        &lt;/Text&gt;
-        &lt;TextInput
-          value={query}
-          onChangeText={setQuery}
-          placeholder="Rechercher une ville ou un logement"
-          style={styles.search}
-        /&gt;
-        &lt;FlatList
-          key={columns}
-          data={visibleStays}
-          numColumns={columns}
-          keyExtractor={(stay) =&gt; stay.id}
-          renderItem={({ item }) =&gt; (
-            &lt;StayCard
-              stay={item}
-              isFavorite={favorites.includes(item.id)}
-              onToggleFavorite={toggleFavorite}
-            /&gt;
-          )}
-          ListEmptyComponent={
-            &lt;Text style={styles.empty}&gt;
-              Aucun logement ne correspond.
-            &lt;/Text&gt;
-          }
-        /&gt;
-      &lt;/View&gt;
-    &lt;/View&gt;
-  );
-}
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#F2F3F9" },
-  container: {
-    flex: 1,
-    width: "100%",
-    maxWidth: 1100,
-    alignSelf: "center",
-    padding: 8,
-  },
-  heading: { fontSize: 24, fontWeight: "800", margin: 8 },
-  search: {
-    margin: 8,
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#D9DCEA",
-    backgroundColor: "#fff",
-    fontSize: 16,
-  },
-  empty: { margin: 8, fontSize: 16 },
-});</code></pre>
-        <div>
-          <ul class="dense">
-            <li><strong>1.</strong> Les favoris sont un état : <code>toggleFavorite</code> ajoute ou retire un identifiant</li>
-            <li><strong>2.</strong> <code>visibleStays</code> se calcule à partir de la recherche : ce n'est pas un état</li>
-            <li><strong>3.</strong> <code>FlatList</code> n'affiche que les éléments <strong>visibles</strong> (virtualisation)</li>
-            <li><code>keyExtractor</code> joue le rôle de la prop <code>key</code> de <code>map()</code></li>
-            <li><code>ScrollView</code> affiche tout d'un coup : réservez-la aux contenus courts</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <aside class="notes">Les listes volumineuses (SectionList, optimisations) sont au programme du cours 3.</aside>
   </section>
   <section>
     <h2><code>StyleSheet</code> et Flexbox</h2>
@@ -722,6 +663,191 @@ const styles = StyleSheet.create({
     </div>
   </section>
   <section>
+    <h2>Des données locales typées</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="import { Stay }+export const STAYS" data-fichier="demos/cours1/src/data/stays.ts" data-titre="src/data/stays.ts"><code class="language-tsx" data-line-numbers="1,3">import { Stay } from "@/models/stay";
+
+export const STAYS: Stay[] = [
+  {
+    id: "s1",
+    title: "Studio lumineux",
+    city: "Paris",
+    type: "apartment",
+    pricePerNight: 95,
+    latitude: 48.8566,
+    longitude: 2.3522,
+    available: true,
+    imageUrl: "https://picsum.photos/id/1067/400/300",
+  },
+  {
+    id: "s2",
+    title: "Loft avec vue",
+    city: "Lyon",
+    type: "apartment",
+    pricePerNight: 120,
+    latitude: 45.764,
+    longitude: 4.8357,
+    available: true,
+    imageUrl: "https://picsum.photos/id/1031/400/300",
+  },
+  {
+    id: "s3",
+    title: "Chalet en bois",
+    city: "Annecy",
+    type: "cabin",
+    pricePerNight: 160,
+    latitude: 45.8992,
+    longitude: 6.1294,
+    available: false,
+    imageUrl: "https://picsum.photos/id/1036/400/300",
+  },
+  {
+    id: "s4",
+    title: "Maison de pêcheur",
+    city: "Biarritz",
+    type: "house",
+    pricePerNight: 140,
+    latitude: 43.4832,
+    longitude: -1.5586,
+    available: true,
+    imageUrl: "https://picsum.photos/id/1039/400/300",
+  },
+  {
+    id: "s5",
+    title: "Cabane perchée",
+    city: "Gérardmer",
+    type: "cabin",
+    pricePerNight: 110,
+    latitude: 48.0731,
+    longitude: 6.8784,
+    available: true,
+    imageUrl: "https://picsum.photos/id/1043/400/300",
+  },
+  {
+    id: "s6",
+    title: "Villa provençale",
+    city: "Aix-en-Provence",
+    type: "house",
+    pricePerNight: 210,
+    latitude: 43.5297,
+    longitude: 5.4474,
+    available: true,
+    imageUrl: "https://picsum.photos/id/1040/400/300",
+  },
+];</code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>STAYS</code> est un tableau de <code>Stay</code> : TypeScript vérifie chaque séjour, champ par champ</li>
+            <li>Un champ oublié ou une faute de frappe dans <code>type</code> est signalé dans l'éditeur</li>
+            <li>Les images viennent de <a href="https://picsum.photos" target="_blank">picsum.photos</a>, qui tient la charge quand toute la classe ouvre les mêmes images</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2>Afficher une liste : <code>FlatList</code></h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-surligne="const [favorites..=    );|const visibleStays..=  );|&lt;FlatList..=        /&gt;" data-fichier="demos/etapes/cours1/catalogue-1/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="15-22|25-29|43-58">import { useState } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+
+import { StayCard } from "@/components/stay-card";
+import { STAYS } from "@/data/stays";
+
+export default function CatalogScreen() {
+  const [query, setQuery] = useState("");
+  const [favorites, setFavorites] = useState&lt;string[]&gt;([]);
+
+  const toggleFavorite = (id: string) =&gt;
+    setFavorites((current) =&gt;
+      current.includes(id)
+        ? current.filter((f) =&gt; f !== id)
+        : [...current, id],
+    );
+
+  const search = query.trim().toLowerCase();
+  const visibleStays = STAYS.filter(
+    (stay) =&gt;
+      stay.title.toLowerCase().includes(search) ||
+      stay.city.toLowerCase().includes(search),
+  );
+
+  return (
+    &lt;View style={styles.screen}&gt;
+      &lt;View style={styles.container}&gt;
+        &lt;Text style={styles.heading}&gt;
+          Séjours · {favorites.length} favori(s)
+        &lt;/Text&gt;
+        &lt;TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Rechercher une ville ou un logement"
+          style={styles.search}
+        /&gt;
+        &lt;FlatList
+          data={visibleStays}
+          keyExtractor={(stay) =&gt; stay.id}
+          renderItem={({ item }) =&gt; (
+            &lt;StayCard
+              stay={item}
+              isFavorite={favorites.includes(item.id)}
+              onToggleFavorite={toggleFavorite}
+            /&gt;
+          )}
+          ListEmptyComponent={
+            &lt;Text style={styles.empty}&gt;
+              Aucun logement ne correspond.
+            &lt;/Text&gt;
+          }
+        /&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: "#F2F3F9" },
+  container: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 1100,
+    alignSelf: "center",
+    padding: 8,
+  },
+  heading: { fontSize: 24, fontWeight: "800", margin: 8 },
+  search: {
+    margin: 8,
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#D9DCEA",
+    backgroundColor: "#fff",
+    fontSize: 16,
+  },
+  empty: { margin: 8, fontSize: 16 },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li><strong>1.</strong> Les favoris sont un état : <code>toggleFavorite</code> ajoute ou retire un identifiant</li>
+            <li><strong>2.</strong> <code>visibleStays</code> se calcule à partir de la recherche : ce n'est pas un état</li>
+            <li><strong>3.</strong> <code>FlatList</code> n'affiche que les éléments <strong>visibles</strong> (virtualisation)</li>
+            <li><code>keyExtractor</code> joue le rôle de la prop <code>key</code> de <code>map()</code></li>
+            <li><code>ScrollView</code> affiche tout d'un coup : réservez-la aux contenus courts</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">Les listes volumineuses (SectionList, optimisations) sont au programme du cours 3.</aside>
+  </section>
+  <section>
     <h2>Pas de media queries : un hook</h2>
     <div class="corps">
       <div class="colonnes code-texte">
@@ -749,7 +875,7 @@ export function useColumns(): number {
     <h2>Une grille sur le web, une liste sur mobile</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-surligne="const columns = useColumns()+key={columns}+numColumns={columns}" data-fichier="demos/cours1/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="15,46,48">import { useState } from "react";
+        <pre class="mini" data-surligne="import { useColumns }+const columns = useColumns()+key={columns}+numColumns={columns}" data-fichier="demos/cours1/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="12,15,46,48">import { useState } from "react";
 import {
   FlatList,
   StyleSheet,
