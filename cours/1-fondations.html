@@ -239,10 +239,12 @@ export type Stay = {
     <h2><code>View</code> et <code>Text</code></h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre data-titre="greeting.tsx"><code class="language-tsx" data-trim>
+        <pre class="mini" data-titre="src/components/greeting.tsx"><code class="language-tsx" data-trim>
+import { StyleSheet, Text } from "react-native";
+
 type GreetingProps = { firstName: string; unread?: number };
 
-function Greeting({ firstName, unread = 0 }: GreetingProps) {
+export function Greeting({ firstName, unread = 0 }: GreetingProps) {
   return (
     &lt;Text style={styles.greeting}&gt;
       Bonjour &lt;Text style={styles.bold}&gt;{firstName}&lt;/Text&gt;
@@ -251,24 +253,27 @@ function Greeting({ firstName, unread = 0 }: GreetingProps) {
   );
 }
 
-&lt;Greeting firstName="Manon" unread={3} /&gt;
+const styles = StyleSheet.create({
+  greeting: { fontSize: 18 },
+  bold: { fontWeight: "700" },
+});
         </code></pre>
         <div>
           <ul class="dense">
             <li><strong>Tout texte doit être dans un <code>&lt;Text&gt;</code></strong>. Un texte posé dans une <code>&lt;View&gt;</code> fait planter l'application</li>
             <li>Un <code>&lt;Text&gt;</code> peut contenir d'autres <code>&lt;Text&gt;</code>. Ce sont les seuls à hériter du style de leur parent</li>
-            <li>Les props sont typées : <code>&lt;Greeting /&gt;</code> sans <code>firstName</code> est refusé par TypeScript</li>
+            <li>Dans un écran : <code>&lt;Greeting firstName="Manon" unread={3} /&gt;</code>. Sans <code>firstName</code>, TypeScript refuse l'appel</li>
+            <li><strong>Export nommé</strong> pour un composant : <code>import { Greeting } from "@/components/greeting"</code>. Seuls les écrans de <code>src/app/</code> utilisent <code>export default</code>, exigé par Expo Router</li>
           </ul>
         </div>
       </div>
     </div>
   </section>
   <section>
-    <h2><code>Image</code> et <code>TextInput</code></h2>
+    <h2><code>Image</code></h2>
     <div class="corps">
-      <div class="colonnes">
-        <div>
-          <pre class="mini" data-titre="Deux sources d'image"><code class="language-tsx" data-trim>
+      <div class="colonnes code-texte">
+        <pre class="compact" data-titre="Deux sources d'image"><code class="language-tsx" data-trim>
 // Image locale, intégrée à l'application
 &lt;Image
   source={require("@/assets/images/icon.png")}
@@ -281,14 +286,28 @@ function Greeting({ firstName, unread = 0 }: GreetingProps) {
   style={{ width: "100%", aspectRatio: 4 / 3 }}
 /&gt;
           </code></pre>
-          <p class="petit">Une image distante n'a <strong>pas de taille par défaut</strong> : sans largeur ni hauteur, elle reste invisible.</p>
-        </div>
         <div>
-          <pre class="mini" data-titre="name-form.tsx"><code class="language-tsx" data-trim>
-function NameForm() {
+          <ul class="dense">
+            <li>Une image locale passe par <code>require()</code> : elle est intégrée à l'application au moment du build</li>
+            <li>Une image distante n'a <strong>pas de taille par défaut</strong> : sans largeur ni hauteur, elle reste invisible</li>
+            <li><code>aspectRatio</code> garde les proportions quand la largeur s'adapte à l'écran</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2><code>TextInput</code> : un champ contrôlé</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-titre="src/components/name-form.tsx"><code class="language-tsx" data-trim style="max-height: none;">
+import { useState } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+
+export function NameForm() {
   const [name, setName] = useState("");
   return (
-    &lt;View style={styles.row}&gt;
+    &lt;View&gt;
       &lt;TextInput
         value={name}
         onChangeText={setName}
@@ -299,8 +318,17 @@ function NameForm() {
     &lt;/View&gt;
   );
 }
-          </code></pre>
-          <p class="petit">Un champ <strong>contrôlé</strong>, comme en React. <code>onChangeText</code> reçoit directement le texte.</p>
+
+const styles = StyleSheet.create({
+  input: { borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 8 },
+});
+</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Un champ <strong>contrôlé</strong>, comme en React : sa valeur vient de l'état</li>
+            <li><code>onChangeText</code> reçoit directement le texte, sans objet d'événement</li>
+            <li>Équivalent web : <code>&lt;input value onChange&gt;</code> et <code>event.target.value</code></li>
+          </ul>
         </div>
       </div>
     </div>

@@ -351,7 +351,10 @@ export function useStays() {
     <h2>Le hook <code>useStayFilters</code> : un état dérivé</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="compact" data-titre="src/hooks/use-stay-filters.ts"><code class="language-typescript" data-trim>
+        <pre class="mini" data-titre="src/hooks/use-stay-filters.ts"><code class="language-typescript" data-trim>
+import { useState } from "react";
+import { matchesFilters, Stay, StayFilters } from "@/models/stay";
+
 const INITIAL_FILTERS: StayFilters = {
   query: "", type: null, onlyAvailable: false,
 };
