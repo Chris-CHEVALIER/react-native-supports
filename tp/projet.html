@@ -27,8 +27,9 @@
     <ul>
       <li><strong>Groupes de trois</strong>, formés le premier jour. Un binôme est possible si l'effectif l'impose, jamais une personne seule.</li>
       <li><strong>Sujet libre</strong>, validé par moi avant le TP2.</li>
-      <li>Il constitue la <strong>note pratique</strong> du module : <strong>50 %</strong> de la note. <strong>Chaque membre est propriétaire d'une partie</strong> : la note du groupe est modulée selon la sienne.</li>
-      <li>Rendu : dernier commit poussé <strong>le mercredi 16 décembre à 23h59</strong>. Démo le 17 décembre.</li>
+      <li>Il compte pour <strong>50 %</strong> de la note du module : la <strong>production</strong> du groupe (25 %) et votre <strong>soutenance individuelle</strong> (25 %). Aucune note intermédiaire.</li>
+      <li><strong>Chaque membre est propriétaire d'une partie</strong>, dont un CRUD Firebase.</li>
+      <li>Soutenance le 17 décembre. Rendu : dernier commit poussé <strong>le jeudi 17 décembre avant 23h59</strong>.</li>
     </ul>
   </div>
 
@@ -52,10 +53,11 @@
       <li>Sur le web, <strong>l'URL suit la navigation</strong> : une page de détail s'ouvre directement depuis son adresse.</li>
       <li>Un <strong>catalogue responsive</strong> : une grille sur ordinateur, une liste fluide sur téléphone, avec des <strong>filtres</strong> dont la logique vit dans un hook.</li>
       <li>Une <strong>API publique</strong> consommée avec <code>fetch()</code>, avec les états de chargement et d'erreur.</li>
-      <li><strong>Firebase</strong> : authentification par e-mail et <strong>deux CRUD</strong> (créer, lire, modifier, supprimer) sur deux collections différentes.</li>
+      <li><strong>Firebase</strong> : authentification par e-mail et <strong>trois CRUD</strong> (créer, lire, modifier, supprimer) sur trois collections différentes, un par partie.</li>
       <li>Une <strong>architecture MVC</strong> en TypeScript : modèles typés, services, hooks contrôleurs, composants d'affichage purs.</li>
       <li>Une interface <strong>lisible et cohérente</strong> : hiérarchie visuelle, contrastes suffisants, retours visuels au toucher.</li>
-      <li>Un <code>README.md</code> complet (voir la partie 4).</li>
+      <li>Une <strong>version web déployée</strong> en ligne (GitHub Pages ou équivalent), à jour du dernier commit.</li>
+      <li>Un <code>README.md</code> complet et <strong>exécutable</strong> : en suivant ses instructions sur un poste neuf, le projet se lance sans autre manipulation (voir la partie 5).</li>
     </ul>
     <div class="encadre">
       Une application qui ne se lance pas sur le web <strong>ou</strong> sur Expo Go ne peut pas être évaluée. Testez les deux à chaque commit important.
@@ -67,7 +69,6 @@
       <li>Des animations soignées.</li>
       <li>Un cache ou un mode hors ligne.</li>
       <li>Des tests automatisés des fonctions du modèle.</li>
-      <li>La version web déployée en ligne.</li>
       <li>Une bibliothèque d'état (Zustand, TanStack Query…), si vous savez expliquer ce choix.</li>
     </ul>
   </section>
@@ -77,30 +78,31 @@
     <h2><span class="num">2</span> Un propriétaire par partie</h2>
     <p>
       Chaque membre est <strong>propriétaire</strong> d'une partie de l'application. Il la conçoit, l'écrit et en répond
-      au point d'étape comme à la démo. Les deux autres l'aident et relisent son code.
+      à la soutenance. Les deux autres l'aident et relisent son code.
     </p>
     <table>
       <tr><th>Partie</th><th>Contenu</th><th>Au fil des TP</th></tr>
-      <tr><td><strong>A · Catalogue</strong></td><td>Modèle et service de l'API publique, catalogue responsive, filtres</td><td>TP2 : modèle, service factice et catalogue. TP3 : API publique et filtres</td></tr>
-      <tr><td><strong>B · Navigation et compte</strong></td><td>Structure de navigation, écran de détail, authentification, premier CRUD</td><td>TP2 : modèle et service de la première collection. TP3 : navigation et détail. TP4 : authentification et premier CRUD</td></tr>
-      <tr><td><strong>C · Données partagées</strong></td><td>État partagé (Context), écran groupé (<code>SectionList</code>), rafraîchissement au focus, second CRUD</td><td>TP2 : Context et deuxième écran. TP3 : <code>SectionList</code> et cycle de vie. TP4 : second CRUD</td></tr>
+      <tr><td><strong>A · Catalogue</strong></td><td>Modèle et service de l'API publique, catalogue responsive, filtres, CRUD lié au catalogue (favoris annotés, par exemple)</td><td>TP2 : modèle, service factice et catalogue. TP3 : API publique et filtres. TP4 : CRUD A</td></tr>
+      <tr><td><strong>B · Navigation et compte</strong></td><td>Structure de navigation, écran de détail, authentification, CRUD B</td><td>TP2 : modèle et service de la collection B. TP3 : navigation et détail. TP4 : authentification et CRUD B</td></tr>
+      <tr><td><strong>C · Données partagées</strong></td><td>État partagé (Context), écran groupé (<code>SectionList</code>), rafraîchissement au focus, CRUD C</td><td>TP2 : Context et deuxième écran. TP3 : <code>SectionList</code> et cycle de vie. TP4 : CRUD C</td></tr>
     </table>
     <div class="encadre">
-      Indiquez le propriétaire de chaque partie dans le README <strong>dès le TP2</strong>. En binôme, répartissez les trois parties entre vous deux et indiquez-le de la même façon.
-      Chacun doit aussi comprendre le reste de l'application : je peux poser une question sur une autre partie.
+      Je note avec vous le propriétaire de chaque partie dès le premier jour. Indiquez-le aussi dans le README <strong>dès le TP2</strong>, avec le prénom, le nom et le compte GitHub de chacun.
+      En binôme, répartissez les trois parties entre vous deux de la même façon.
+      Chacun doit aussi comprendre le reste de l'application : à la soutenance, je pose une question sur la partie d'un autre membre.
     </div>
   </section>
 
   <!-- ================================================================== -->
   <section class="defi" id="idees">
     <h2><span class="num">3</span> Des idées de sujets</h2>
-    <p>Ces quatre sujets s'appuient sur des API <strong>gratuites et sans clé</strong>. Vous pouvez en proposer un autre : il doit se prêter à un catalogue et à deux CRUD.</p>
+    <p>Ces quatre sujets s'appuient sur des API <strong>gratuites et sans clé</strong>. Vous pouvez en proposer un autre : il doit se prêter à un catalogue et à trois CRUD.</p>
     <table>
-      <tr><th>Sujet</th><th>API publique</th><th>Idées de CRUD Firebase</th></tr>
-      <tr><td><strong>Carnet de recettes</strong></td><td><a href="https://www.themealdb.com/api.php" target="_blank">TheMealDB</a></td><td>Mes recettes personnelles, ma liste de courses</td></tr>
-      <tr><td><strong>Bibliothèque personnelle</strong></td><td><a href="https://openlibrary.org/developers/api" target="_blank">Open Library</a></td><td>Mes lectures (lu, en cours, à lire), mes avis</td></tr>
-      <tr><td><strong>Carnet de voyage</strong></td><td><a href="https://restcountries.com" target="_blank">REST Countries</a> et <a href="https://open-meteo.com" target="_blank">Open-Meteo</a></td><td>Mes voyages, les étapes d'un voyage</td></tr>
-      <tr><td><strong>Garde-manger anti-gaspi</strong></td><td><a href="https://world.openfoodfacts.org/data" target="_blank">Open Food Facts</a></td><td>Mes produits et leurs dates de péremption, mes listes de courses</td></tr>
+      <tr><th>Sujet</th><th>API publique</th><th>Idées de CRUD Firebase (A, B, C)</th></tr>
+      <tr><td><strong>Carnet de recettes</strong></td><td><a href="https://www.themealdb.com/api.php" target="_blank">TheMealDB</a></td><td>Mes recettes favorites et leurs notes, mes recettes personnelles, ma liste de courses</td></tr>
+      <tr><td><strong>Bibliothèque personnelle</strong></td><td><a href="https://openlibrary.org/developers/api" target="_blank">Open Library</a></td><td>Mes livres à lire, mes lectures (lu, en cours) et mes avis, mes étagères thématiques</td></tr>
+      <tr><td><strong>Carnet de voyage</strong></td><td><a href="https://restcountries.com" target="_blank">REST Countries</a> et <a href="https://open-meteo.com" target="_blank">Open-Meteo</a></td><td>Mes pays à visiter, mes voyages, les étapes d'un voyage</td></tr>
+      <tr><td><strong>Garde-manger anti-gaspi</strong></td><td><a href="https://world.openfoodfacts.org/data" target="_blank">Open Food Facts</a></td><td>Mes produits favoris, mes produits et leurs dates de péremption, mes listes de courses</td></tr>
     </table>
     <p class="muet">Deux groupes d'une même classe ne peuvent pas choisir le même sujet. Le premier qui me l'envoie le garde.</p>
   </section>
@@ -110,14 +112,15 @@
     <h2><span class="num">4</span> Les jalons</h2>
     <table>
       <tr><th>Quand</th><th>Jalon</th><th>Ce qui doit exister</th></tr>
-      <tr><td>Mar. 27 oct.</td><td><strong>Lancement</strong></td><td>Trinôme formé, sujet proposé, dépôt commun créé, Chris-CHEVALIER invité</td></tr>
+      <tr><td>Mar. 27 oct.</td><td><strong>Lancement</strong></td><td>Trinôme formé, sujet et parties notés avec moi, dépôt commun créé, Chris-CHEVALIER invité</td></tr>
       <tr><td>Mer. 28 oct.</td><td><strong>TP2</strong></td><td>Arborescence MVC, modèles typés, service de données factices, hook contrôleur, catalogue responsive, un Context</td></tr>
-      <tr><td>Du 29 oct. au 24 nov.</td><td><strong>TP3 (noté)</strong></td><td>Navigation complète (onglets, pile, détail), API publique, filtres, cycle de vie. Tag <code>jalon-2</code> au plus tard le 24 nov. à 23h59</td></tr>
-      <tr><td>Mer. 25 nov.</td><td><strong>TP4</strong></td><td>Authentification Firebase et deux CRUD</td></tr>
-      <tr><td>Mer. 16 déc. 23h59</td><td><strong>Rendu final</strong></td><td>Application complète, README, bonus éventuels</td></tr>
-      <tr><td>Jeu. 17 déc.</td><td><strong>Démo</strong></td><td>8 minutes par groupe : 5 min de démo sur le web et sur mobile, puis 3 min de questions</td></tr>
+      <tr><td>Du 29 oct. au 24 nov.</td><td><strong>TP3</strong></td><td>Navigation complète (onglets, pile, détail), API publique, filtres, cycle de vie</td></tr>
+      <tr><td>Mer. 25 nov.</td><td><strong>TP4</strong></td><td>Authentification Firebase et trois CRUD</td></tr>
+      <tr><td>Jeu. 17 déc.</td><td><strong>Soutenance</strong></td><td>10 minutes par groupe (voir la partie 6)</td></tr>
+      <tr><td>Jeu. 17 déc. avant 23h59</td><td><strong>Rendu final</strong></td><td>Application complète, version web déployée à jour, README, bonus éventuels</td></tr>
     </table>
-    <p>Le 25 novembre, pendant le TP4, je fais un <strong>point d'étape</strong> avec chaque groupe : 5 minutes de démo du jalon 2, où chacun montre sa partie, et une question à chaque membre. Ce jalon est <strong>noté</strong> (voir l'énoncé du TP3).</p>
+    <p>Le 25 novembre, pendant le TP4, je fais un <strong>point d'étape</strong> de 5 minutes avec chaque groupe : chacun me montre où en est sa partie. Il n'est pas noté. Il me sert à repérer tôt un groupe en difficulté.</p>
+    <p class="muet">Après votre soutenance, vous pouvez encore améliorer votre projet jusqu'au soir. Je corrige la production sur le dernier commit poussé avant 23h59.</p>
   </section>
 
   <!-- ================================================================== -->
@@ -125,40 +128,76 @@
     <h2><span class="num">5</span> Le dépôt et le rendu</h2>
     <ul>
       <li>Un dépôt GitHub <strong>privé</strong> nommé <code>rn-projet-nom1-nom2-nom3</code>, avec <strong>Chris-CHEVALIER</strong> invité dès le premier jour.</li>
-      <li><strong>Chacun commite avec son propre compte</strong>, régulièrement. L'historique me sert à mesurer la contribution de chacun.</li>
-      <li>Le projet se lance avec <code>npm install</code> puis <code>npx expo start</code>, sans autre manipulation. Aucun fichier APK ou IPA n'est demandé.</li>
+      <li><strong>Chacun commite avec son propre compte</strong>, régulièrement, sur la branche <code>main</code>.</li>
+      <li>Le projet se lance avec <code>npm install</code> puis <code>npx expo start</code>, sans autre manipulation que celles du README. Aucun fichier APK ou IPA n'est demandé.</li>
     </ul>
     <h3>Le README contient</h3>
     <ul>
-      <li>le sujet, les membres du groupe et le <strong>propriétaire de chaque partie</strong> ;</li>
+      <li>le sujet, les membres du groupe (prénom, nom, compte GitHub) et le <strong>propriétaire de chaque partie</strong> ;</li>
+      <li>le <strong>lien de la version web déployée</strong> ;</li>
       <li>les fonctionnalités, avec des captures d'écran sur le web et sur mobile ;</li>
-      <li>l'API publique utilisée et le schéma des collections Firebase ;</li>
+      <li>l'API publique utilisée et le schéma des trois collections Firebase ;</li>
       <li>le parcours de navigation (la liste des écrans et leurs URL) ;</li>
-      <li>les instructions de lancement, dont la configuration Firebase à fournir ;</li>
+      <li>les instructions de lancement, dont la configuration Firebase à fournir. Je les suis à la lettre sur un poste neuf ;</li>
       <li>les bonus réalisés ;</li>
       <li>la déclaration d'usage de l'IA.</li>
     </ul>
     <div class="encadre neutre">
       <span class="intitule">Rendu final</span>
-      Le 16 décembre au plus tard, envoyez à <a href="mailto:chevalier@chris-freelance.com">chevalier@chris-freelance.com</a> un e-mail avec l'objet
-      <code>[RN-IWB1] Projet – NOM1, NOM2, NOM3</code> (ou <code>IWB2</code>) et le lien du dépôt. Je corrige le dernier commit poussé avant 23h59.
+      Rien à envoyer : votre invitation me donne accès au dépôt. Je corrige le dernier commit poussé sur <code>main</code> le <strong>jeudi 17 décembre avant 23h59</strong>.
     </div>
   </section>
 
   <!-- ================================================================== -->
   <section class="defi" id="evaluation">
     <h2><span class="num">6</span> L'évaluation</h2>
+    <p>Le projet donne <strong>deux notes sur 20</strong>, qui comptent chacune pour 25 % de la note du module. L'examen écrit compte pour les 50 % restants.</p>
+
+    <h3>La production du groupe (25 %)</h3>
+    <p>Chaque critère vaut 1 point : il est rempli ou il ne l'est pas. Je vérifie une partie des critères automatiquement à partir de votre dépôt, le reste sur votre version web déployée et sur Expo Go.</p>
     <table>
-      <tr><th>Critère</th><th>Ce que je regarde</th><th>Points</th></tr>
-      <tr><td><strong>Fonctionnalités</strong></td><td>Les exigences obligatoires sont présentes et fonctionnent sur le web et sur mobile</td><td>5</td></tr>
-      <tr><td><strong>Jalon 2 (TP3)</strong></td><td>La note du TP3 sur 20, ramenée sur 3</td><td>3</td></tr>
-      <tr><td><strong>Architecture</strong></td><td>Séparation MVC, types, hooks, composants purs, un fichier par domaine</td><td>3</td></tr>
-      <tr><td><strong>Interface</strong></td><td>Responsive, lisible, cohérente, états de chargement, d'erreur et de liste vide</td><td>3</td></tr>
-      <tr><td><strong>Qualité</strong></td><td>Code lisible, <code>npx tsc --noEmit</code> sans erreur, commits réguliers, README complet</td><td>2</td></tr>
-      <tr><td><strong>Démo et questions</strong></td><td>Démo fluide, chaque membre présente sa partie et répond juste à une question sur son code</td><td>4</td></tr>
-      <tr><td colspan="2"><strong>Bonus</strong> (dans la limite de 20)</td><td>+2</td></tr>
+      <tr><th>Bloc</th><th>Critères (1 point chacun)</th><th>Points</th></tr>
+      <tr><td><strong>Socle commun</strong></td><td>
+        Le projet se lance en suivant le README ·
+        <code>npx tsc --noEmit</code> sans erreur ·
+        <code>npx expo lint</code> sans erreur ·
+        version web déployée et à jour ·
+        MVC respecté (aucun <code>fetch</code> ni appel Firebase dans <code>src/app/</code> ou <code>src/components/</code>) ·
+        README complet ·
+        états de chargement, d'erreur et de liste vide ·
+        interface lisible et cohérente sur le web et sur mobile</td><td>8</td></tr>
+      <tr><td><strong>A · Catalogue</strong></td><td>
+        Service de l'API (<code>fetch</code>, test de <code>response.ok</code>, réponse typée et convertie en modèle) ·
+        grille sur ordinateur et liste sur téléphone ·
+        deux filtres combinables dans un hook ·
+        CRUD A complet</td><td>4</td></tr>
+      <tr><td><strong>B · Navigation et compte</strong></td><td>
+        Onglets, pile, route dynamique, écran <code>+not-found</code> et au moins 4 écrans ·
+        un détail s'ouvre et se recharge depuis son URL ·
+        inscription, connexion et déconnexion par e-mail ·
+        CRUD B complet</td><td>4</td></tr>
+      <tr><td><strong>C · Données partagées</strong></td><td>
+        Un Context partagé par plusieurs écrans ·
+        une <code>SectionList</code> dont le regroupement est dans le modèle ·
+        <code>useFocusEffect</code> utilisé à bon escient et expliqué dans le README ·
+        CRUD C complet</td><td>4</td></tr>
+      <tr><td colspan="2"><strong>Bonus</strong> (1 point par bonus réalisé, dans la limite de 20)</td><td>+2</td></tr>
     </table>
-    <p>La note est celle du groupe, <strong>modulée individuellement</strong> d'après la partie dont chacun est propriétaire : son état, ses commits et ses réponses. Un membre qui n'a pas contribué peut avoir 0.</p>
+    <p>Un CRUD est <strong>complet</strong> s'il permet de créer, lire, modifier et supprimer, et si chaque utilisateur ne voit que ses propres données. Un critère de fonctionnalité doit marcher <strong>sur le web et sur mobile</strong>.</p>
+    <p>La note de production est celle du groupe. Si la soutenance montre qu'un membre n'a pas contribué, sa note de production est réduite, jusqu'à 0.</p>
+
+    <h3>La soutenance individuelle (25 %)</h3>
+    <p>Le 17 décembre, <strong>10 minutes par groupe</strong>, sans IA :</p>
+    <ul>
+      <li><strong>4 minutes de démonstration</strong> sur le web et sur mobile : chacun présente sa partie ;</li>
+      <li><strong>2 minutes par membre</strong> : vous m'expliquez un extrait de votre partie que je choisis, puis vous répondez à une question sur la partie d'un autre membre.</li>
+    </ul>
+    <table>
+      <tr><th>Critère individuel</th><th>Absent</th><th>Partiel</th><th>Complet</th></tr>
+      <tr><td><strong>Démonstration de votre partie</strong> : elle fonctionne et vous la présentez clairement</td><td>0</td><td>2</td><td>4</td></tr>
+      <tr><td><strong>Explication d'un extrait de votre partie</strong> : ce que fait le code, pourquoi il est écrit ainsi</td><td>0</td><td>4</td><td>8</td></tr>
+      <tr><td><strong>Question sur la partie d'un autre membre</strong> : vous comprenez l'ensemble du projet</td><td>0</td><td>4</td><td>8</td></tr>
+    </table>
   </section>
 
   <!-- ================================================================== -->
@@ -166,7 +205,7 @@
     <h2><span class="num">7</span> L'IA générative</h2>
     <ul>
       <li>L'IA (ChatGPT, Claude, Copilot…) est <strong>autorisée</strong> pour le projet.</li>
-      <li>Chaque membre doit <strong>comprendre et savoir expliquer</strong> chaque partie du code. Une fonctionnalité que personne ne sait expliquer pendant la démo n'est pas comptée.</li>
+      <li>Chaque membre doit <strong>comprendre et savoir expliquer</strong> chaque partie du code. Une fonctionnalité que personne ne sait expliquer pendant la soutenance n'est pas comptée.</li>
       <li>Déclarez votre usage dans le README : quels outils, pour quelles tâches.</li>
       <li>Méfiez-vous des réponses qui datent : <code>expo eject</code>, <code>expo-cli</code> global ou React Navigation configuré à la main ne correspondent pas à la version d'Expo utilisée dans ce module.</li>
     </ul>

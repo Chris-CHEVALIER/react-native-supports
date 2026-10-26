@@ -11,7 +11,7 @@
 <header class="entete">
   <div class="titre">
     <h1>TP3 – Navigation et données distantes</h1>
-    <p><span class="code-module">React Native</span> · En trinôme · Projet, jalon 2 · <strong>Noté</strong></p>
+    <p><span class="code-module">React Native</span> · En trinôme · Projet, jalon 2</p>
   </div>
 </header>
 
@@ -27,7 +27,7 @@
     <ul>
       <li><strong>Objectifs</strong> : mettre en place la navigation avec Expo Router (onglets, pile, route dynamique), consommer une API avec <code>fetch</code>, gérer le cycle de vie des écrans et des listes plus riches.</li>
       <li>En trinôme, dans le dépôt du projet. <strong>Lancé en séance le 29 octobre</strong>, puis en autonomie jusqu'au 24 novembre.</li>
-      <li><strong>Ce jalon est noté</strong> sur 20 avec la grille de la dernière partie. Sa note compte pour <strong>3 points</strong> sur les 20 du projet.</li>
+      <li>Ce jalon n'est pas noté. Ses critères font partie de la grille de production du projet, évaluée le 17 décembre.</li>
       <li>Le cours 3 (catalogue de séjours avec météo) vous sert de modèle.</li>
     </ul>
   </div>
@@ -47,8 +47,7 @@
     <a href="#etape-3"><span class="n">Étape 3</span><br>L'écran de détail</a>
     <a href="#etape-4"><span class="n">Étape 4</span><br>Le catalogue et ses filtres</a>
     <a href="#etape-5"><span class="n">Étape 5</span><br>Le cycle de vie</a>
-    <a href="#rendu"><span class="n">Rendu</span><br>Tag Git et point d'étape</a>
-    <a href="#grille"><span class="n">Grille</span><br>La notation</a>
+    <a href="#rendu"><span class="n">Checklist</span><br>Point d'étape</a>
   </nav>
 
   <!-- ================================================================== -->
@@ -93,7 +92,7 @@
     </details>
     <details>
       <summary>Indice : les données locales servent encore</summary>
-      <p>Si votre API ne fournit pas tout (vos catégories, par exemple), gardez ces données dans <code>src/data/</code>. Ce sont vos deux CRUD Firebase du TP4 qui remplaceront le reste.</p>
+      <p>Si votre API ne fournit pas tout (vos catégories, par exemple), gardez ces données dans <code>src/data/</code>. Ce sont vos trois CRUD Firebase du TP4 qui remplaceront le reste.</p>
     </details>
   </section>
 
@@ -138,41 +137,17 @@
 
   <!-- ================================================================== -->
   <section class="defi" id="rendu">
-    <h2><span class="num">✓</span> Rendu et point d'étape</h2>
+    <h2><span class="num">✓</span> Avant le point d'étape</h2>
     <ul class="checklist">
       <li><code>npx tsc --noEmit</code> et <code>npx expo lint</code> n'affichent aucune erreur.</li>
       <li>L'application se lance sur le web et sur Expo Go.</li>
       <li>Le README liste les écrans et leurs URL, l'API utilisée et l'explication de l'étape 5.</li>
-      <li>Chaque membre a commité sur sa partie pendant ce jalon.</li>
+      <li>Chaque membre a avancé sur sa partie et sait l'expliquer.</li>
     </ul>
-    <ol>
-      <li>Quand le jalon est prêt, créez un <strong>tag Git</strong> et poussez-le, <strong>au plus tard le mardi 24 novembre à 23h59</strong> :
-        <pre data-titre="Terminal"><code class="language-bash">
-          git tag jalon-2
-          git push origin jalon-2
-        </code></pre>
-      </li>
-      <li>Envoyez un e-mail à <a href="mailto:chevalier@chris-freelance.com">chevalier@chris-freelance.com</a> avec l'objet <code>[RN-IWB1] Jalon 2 – NOM1, NOM2, NOM3</code> (ou <code>IWB2</code>).</li>
-      <li>Le mercredi 25 novembre, pendant le TP4, je passe voir chaque groupe pour le <strong>point d'étape</strong> : 5 minutes de démonstration où chacun montre sa partie, puis une question à chaque membre sur son code.</li>
-    </ol>
-    <p class="muet">Je corrige le commit pointé par le tag <code>jalon-2</code>. Les commits suivants comptent pour le rendu final, pas pour ce jalon.</p>
-  </section>
-
-  <!-- ================================================================== -->
-  <section class="defi" id="grille">
-    <h2><span class="num">20</span> La grille de notation</h2>
-    <table>
-      <tr><th>Critère</th><th>Ce que je vérifie</th><th>Points</th></tr>
-      <tr><td><strong>Navigation</strong></td><td>Pile racine, au moins deux onglets avec icônes, route dynamique de détail, écran <code>+not-found</code></td><td>5</td></tr>
-      <tr><td><strong>URL et liens profonds</strong></td><td>Un détail s'ouvre et se recharge depuis son adresse, avec une flèche de retour</td><td>2</td></tr>
-      <tr><td><strong>API publique</strong></td><td>Service avec <code>fetch</code>, test de <code>response.ok</code>, réponse typée et convertie en modèle, états de chargement et d'erreur</td><td>5</td></tr>
-      <tr><td><strong>Catalogue et listes</strong></td><td>Grille ou liste selon la largeur, deux filtres combinables dans un hook, une <code>SectionList</code></td><td>3</td></tr>
-      <tr><td><strong>Cycle de vie</strong></td><td><code>useFocusEffect</code> utilisé à bon escient et expliqué dans le README</td><td>2</td></tr>
-      <tr><td><strong>Architecture et qualité</strong></td><td>MVC respecté (aucun service dans un composant), aucune erreur TypeScript, chaque membre a commité sur sa partie</td><td>3</td></tr>
-      <tr><td colspan="2"><strong>Total</strong></td><td><strong>20</strong></td></tr>
-    </table>
-    <p>Un critère est noté en entier s'il fonctionne <strong>sur le web et sur mobile</strong>. Une fonctionnalité que personne ne sait expliquer au point d'étape n'est pas comptée.</p>
-    <p>La note du jalon est celle du groupe, <strong>modulée pour chaque membre</strong> selon l'état de sa partie et sa réponse au point d'étape.</p>
+    <p>
+      Poussez votre travail au fil de l'eau sur <code>main</code>. Le mercredi 25 novembre, pendant le TP4, je passe voir chaque groupe pour un
+      <strong>point d'étape</strong> de 5 minutes : chacun me montre où en est sa partie. Il n'est pas noté. Il sert à repérer tôt ce qui bloque.
+    </p>
   </section>
 
 </main>

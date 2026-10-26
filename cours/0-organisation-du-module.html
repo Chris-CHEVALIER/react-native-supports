@@ -156,14 +156,14 @@
           <ul>
             <li>Cours 4 Firebase</li>
             <li>TP4 Projet</li>
-            <li>Point d'étape noté, pendant le TP4</li>
+            <li>Point d'étape, pendant le TP4</li>
           </ul>
         </div>
         <div class="etape corail">
           <div class="date">Jeu. 17 déc.</div>
           <ul>
             <li>Mise en production</li>
-            <li><strong>Démos du projet</strong></li>
+            <li><strong>Soutenances du projet</strong></li>
             <li><strong>Examen écrit</strong></li>
           </ul>
         </div>
@@ -241,14 +241,14 @@
         <li><strong>Sujet libre</strong>, à faire valider par moi aujourd'hui</li>
         <li><strong>Groupes de trois</strong>, formés aujourd'hui. Les groupes d'une seule personne ne sont pas possibles</li>
         <li>Le projet avance à chaque TP. <strong>Chaque TP est un jalon</strong> du projet final</li>
-        <li><strong>Chaque membre est propriétaire d'une partie</strong> : catalogue, navigation et compte, données partagées</li>
+        <li><strong>Chaque membre est propriétaire d'une partie</strong> (catalogue, navigation et compte, données partagées), avec son propre CRUD Firebase</li>
         <li>Il doit fonctionner <strong>sur le web et sur mobile</strong>, avec le même code</li>
       </ul>
       <div class="frise" style="grid-template-columns: repeat(4, 1fr); margin-top: 22px;">
         <div class="etape"><div class="date">TP2 · 28 oct.</div>Squelette MVC, modèles typés, mise en page</div>
-        <div class="etape"><div class="date">TP3 · noté</div>Navigation, API publique, catalogue et filtres</div>
-        <div class="etape"><div class="date">TP4 · 25 nov.</div>Authentification et CRUD Firebase</div>
-        <div class="etape corail"><div class="date">17 déc.</div>Rendu final et démo</div>
+        <div class="etape"><div class="date">TP3 · 29 oct.-24 nov.</div>Navigation, API publique, catalogue et filtres</div>
+        <div class="etape"><div class="date">TP4 · 25 nov.</div>Authentification et trois CRUD Firebase</div>
+        <div class="etape corail"><div class="date">17 déc.</div>Soutenance et rendu final</div>
       </div>
     </div>
   </section>
@@ -265,9 +265,10 @@
             <li><strong>L'URL du navigateur</strong> suit la navigation sur le web</li>
             <li>Un <strong>catalogue responsive</strong> : grille sur ordinateur, liste sur mobile, avec des filtres</li>
             <li>Une <strong>API publique</strong> consommée avec <code>fetch()</code></li>
-            <li><strong>Firebase</strong> : authentification et 2 CRUD</li>
+            <li><strong>Firebase</strong> : authentification et <strong>3 CRUD</strong>, un par membre</li>
             <li>Une <strong>architecture MVC</strong> en TypeScript</li>
-            <li>Un <strong>README</strong> complet</li>
+            <li>Une <strong>version web déployée</strong> (GitHub Pages…)</li>
+            <li>Un <strong>README exécutable</strong> qui suffit à lancer le projet</li>
           </ul>
         </div>
         <div>
@@ -277,7 +278,6 @@
             <li>Des animations soignées</li>
             <li>Un cache ou un mode hors ligne</li>
             <li>Des tests automatisés</li>
-            <li>Une version web déployée en ligne</li>
           </ul>
         </div>
       </div>
@@ -307,7 +307,7 @@
         </div>
       </div>
       <div class="encadre neutre" style="margin-top: 22px;">
-        Toutes ces API sont <strong>gratuites et sans clé</strong>. Un autre sujet vous tente ? Proposez-le-moi : il doit se prêter à un catalogue et à deux CRUD.
+        Toutes ces API sont <strong>gratuites et sans clé</strong>. Un autre sujet vous tente ? Proposez-le-moi : il doit se prêter à un catalogue et à trois CRUD.
       </div>
     </div>
   </section>
@@ -320,15 +320,14 @@
         <li><strong>Un dépôt personnel</strong> pour le TP1</li>
         <li><strong>Un dépôt commun</strong> par trinôme pour le projet</li>
         <li>Invitez <strong>Chris-CHEVALIER</strong> comme collaborateur sur les deux <strong>dès aujourd'hui</strong></li>
-        <li><strong>Des commits réguliers et signés de votre nom</strong> : l'historique me montre la contribution de chacun</li>
+        <li><strong>Des commits réguliers</strong>, chacun avec son propre compte</li>
       </ul>
       <div class="encadre corail" style="margin-top: 22px;">
-        Le soir même, envoyez-moi un e-mail à <a href="mailto:chevalier@chris-freelance.com">chevalier@chris-freelance.com</a> avec l'objet
-        <code>[RN-IWB1] Groupe – NOM1, NOM2, NOM3</code> (ou <code>IWB2</code>), le sujet choisi et le lien du dépôt.
+        Avant la fin de la séance, je passe voir chaque groupe. Nous notons ensemble <strong>les membres, leur compte GitHub, le sujet et le propriétaire de chaque partie</strong>.
       </div>
     </div>
     <aside class="notes">
-      Les rendus ne passent pas par MyGES. L'objet normalisé me permet de filtrer les e-mails des deux classes.
+      Les rendus ne passent pas par MyGES : l'invitation au dépôt suffit. Noter pour chaque groupe les noms, les comptes GitHub, le sujet et les parties A, B et C.
       IWB 1 : 27 étudiants, soit 9 trinômes. IWB 2 : 35 étudiants, soit 11 trinômes et un binôme.
     </aside>
   </section>
@@ -346,32 +345,48 @@
     <div class="corps">
       <table>
         <tr><th>Épreuve</th><th>Conditions</th><th class="num">Poids</th></tr>
-        <tr><td><strong>Note pratique · Projet</strong> <span class="etiquette accent">Trinôme</span></td><td>Jalon 2 noté (TP3) le 25 novembre, rendu final et démo le 17 décembre</td><td class="num"><strong>50 %</strong></td></tr>
-        <tr><td><strong>Note théorique · Examen écrit</strong> <span class="etiquette">Individuel</span></td><td>Le 17 décembre, sur table, 30 min, 10 questions à réponse courte, sans document ni IA</td><td class="num"><strong>50 %</strong></td></tr>
+        <tr><td><strong>Projet · Production</strong> <span class="etiquette accent">Trinôme</span></td><td>L'application rendue le 17 décembre, avec une grille de critères à 1 point</td><td class="num"><strong>25 %</strong></td></tr>
+        <tr><td><strong>Projet · Soutenance</strong> <span class="etiquette">Individuel</span></td><td>Le 17 décembre : démonstration de votre partie et questions sur le code</td><td class="num"><strong>25 %</strong></td></tr>
+        <tr><td><strong>Examen écrit</strong> <span class="etiquette">Individuel</span></td><td>Le 17 décembre, sur table, 30 min, 10 questions à réponse courte, sans document ni IA</td><td class="num"><strong>50 %</strong></td></tr>
       </table>
       <div class="encadre" style="margin-top: 22px;">
-        <strong>Deux notes, pas plus.</strong> La note du projet est modulée pour chacun selon la partie dont il est propriétaire.
+        <strong>Aucune note intermédiaire.</strong> Tout est évalué le 17 décembre : avancez à votre rythme, mais régulièrement.
       </div>
     </div>
     <aside class="notes">
-      Règle ESGI : 50 % de contrôle continu (le projet, avec son jalon noté) et 50 % d'examen.
+      Règle ESGI : 50 % de contrôle continu (production et soutenance, dont une note individuelle) et 50 % d'examen.
     </aside>
   </section>
 
   <!-- ================================================================== -->
   <section>
-    <h2>La note pratique : le projet</h2>
+    <h2>Les deux notes du projet</h2>
     <div class="corps">
-      <ul>
-        <li><strong>Jalon 2 noté</strong> (TP3) : tag Git au plus tard le 24 novembre, point d'étape le 25 novembre. Il compte pour 3 points sur 20</li>
-        <li><strong>Rendu final</strong> : dernier commit poussé le 16 décembre à 23h59</li>
-        <li><strong>Démo</strong> le 17 décembre : 5 min de démonstration, puis une question à chaque membre sur sa partie</li>
-        <li>La grille complète est dans le sujet du projet</li>
-      </ul>
+      <div class="colonnes">
+        <div class="carte">
+          <h3>Production · note du groupe</h3>
+          <ul class="dense">
+            <li>20 critères à <strong>1 point</strong> : rempli ou non</li>
+            <li>Un socle commun, puis 4 critères par partie</li>
+            <li>Corrigée sur le dernier commit poussé le <strong>17 décembre avant 23h59</strong></li>
+          </ul>
+        </div>
+        <div class="carte">
+          <h3>Soutenance · note individuelle</h3>
+          <ul class="dense">
+            <li>Démonstration de <strong>votre</strong> partie</li>
+            <li>Explication d'un extrait de votre code, que je choisis</li>
+            <li>Une question sur la partie d'un autre membre</li>
+          </ul>
+        </div>
+      </div>
       <div class="encadre neutre" style="margin-top: 18px;">
-        Chaque membre est propriétaire d'une partie : <strong>sa note est modulée</strong> selon l'état de cette partie, ses commits et ses réponses.
+        La grille complète est dans le sujet du projet. Un membre qui n'a pas contribué peut voir sa note de production réduite, jusqu'à 0.
       </div>
     </div>
+    <aside class="notes">
+      Le 25 novembre, point d'étape non noté de 5 min par groupe pendant le TP4 : repérer les groupes en retard et les membres absents du projet.
+    </aside>
   </section>
 
   <!-- ================================================================== -->
@@ -380,17 +395,17 @@
     <div class="corps">
       <div class="colonnes">
         <div class="carte">
-          <h3>Démo du projet · 8 min par groupe</h3>
+          <h3>Soutenance · 10 min par groupe</h3>
           <ul>
-            <li><strong>5 min</strong> : démonstration sur le web et sur mobile</li>
-            <li><strong>3 min</strong> : une question à chaque membre, sur sa partie</li>
-            <li>Rendu : dernier commit poussé <strong>la veille à 23h59</strong></li>
+            <li><strong>4 min</strong> : démonstration sur le web et sur mobile, chacun présente sa partie</li>
+            <li><strong>2 min par membre</strong> : un extrait de votre code à expliquer, puis une question sur une autre partie</li>
+            <li>Rendu : dernier commit poussé <strong>le soir même avant 23h59</strong></li>
           </ul>
         </div>
         <div class="carte">
           <h3>Examen écrit · 30 min</h3>
           <ul>
-            <li>À la fin de la séance, après les démos</li>
+            <li>À la fin de la séance, après les soutenances</li>
             <li><strong>10 questions à réponse courte</strong> (une à trois lignes) sur l'ensemble des cours, 2 points chacune</li>
             <li>Plusieurs questions portent sur des <strong>extraits de code</strong> : prévoir ce qui s'affiche, trouver une erreur</li>
           </ul>
@@ -413,7 +428,7 @@
         </div>
         <div>
           <ul>
-            <li>Les questions de la démo vérifient cette compréhension. <strong>Une fonctionnalité non expliquée n'est pas comptée</strong></li>
+            <li>Les questions de la soutenance vérifient cette compréhension. <strong>Une fonctionnalité non expliquée n'est pas comptée</strong></li>
             <li>L'examen écrit se fait <strong>sans IA</strong></li>
             <li>Le plagiat et la triche entraînent un 0 à l'épreuve concernée</li>
           </ul>
