@@ -34,18 +34,45 @@
     <div class="sous-titre">Ce que vous savez déjà, ce qui change</div>
   </section>
   <section>
+    <h2>React et React Native</h2>
+    <div class="corps">
+      <div class="colonnes">
+        <div class="carte">
+          <h3><a href="https://react.dev" target="_blank">React</a></h3>
+          <ul class="dense">
+            <li>Une <strong>bibliothèque JavaScript</strong> créée par Meta (ex-Facebook), open source depuis 2013</li>
+            <li>Elle construit des <strong>interfaces web</strong> à partir de composants</li>
+            <li>Facebook, Instagram, Netflix ou Airbnb l'utilisent sur le web</li>
+          </ul>
+        </div>
+        <div class="carte accent">
+          <h3><a href="https://reactnative.dev" target="_blank">React Native</a></h3>
+          <ul class="dense">
+            <li>Un <strong>framework</strong> créé par Meta, open source depuis 2015</li>
+            <li>Il reprend React pour créer de <strong>vraies applications mobiles</strong> iOS et Android, avec un seul code</li>
+            <li>Instagram, Discord, Shopify ou Microsoft Office l'utilisent : voir la <a href="https://reactnative.dev/showcase" target="_blank">vitrine officielle</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="encadre" style="margin-top: 22px;">
+        React décrit l'interface. Le <strong>moteur de rendu</strong> l'affiche : le DOM du navigateur pour React, les vues natives du téléphone pour React Native.
+      </div>
+    </div>
+  </section>
+  <section>
     <h2>Le même modèle, une autre cible</h2>
     <div class="corps">
       <table>
         <tr><th></th><th>React (web)</th><th>React Native</th></tr>
         <tr><td><strong>Ce que vous écrivez</strong></td><td colspan="2" style="text-align: center;">Des composants, des props, de l'état, des hooks</td></tr>
-        <tr><td><strong>Les briques</strong></td><td><code>&lt;div&gt;</code>, <code>&lt;span&gt;</code>, <code>&lt;img&gt;</code>, <code>&lt;input&gt;</code></td><td><code>&lt;View&gt;</code>, <code>&lt;Text&gt;</code>, <code>&lt;Image&gt;</code>, <code>&lt;TextInput&gt;</code></td></tr>
-        <tr><td><strong>Les styles</strong></td><td>CSS, cascade, sélecteurs</td><td>Objets JavaScript, aucune cascade</td></tr>
-        <tr><td><strong>Le rendu</strong></td><td>Le DOM du navigateur</td><td>Des vues natives iOS et Android (et le DOM sur le web)</td></tr>
-        <tr><td><strong>La navigation</strong></td><td>Des URL</td><td>Une pile d'écrans (et des URL sur le web)</td></tr>
+        <tr><td><strong>Les composants de base</strong></td><td><code>&lt;div&gt;</code>, <code>&lt;span&gt;</code>, <code>&lt;img&gt;</code>, <code>&lt;input&gt;</code></td><td><a href="https://reactnative.dev/docs/view" target="_blank"><code>View</code></a>, <a href="https://reactnative.dev/docs/text" target="_blank"><code>Text</code></a>, <a href="https://reactnative.dev/docs/image" target="_blank"><code>Image</code></a>, <a href="https://reactnative.dev/docs/textinput" target="_blank"><code>TextInput</code></a></td></tr>
+        <tr><td><strong>Les styles</strong></td><td>CSS, cascade, sélecteurs</td><td>Objets JavaScript, aucune cascade*</td></tr>
+        <tr><td><strong>Le rendu</strong></td><td>Le DOM du navigateur</td><td>Des vues natives iOS et Android</td></tr>
+        <tr><td><strong>La navigation</strong></td><td>Des URL</td><td>Une pile d'écrans</td></tr>
       </table>
-      <div class="encadre" style="margin-top: 20px;">
-        Votre logique React se réutilise telle quelle. Ce qui change, ce sont les <strong>briques d'affichage</strong> et les <strong>contraintes du mobile</strong>.
+      <p class="petit muet" style="margin-top: 8px;">* Aucune cascade : un style ne s'applique qu'au composant qui le reçoit. Une couleur donnée à un conteneur ne colore pas le texte qu'il contient. Seul un <code>&lt;Text&gt;</code> transmet son style à un <code>&lt;Text&gt;</code> enfant.</p>
+      <div class="encadre" style="margin-top: 14px;">
+        Votre logique React se réutilise telle quelle. Ce qui change, ce sont les <strong>composants de base</strong> et les <strong>contraintes du mobile</strong>.
       </div>
     </div>
   </section>
@@ -53,19 +80,13 @@
     <h2>Comment JavaScript devient une vue native</h2>
     <div class="corps">
       <div class="frise" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="etape"><div class="date">1. Votre code</div>Vos composants TypeScript sont exécutés par <strong>Hermes</strong>, le moteur JavaScript optimisé pour le mobile</div>
-        <div class="etape"><div class="date">2. Le rendu</div>React calcule l'arbre des composants. Le moteur de rendu <strong>Fabric</strong> le traduit en vues natives</div>
-        <div class="etape corail"><div class="date">3. L'écran</div>iOS affiche une <code>UIView</code>, Android une <code>android.view.View</code>, le navigateur une <code>&lt;div&gt;</code></div>
+        <div class="etape"><div class="date">1. Votre code</div>Vos composants TypeScript sont exécutés par <a href="https://reactnative.dev/docs/hermes" target="_blank"><strong>Hermes</strong></a>, le moteur JavaScript optimisé pour le mobile</div>
+        <div class="etape"><div class="date">2. Le rendu</div>React calcule l'arbre des composants. Le moteur de rendu <a href="https://reactnative.dev/architecture/fabric-renderer" target="_blank"><strong>Fabric</strong></a> le traduit en vues natives</div>
+        <div class="etape corail"><div class="date">3. L'écran</div>iOS affiche une <a href="https://developer.apple.com/documentation/uikit/uiview" target="_blank"><code>UIView</code></a>, Android une <a href="https://developer.android.com/reference/android/view/View" target="_blank"><code>android.view.View</code></a>, le navigateur une <code>&lt;div&gt;</code></div>
       </div>
-      <div class="colonnes" style="margin-top: 26px;">
-        <div class="carte">
-          <h3>Avant : le bridge</h3>
-          JavaScript et le natif échangeaient des messages <strong>asynchrones</strong> sérialisés en JSON. Le pont devenait un goulot d'étranglement.
-        </div>
-        <div class="carte accent">
-          <h3>Aujourd'hui : la nouvelle architecture</h3>
-          <strong>JSI</strong> (JavaScript Interface) permet des appels <strong>directs</strong> entre JavaScript et le natif. C'est l'architecture par défaut des projets actuels.
-        </div>
+      <div class="carte accent" style="margin-top: 26px;">
+        <h3><a href="https://reactnative.dev/architecture/landing-page" target="_blank">La nouvelle architecture</a></h3>
+        <strong>JSI</strong> (JavaScript Interface) permet des appels <strong>directs</strong> entre JavaScript et le natif. C'est l'architecture par défaut des projets actuels.
       </div>
     </div>
     <aside class="notes">
@@ -107,7 +128,7 @@ const styles = StyleSheet.create({
           <ul class="dense">
             <li><a href="https://necolas.github.io/react-native-web/" target="_blank">React Native for Web</a> réimplémente les composants de React Native avec <strong>React DOM</strong></li>
             <li><code>&lt;View&gt;</code> devient une <code>&lt;div&gt;</code>, <code>&lt;TextInput&gt;</code> un <code>&lt;input&gt;</code></li>
-            <li><code>StyleSheet</code> génère des <strong>classes CSS</strong> optimisées</li>
+            <li><a href="https://reactnative.dev/docs/stylesheet" target="_blank"><code>StyleSheet</code></a> génère des <strong>classes CSS</strong> optimisées</li>
             <li>Un seul code pour trois plateformes</li>
           </ul>
           <pre class="mini" data-titre="Ce que le navigateur reçoit"><code class="language-html" data-trim>
@@ -133,7 +154,7 @@ const styles = StyleSheet.create({
       </div>
       <p style="margin-top: 26px;"><strong>Une application React Native est-elle une page web dans une application ?</strong></p>
       <div class="reponse fragment">
-        Non. Sur mobile, ce sont de vraies vues natives. Une page web affichée dans une application s'appelle une <strong>WebView</strong> (c'est l'approche de Cordova ou d'Ionic).
+        Non. Sur mobile, ce sont de vraies vues natives. Une page web affichée dans une application s'appelle une <strong>WebView</strong> (c'est l'approche de <a href="https://cordova.apache.org" target="_blank">Cordova</a> ou d'<a href="https://ionicframework.com" target="_blank">Ionic</a>).
       </div>
     </div>
   </section>
@@ -155,18 +176,16 @@ npx expo start
           </code></pre>
           <ul class="dense">
             <li><a href="https://expo.dev" target="_blank"><strong>Expo</strong></a> est le framework <a href="https://reactnative.dev/docs/environment-setup" target="_blank">recommandé par l'équipe de React Native</a></li>
-            <li><code>w</code> ouvre la version web. Le QR code s'ouvre avec <a href="https://expo.dev/go" target="_blank">Expo Go</a> sur votre téléphone</li>
-            <li>À la question de <code>reset-project</code>, répondez <code>n</code> : l'exemple est supprimé au lieu d'être déplacé</li>
-            <li>Chaque sauvegarde met l'écran à jour (<em>Fast Refresh</em>)</li>
+            <li><code>npm run reset-project</code> retire l'application d'exemple pour partir d'un écran vierge. À sa question, répondez <code>n</code> : l'exemple est supprimé au lieu d'être déplacé</li>
+            <li><code>w</code> ouvre la version web, <code>i</code> le simulateur iOS (macOS et Xcode), <code>a</code> l'émulateur Android. Le QR code s'ouvre avec <a href="https://expo.dev/go" target="_blank">Expo Go</a> sur votre téléphone</li>
+            <li>Chaque sauvegarde met l'écran à jour (<a href="https://reactnative.dev/docs/fast-refresh" target="_blank"><em>Fast Refresh</em></a>)</li>
           </ul>
         </div>
         <div>
           <div class="encadre corail">
-            <strong>Un réglage pour le web.</strong> Dans <code>app.json</code>, remplacez <code>"output": "server"</code> par <code>"output": "single"</code>.
-            Le rendu sur serveur ne connaît pas la taille de la fenêtre : un écran responsive y provoque une erreur d'<strong>hydratation</strong>.
-          </div>
-          <div class="encadre neutre" style="margin-top: 14px;">
-            Méfiez-vous des tutoriels anciens et des réponses d'IA : <code>expo eject</code> ou <code>expo-cli</code> installé globalement ont <strong>disparu</strong>.
+            <strong>Indispensable pour le web.</strong> Dans <code>app.json</code>, remplacez <code>"output": "server"</code> par <code>"output": "single"</code>.
+            Avec <code>"server"</code>, la page est préparée à l'avance, sans connaître la taille de la fenêtre. Un écran qui s'adapte à la largeur plante alors au chargement.
+            <span class="petit muet" style="display: block; margin-top: 6px;">Ce plantage s'appelle une erreur d'<strong>hydratation</strong> : le premier affichage calculé par le navigateur ne correspond pas à la page reçue.</span>
           </div>
           <div class="encadre neutre" style="margin-top: 14px;">
             Le téléphone et l'ordinateur doivent être sur le <strong>même réseau</strong>. Si le Wi-Fi de l'école bloque la connexion, lancez <code>npx expo start --tunnel</code>.
@@ -195,17 +214,18 @@ tsconfig.json         configuration TypeScript
         </code></pre>
         <div>
           <ul class="dense">
+            <li>Ce n'est pas l'arborescence créée par Expo : après <code>reset-project</code>, <code>src/</code> ne contient que <code>app/</code>. Les autres dossiers suivent les <strong>bonnes pratiques</strong> : un dossier par rôle</li>
             <li><strong>Chaque fichier de <code>src/app/</code> est un écran</strong>. Son chemin donne son URL</li>
             <li>Tout le reste du code vit <strong>en dehors</strong> de <code>src/app/</code></li>
-            <li>L'alias <code>@/</code> pointe vers <code>src/</code> : <code>import { STAYS } from "@/data/stays"</code></li>
+            <li>💡 L'alias <code>@/</code> pointe vers <code>src/</code> : <code>import { STAYS } from "@/data/stays"</code></li>
           </ul>
         </div>
       </div>
     </div>
-    <aside class="notes">Les dossiers models, data et hooks n'existent pas après reset-project : on les crée. On détaillera Expo Router au cours 3.</aside>
+    <aside class="notes">Les dossiers models, data et hooks n'existent pas après reset-project : on les crée au fil des exemples.</aside>
   </section>
   <section>
-    <h2>TypeScript : ce qui nous servira</h2>
+    <h2>TypeScript : rappels</h2>
     <div class="corps">
       <div class="colonnes code-texte">
         <pre class="mini" data-fichier="demos/cours1/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="">export type StayType = "apartment" | "house" | "cabin";
@@ -236,20 +256,21 @@ export type Stay = {
   <section data-layout="section">
     <div class="numero">03</div>
     <h2>Composants, styles et responsive</h2>
-    <div class="sous-titre">Les briques de toute interface</div>
+    <div class="sous-titre">Les composants de base de toute interface</div>
   </section>
   <section>
-    <h2>Les briques de base</h2>
+    <h2>Les composants de base</h2>
     <div class="corps">
+      <p>React Native fournit un petit jeu de <strong>composants de base</strong> (<a href="https://reactnative.dev/docs/components-and-apis" target="_blank"><em>core components</em></a>). Toute interface s'écrit avec eux.</p>
       <table class="serre">
         <tr><th>Composant</th><th>Rôle</th><th>Équivalent web</th></tr>
-        <tr><td><code>View</code></td><td>Conteneur et mise en page</td><td><code>&lt;div&gt;</code></td></tr>
-        <tr><td><code>Text</code></td><td>Tout texte affiché</td><td><code>&lt;p&gt;</code>, <code>&lt;span&gt;</code></td></tr>
-        <tr><td><code>Image</code></td><td>Image locale ou distante</td><td><code>&lt;img&gt;</code></td></tr>
-        <tr><td><code>TextInput</code></td><td>Saisie de texte</td><td><code>&lt;input&gt;</code></td></tr>
-        <tr><td><code>Pressable</code></td><td>Zone qui réagit au toucher</td><td><code>&lt;button&gt;</code></td></tr>
-        <tr><td><code>ScrollView</code></td><td>Contenu qui défile (court)</td><td><code>overflow: auto</code></td></tr>
-        <tr><td><code>FlatList</code></td><td>Liste longue, affichée au fur et à mesure</td><td>Aucun</td></tr>
+        <tr><td><a href="https://reactnative.dev/docs/view" target="_blank"><code>View</code></a></td><td>Conteneur et mise en page</td><td><code>&lt;div&gt;</code></td></tr>
+        <tr><td><a href="https://reactnative.dev/docs/text" target="_blank"><code>Text</code></a></td><td>Tout texte affiché</td><td><code>&lt;p&gt;</code>, <code>&lt;span&gt;</code></td></tr>
+        <tr><td><a href="https://reactnative.dev/docs/image" target="_blank"><code>Image</code></a></td><td>Image locale ou distante</td><td><code>&lt;img&gt;</code></td></tr>
+        <tr><td><a href="https://reactnative.dev/docs/textinput" target="_blank"><code>TextInput</code></a></td><td>Saisie de texte</td><td><code>&lt;input&gt;</code></td></tr>
+        <tr><td><a href="https://reactnative.dev/docs/pressable" target="_blank"><code>Pressable</code></a></td><td>Zone qui réagit au toucher</td><td><code>&lt;button&gt;</code></td></tr>
+        <tr><td><a href="https://reactnative.dev/docs/scrollview" target="_blank"><code>ScrollView</code></a></td><td>Contenu qui défile (court)</td><td><code>overflow: auto</code></td></tr>
+        <tr><td><a href="https://reactnative.dev/docs/flatlist" target="_blank"><code>FlatList</code></a></td><td>Liste longue, affichée au fur et à mesure</td><td>Aucun</td></tr>
       </table>
       <p class="petit muet" style="margin-top: 10px;">Tous s'importent depuis <code>react-native</code> : <code>import { View, Text } from "react-native";</code></p>
     </div>
@@ -349,7 +370,7 @@ const styles = StyleSheet.create({
           <ul class="dense">
             <li>Une image locale passe par <code>require()</code> : elle est intégrée à l'application au moment du build</li>
             <li>Une image distante n'a <strong>pas de taille par défaut</strong> : sans largeur ni hauteur, elle reste invisible</li>
-            <li><code>aspectRatio</code> garde les proportions quand la largeur s'adapte à l'écran</li>
+            <li><code>aspectRatio: 4 / 3</code> : la hauteur vaut les trois quarts de la largeur, le format d'une photo classique. Avec <code>width: "100%"</code>, l'image prend toute la largeur et sa hauteur suit</li>
             <li>Dans le JSX, un commentaire s'écrit <code style="white-space: nowrap;">{/* … */}</code>. Un <code>//</code> y deviendrait du texte, ce qui fait planter l'application</li>
           </ul>
         </div>
@@ -645,7 +666,7 @@ const styles = StyleSheet.create({
             <li>Des propriétés CSS en <strong>camelCase</strong>, des nombres <strong>sans unité</strong></li>
             <li><strong>Aucune cascade</strong> : seul un <code>&lt;Text&gt;</code> transmet son style à un <code>&lt;Text&gt;</code> enfant</li>
             <li>Flexbox partout, mais <code>flexDirection</code> vaut <strong><code>column</code></strong> par défaut</li>
-            <li><code>flex: 1</code> : « prends toute la place disponible »</li>
+            <li><code>flex: 1</code> : le composant prend toute la place disponible</li>
             <li><code>gap</code> espace les enfants sans marges</li>
           </ul>
         </div>
@@ -838,7 +859,7 @@ const styles = StyleSheet.create({
           <ul class="dense">
             <li><strong>1.</strong> Les favoris sont un état : <code>toggleFavorite</code> ajoute ou retire un identifiant</li>
             <li><strong>2.</strong> <code>visibleStays</code> se calcule à partir de la recherche : ce n'est pas un état</li>
-            <li><strong>3.</strong> <code>FlatList</code> n'affiche que les éléments <strong>visibles</strong> (virtualisation)</li>
+            <li><strong>3.</strong> <code>FlatList</code> ne crée que les cartes <strong>visibles</strong> à l'écran, puis les suivantes au fil du défilement. Une liste de 1 000 séjours reste donc fluide</li>
             <li><code>keyExtractor</code> joue le rôle de la prop <code>key</code> de <code>map()</code></li>
             <li><code>ScrollView</code> affiche tout d'un coup : réservez-la aux contenus courts</li>
           </ul>
@@ -864,7 +885,7 @@ export function useColumns(): number {
         <div>
           <ul class="dense">
             <li><code>StyleSheet</code> ne connaît pas les <em>media queries</em> du CSS</li>
-            <li><code>useWindowDimensions()</code> renvoie la taille de la fenêtre et <strong>déclenche un nouveau rendu</strong> quand elle change (rotation, redimensionnement)</li>
+            <li><a href="https://reactnative.dev/docs/usewindowdimensions" target="_blank"><code>useWindowDimensions()</code></a> renvoie la taille de la fenêtre et <strong>déclenche un nouveau rendu</strong> quand elle change (rotation, redimensionnement)</li>
             <li>L'ancienne API <code>Dimensions.get()</code> ne se met pas à jour toute seule : préférez le hook</li>
           </ul>
         </div>
@@ -974,26 +995,6 @@ const styles = StyleSheet.create({
     </div>
   </section>
   <section>
-    <h2>Démo : le catalogue de séjours</h2>
-    <div class="corps">
-      <div class="colonnes">
-        <div>
-          <ul>
-            <li>Des données typées (<code>Stay</code>)</li>
-            <li>Un composant <code>StayCard</code> aux props typées</li>
-            <li>Une recherche avec <code>TextInput</code></li>
-            <li>Des favoris avec <code>Pressable</code> et <code>useState</code></li>
-            <li>Une grille de 1 à 3 colonnes selon la largeur</li>
-          </ul>
-        </div>
-        <div class="encadre corail">
-          Je lance l'application sur le web puis sur mon téléphone avec Expo Go. Redimensionnez la fenêtre : la grille s'adapte en direct.
-        </div>
-      </div>
-    </div>
-    <aside class="notes">Projet de démo : demos/cours1 dans le dépôt de la refonte (npx expo start, puis w). Les photos viennent de picsum.photos (illustration).</aside>
-  </section>
-  <section>
     <h2>À retenir</h2>
     <div class="corps">
       <ul>
@@ -1004,7 +1005,7 @@ const styles = StyleSheet.create({
         <li>Le responsive passe par <code>useWindowDimensions()</code> et des points de rupture</li>
       </ul>
       <div class="encadre corail" style="margin-top: 18px;">
-        Place à la pratique : le <strong>TP1</strong> occupe les deux créneaux suivants.
+        Place à la pratique : le <strong>TP1</strong> occupe toute la fin de la séance. On termine par un <strong>Kahoot de 10 questions</strong>, 15 minutes avant la fin.
       </div>
     </div>
   </section>

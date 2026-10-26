@@ -52,7 +52,7 @@
       <li><strong>Au moins 4 écrans</strong>, organisés avec Expo Router : des onglets, une pile et au moins une route dynamique (par exemple <code>/items/[id]</code>).</li>
       <li>Sur le web, <strong>l'URL suit la navigation</strong> : une page de détail s'ouvre directement depuis son adresse.</li>
       <li>Un <strong>catalogue responsive</strong> : une grille sur ordinateur, une liste fluide sur téléphone, avec des <strong>filtres</strong> dont la logique vit dans un hook.</li>
-      <li>Une <strong>API publique</strong> consommée avec <code>fetch()</code>, avec les états de chargement et d'erreur.</li>
+      <li>Une <strong>API publique</strong> consommée avec <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch()</code></a>, avec les états de chargement et d'erreur.</li>
       <li><strong>Firebase</strong> : authentification par e-mail et <strong>trois CRUD</strong> (créer, lire, modifier, supprimer) sur trois collections différentes, un par partie.</li>
       <li>Une <strong>architecture MVC</strong> en TypeScript : modèles typés, services, hooks contrôleurs, composants d'affichage purs.</li>
       <li>Une interface <strong>lisible et cohérente</strong> : hiérarchie visuelle, contrastes suffisants, retours visuels au toucher.</li>
@@ -84,7 +84,7 @@
       <tr><th>Partie</th><th>Contenu</th><th>Au fil des TP</th></tr>
       <tr><td><strong>A · Catalogue</strong></td><td>Modèle et service de l'API publique, catalogue responsive, filtres, CRUD lié au catalogue (favoris annotés, par exemple)</td><td>TP2 : modèle, service factice et catalogue. TP3 : API publique et filtres. TP4 : CRUD A</td></tr>
       <tr><td><strong>B · Navigation et compte</strong></td><td>Structure de navigation, écran de détail, authentification, CRUD B</td><td>TP2 : modèle et service de la collection B. TP3 : navigation et détail. TP4 : authentification et CRUD B</td></tr>
-      <tr><td><strong>C · Données partagées</strong></td><td>État partagé (Context), écran groupé (<code>SectionList</code>), rafraîchissement au focus, CRUD C</td><td>TP2 : Context et deuxième écran. TP3 : <code>SectionList</code> et cycle de vie. TP4 : CRUD C</td></tr>
+      <tr><td><strong>C · Données partagées</strong></td><td>État partagé (Context), écran groupé (<a href="https://reactnative.dev/docs/sectionlist" target="_blank"><code>SectionList</code></a>), rafraîchissement au focus, CRUD C</td><td>TP2 : Context et deuxième écran. TP3 : <code>SectionList</code> et cycle de vie. TP4 : CRUD C</td></tr>
     </table>
     <div class="encadre">
       Je note avec vous le propriétaire de chaque partie dès le premier jour. Indiquez-le aussi dans le README <strong>dès le TP2</strong>, avec le prénom, le nom et le compte GitHub de chacun.
@@ -162,7 +162,7 @@
         <code>npx tsc --noEmit</code> sans erreur ·
         <code>npx expo lint</code> sans erreur ·
         version web déployée et à jour ·
-        MVC respecté (aucun <code>fetch</code> ni appel Firebase dans <code>src/app/</code> ou <code>src/components/</code>) ·
+        MVC respecté (aucun <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a> ni appel Firebase dans <code>src/app/</code> ou <code>src/components/</code>) ·
         README complet ·
         états de chargement, d'erreur et de liste vide ·
         interface lisible et cohérente sur le web et sur mobile</td><td>8</td></tr>
@@ -179,7 +179,7 @@
       <tr><td><strong>C · Données partagées</strong></td><td>
         Un Context partagé par plusieurs écrans ·
         une <code>SectionList</code> dont le regroupement est dans le modèle ·
-        <code>useFocusEffect</code> utilisé à bon escient et expliqué dans le README ·
+        <a href="https://docs.expo.dev/router/reference/hooks/#usefocuseffect" target="_blank"><code>useFocusEffect</code></a> utilisé à bon escient et expliqué dans le README ·
         CRUD C complet</td><td>4</td></tr>
       <tr><td colspan="2"><strong>Bonus</strong> (1 point par bonus réalisé, dans la limite de 20)</td><td>+2</td></tr>
     </table>

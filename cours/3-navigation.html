@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li><code>useLocalSearchParams</code> lit <code>id</code> dans l'URL</li>
+            <li><a href="https://docs.expo.dev/router/reference/hooks/#uselocalsearchparams" target="_blank"><code>useLocalSearchParams</code></a> lit <code>id</code> dans l'URL</li>
             <li>L'écran ne reçoit <strong>que l'identifiant</strong>, jamais l'objet entier : il recharge ses données. C'est ce qui permet d'ouvrir la page depuis un lien</li>
             <li><code>&lt;Stack.Screen options&gt;</code> change le titre de l'en-tête</li>
             <li>Un identifiant inconnu est un cas prévu</li>
@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li><code>&lt;Link&gt;</code> est l'équivalent de <code>&lt;a href&gt;</code> : sur le web, c'est un vrai lien</li>
+            <li><a href="https://docs.expo.dev/router/navigating-pages/" target="_blank"><code>&lt;Link&gt;</code></a> est l'équivalent de <code>&lt;a href&gt;</code> : sur le web, c'est un vrai lien</li>
             <li><code>href</code> reçoit le chemin de la route et ses paramètres : ici l'identifiant du séjour</li>
             <li>Les <strong>routes typées</strong> (<code>typedRoutes</code> dans <code>app.json</code>) font signaler par TypeScript un lien vers une page inexistante</li>
           </ul>
@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li>Pour naviguer après une action (un appui, un envoi de formulaire), sans lien visible</li>
+            <li>Pour naviguer après une action (un appui, un envoi de formulaire), sans lien visible : <a href="https://docs.expo.dev/router/reference/hooks/#userouter" target="_blank"><code>useRouter()</code></a> renvoie l'objet <code>router</code></li>
           </ul>
           <table class="serre">
             <tr><th>Méthode</th><th>Effet</th></tr>
@@ -749,7 +749,7 @@ export async function fetchWeather(
 }</code></pre>
         <div>
           <ul class="dense">
-            <li><code>fetch</code> fonctionne de la même façon sur le web et sur mobile</li>
+            <li><a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a> fonctionne de la même façon sur le web et sur mobile</li>
             <li><code>fetch</code> ne lève <strong>pas</strong> d'erreur sur une réponse 404 ou 500 : testez <code>response.ok</code></li>
             <li>Le service <strong>traduit</strong> la réponse de l'API dans le vocabulaire du modèle. Si l'API change, seul ce fichier change</li>
           </ul>
@@ -1007,9 +1007,9 @@ const styles = StyleSheet.create({
         <div>
           <ul class="dense">
             <li>Un onglet quitté reste <strong>monté</strong> : son <code>useEffect(…, [])</code> ne s'exécutera plus</li>
-            <li><code>useFocusEffect</code> (d'<code>expo-router</code>) s'exécute à <strong>chaque</strong> affichage de l'écran</li>
+            <li><a href="https://docs.expo.dev/router/reference/hooks/#usefocuseffect" target="_blank"><code>useFocusEffect</code></a> (d'<code>expo-router</code>) s'exécute à <strong>chaque</strong> affichage de l'écran</li>
             <li>La fonction renvoyée, si vous en écrivez une, s'exécute quand l'écran perd le focus</li>
-            <li><code>useCallback</code> évite de relancer l'effet à chaque rendu</li>
+            <li><a href="https://react.dev/reference/react/useCallback" target="_blank"><code>useCallback</code></a> évite de relancer l'effet à chaque rendu</li>
           </ul>
         </div>
       </div>
@@ -1039,7 +1039,7 @@ export function useIsAppActive(): boolean {
 }</code></pre>
         <div>
           <ul class="dense">
-            <li><code>AppState</code> signale le premier plan (<code>"active"</code>) et l'arrière-plan (<code>"background"</code>)</li>
+            <li><a href="https://reactnative.dev/docs/appstate" target="_blank"><code>AppState</code></a> signale le premier plan (<code>"active"</code>) et l'arrière-plan (<code>"background"</code>)</li>
             <li>Sur le web, il suit la visibilité de l'onglet du navigateur</li>
             <li>Toujours <strong>retirer l'écouteur</strong> au démontage, sinon il s'accumule</li>
             <li><code>useWeather</code> s'en sert pour recharger la météo au retour dans l'application</li>
@@ -1272,7 +1272,7 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li><code>sections</code> remplace le <code>data</code> d'une <code>FlatList</code></li>
+            <li><a href="https://reactnative.dev/docs/sectionlist" target="_blank"><code>SectionList</code></a> est un composant de base, comme <a href="https://reactnative.dev/docs/flatlist" target="_blank"><code>FlatList</code></a> : <code>sections</code> remplace son <code>data</code></li>
             <li><code>renderSectionHeader</code> affiche le titre de chaque groupe, <code>renderItem</code> chaque élément</li>
           </ul>
         </div>

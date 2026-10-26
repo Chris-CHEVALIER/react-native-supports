@@ -154,7 +154,7 @@
     <div class="meta"><span class="etiquette clair">FlatList · useWindowDimensions · hooks</span></div>
 
     <ol>
-      <li>Dans <code>src/app/index.tsx</code>, affichez <strong>tous</strong> les albums avec une <code>FlatList</code>.</li>
+      <li>Dans <code>src/app/index.tsx</code>, affichez <strong>tous</strong> les albums avec une <a href="https://reactnative.dev/docs/flatlist" target="_blank"><code>FlatList</code></a>.</li>
       <li>Dans le fichier <code>src/hooks/use-columns.ts</code>, écrivez le hook <code>useColumns()</code>. Il renvoie le nombre de colonnes selon la largeur de la fenêtre :
         <table class="compact">
           <tr><th>Largeur de la fenêtre</th><th>Colonnes</th></tr>
@@ -180,7 +180,7 @@
     <div class="meta"><span class="etiquette clair">useState · Pressable · état remonté</span></div>
 
     <ol>
-      <li>Ajoutez à chaque carte un bouton <strong>« Ajouter au panier »</strong> (<code>Pressable</code>). Un nouvel appui retire l'album du panier.</li>
+      <li>Ajoutez à chaque carte un bouton <strong>« Ajouter au panier »</strong> (<a href="https://reactnative.dev/docs/pressable" target="_blank"><code>Pressable</code></a>). Un nouvel appui retire l'album du panier.</li>
       <li>Le bouton donne un <strong>retour visuel</strong> pendant l'appui. Son libellé et sa couleur changent quand l'album est dans le panier (« Dans le panier ✓ »).</li>
       <li>Un album épuisé (<code>inStock: false</code>) affiche un bouton <strong>« Épuisé »</strong> grisé, qui ne réagit pas.</li>
       <li>En haut de l'écran, affichez le nombre d'albums du panier et leur <strong>prix total</strong> : <code>Panier : 2 · 59,80 €</code>.</li>
@@ -199,7 +199,7 @@
     <div class="meta"><span class="etiquette clair">TextInput · état dérivé · ScrollView horizontale</span></div>
 
     <ol>
-      <li>Ajoutez un champ de recherche (<code>TextInput</code>). Il filtre les albums dont le <strong>titre ou l'artiste</strong> contient le texte saisi, sans tenir compte des majuscules.</li>
+      <li>Ajoutez un champ de recherche (<a href="https://reactnative.dev/docs/textinput" target="_blank"><code>TextInput</code></a>). Il filtre les albums dont le <strong>titre ou l'artiste</strong> contient le texte saisi, sans tenir compte des majuscules.</li>
       <li>Dans le fichier <code>src/components/genre-filter.tsx</code>, écrivez le composant <code>GenreFilter</code>. Il affiche une rangée de boutons « Tous », « rock », « jazz »… Le genre choisi est mis en évidence.</li>
       <li>La recherche et le filtre se <strong>combinent</strong> : « daft » avec le genre « electro » affiche les trois albums de Daft Punk.</li>
       <li>Quand aucun album ne correspond, la liste affiche un message (prop <code>ListEmptyComponent</code>).</li>

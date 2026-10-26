@@ -106,7 +106,7 @@
       <li>Écrivez le hook des filtres (par exemple <code>useRecipeFilters(items)</code>). Il renvoie les filtres, une fonction pour les modifier et la liste filtrée, <strong>calculée</strong> avec <code>matchesFilters</code>.</li>
     </ol>
     <div class="encadre">
-      La liste filtrée n'est pas un état. Si vous écrivez <code>useState</code> pour elle, c'est qu'une donnée est stockée deux fois.
+      La liste filtrée n'est pas un état. Si vous écrivez <a href="https://react.dev/reference/react/useState" target="_blank"><code>useState</code></a> pour elle, c'est qu'une donnée est stockée deux fois.
     </div>
   </section>
 
@@ -126,7 +126,7 @@
     </ol>
     <div class="encadre">
       <span class="intitule">Vérifiez vos vues</span>
-      Aucun fichier de <code>src/components/</code> ne doit importer un service, appeler <code>fetch</code> ou contenir un <code>useEffect</code> qui charge des données.
+      Aucun fichier de <code>src/components/</code> ne doit importer un service, appeler <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a> ou contenir un <a href="https://react.dev/reference/react/useEffect" target="_blank"><code>useEffect</code></a> qui charge des données.
     </div>
   </section>
 

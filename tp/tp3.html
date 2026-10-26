@@ -25,7 +25,7 @@
   <div class="encadre neutre">
     <span class="intitule">Ce TP en bref</span>
     <ul>
-      <li><strong>Objectifs</strong> : mettre en place la navigation avec Expo Router (onglets, pile, route dynamique), consommer une API avec <code>fetch</code>, gérer le cycle de vie des écrans et des listes plus riches.</li>
+      <li><strong>Objectifs</strong> : mettre en place la navigation avec Expo Router (onglets, pile, route dynamique), consommer une API avec <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a>, gérer le cycle de vie des écrans et des listes plus riches.</li>
       <li>En trinôme, dans le dépôt du projet. <strong>Lancé en séance le 29 octobre</strong>, puis en autonomie jusqu'au 24 novembre.</li>
       <li>Ce jalon n'est pas noté. Ses critères font partie de la grille de production du projet, évaluée le 17 décembre.</li>
       <li>Le cours 3 (catalogue de séjours avec météo) vous sert de modèle.</li>
@@ -37,7 +37,7 @@
     <ul>
       <li><strong>A · Catalogue</strong> : étape 2 (API publique) et étape 4 (catalogue et filtres).</li>
       <li><strong>B · Navigation et compte</strong> : étape 1 (navigation) et étape 3 (détail).</li>
-      <li><strong>C · Données partagées</strong> : la <code>SectionList</code> de l'étape 4 et l'étape 5 (cycle de vie).</li>
+      <li><strong>C · Données partagées</strong> : la <a href="https://reactnative.dev/docs/sectionlist" target="_blank"><code>SectionList</code></a> de l'étape 4 et l'étape 5 (cycle de vie).</li>
     </ul>
   </div>
 
@@ -102,7 +102,7 @@
     <div class="meta"><span class="etiquette clair">useLocalSearchParams · liens profonds</span></div>
     <ol>
       <li>Depuis le catalogue, un appui sur un élément ouvre son détail avec <code>router.push</code> ou un <code>&lt;Link&gt;</code>.</li>
-      <li>Le détail lit l'identifiant avec <code>useLocalSearchParams</code> et <strong>recharge l'élément</strong> par un service et un hook dédiés.</li>
+      <li>Le détail lit l'identifiant avec <a href="https://docs.expo.dev/router/reference/hooks/#uselocalsearchparams" target="_blank"><code>useLocalSearchParams</code></a> et <strong>recharge l'élément</strong> par un service et un hook dédiés.</li>
       <li>Son titre apparaît dans l'en-tête (<code>&lt;Stack.Screen options&gt;</code>).</li>
       <li>Un identifiant inconnu affiche un message clair, sans planter.</li>
     </ol>
@@ -129,9 +129,9 @@
     <h2><span class="num">5</span> Le cycle de vie</h2>
     <div class="meta"><span class="etiquette clair">useFocusEffect · AppState</span></div>
     <ol>
-      <li>Repérez un écran dont les données peuvent changer pendant qu'il est caché (un onglet de favoris, par exemple). Rechargez-le avec <code>useFocusEffect</code>.</li>
+      <li>Repérez un écran dont les données peuvent changer pendant qu'il est caché (un onglet de favoris, par exemple). Rechargez-le avec <a href="https://docs.expo.dev/router/reference/hooks/#usefocuseffect" target="_blank"><code>useFocusEffect</code></a>.</li>
       <li>Dans le README, expliquez en deux ou trois phrases <strong>pourquoi</strong> un <code>useEffect(…, [])</code> ne suffisait pas à cet endroit.</li>
-      <li><strong>Facultatif</strong> : rafraîchissez une donnée au retour de l'application au premier plan, avec <code>AppState</code>.</li>
+      <li><strong>Facultatif</strong> : rafraîchissez une donnée au retour de l'application au premier plan, avec <a href="https://reactnative.dev/docs/appstate" target="_blank"><code>AppState</code></a>.</li>
     </ol>
   </section>
 

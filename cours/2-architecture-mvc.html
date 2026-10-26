@@ -358,7 +358,7 @@ export async function fetchStays(): Promise&lt;Stay[]&gt; {
           <ul class="dense">
             <li>Le service promet une chose : <code>Promise&lt;Stay[]&gt;</code></li>
             <li>Le délai simule le réseau : l'écran doit déjà gérer le <strong>chargement</strong></li>
-            <li>Au TP3, son contenu deviendra un <code>fetch()</code>. Au TP4, un appel à Firebase. <strong>Ni les hooks ni les vues ne changeront</strong></li>
+            <li>Au TP3, son contenu deviendra un <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch()</code></a>. Au TP4, un appel à Firebase. <strong>Ni les hooks ni les vues ne changeront</strong></li>
           </ul>
         </div>
       </div>
@@ -527,7 +527,7 @@ export function useStayFilters(stays: Stay[]) {
     <div class="corps">
       <p><strong>Je dois trier les séjours par prix. Où écrire la fonction de tri ?</strong></p>
       <div class="reponse fragment">Dans le modèle (<code>src/models/stay.ts</code>) : c'est une règle métier, pure et testable. Le hook l'appelle, la vue n'en sait rien.</div>
-      <p style="margin-top: 22px;"><strong>Faut-il un <code>useState</code> pour le nombre de séjours visibles ?</strong></p>
+      <p style="margin-top: 22px;"><strong>Faut-il un <a href="https://react.dev/reference/react/useState" target="_blank"><code>useState</code></a> pour le nombre de séjours visibles ?</strong></p>
       <div class="reponse fragment">Non : <code>visibleStays.length</code> se calcule. Un état ne doit contenir que ce qui ne se déduit de rien d'autre.</div>
     </div>
   </section>
@@ -642,8 +642,9 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
+            <li>Il n'assemble que des <strong>composants de base</strong> (<a href="https://reactnative.dev/docs/textinput" target="_blank"><code>TextInput</code></a>, <a href="https://reactnative.dev/docs/pressable" target="_blank"><code>Pressable</code></a>, <a href="https://reactnative.dev/docs/switch" target="_blank"><code>Switch</code></a>) et leurs styles</li>
             <li>Il <strong>reçoit</strong> les filtres et <strong>signale</strong> les changements</li>
-            <li>Aucun état, aucun service, aucun <code>useEffect</code></li>
+            <li>Aucun état, aucun service, aucun <a href="https://react.dev/reference/react/useEffect" target="_blank"><code>useEffect</code></a></li>
             <li>On peut le réutiliser ailleurs ou changer son design sans toucher à la logique</li>
           </ul>
         </div>
@@ -826,7 +827,7 @@ const styles = StyleSheet.create({
         <div>
           <p class="ko">Une vue pure ne…</p>
           <ul class="dense">
-            <li>n'importe <strong>aucun service</strong> et n'appelle ni <code>fetch</code> ni Firebase</li>
+            <li>n'importe <strong>aucun service</strong> et n'appelle ni <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a> ni Firebase</li>
             <li>ne contient <strong>aucune règle métier</strong> (calcul de prix, filtre, tri)</li>
             <li>ne charge pas de données dans un <code>useEffect</code></li>
           </ul>
