@@ -796,8 +796,8 @@ const styles = StyleSheet.create({
     <h2>Un écran ne se démonte pas toujours</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-fichier="demos/etapes/cours3/favoris-2/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="1-2,10,13-19">import { Link, useFocusEffect } from "expo-router";
-import { useCallback } from "react";
+        <pre class="mini" data-fichier="demos/etapes/cours3/favoris-2/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="1-2,10,12,14-21,33-37,56">import { Link, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { FlatList, StyleSheet, Text } from "react-native";
 
 import { StateMessage } from "@/components/state-message";
@@ -807,12 +807,14 @@ import { useStays } from "@/hooks/use-stays";
 export default function FavoritesScreen() {
   const { state, reload } = useStays();
   const { isFavorite } = useFavorites();
+  const [refreshedAt, setRefreshedAt] = useState("");
 
   // À chaque fois que l'onglet redevient visible, on recharge les
-  // séjours
+  // séjours et on note l'heure pour le voir à l'écran
   useFocusEffect(
     useCallback(() =&gt; {
       reload();
+      setRefreshedAt(new Date().toLocaleTimeString("fr-FR"));
     }, [reload]),
   );
 
@@ -826,6 +828,11 @@ export default function FavoritesScreen() {
     &lt;FlatList
       data={favoriteStays}
       keyExtractor={(stay) =&gt; stay.id}
+      ListHeaderComponent={
+        &lt;Text style={styles.refreshed}&gt;
+          Actualisé à {refreshedAt}
+        &lt;/Text&gt;
+      }
       renderItem={({ item }) =&gt; (
         &lt;Link
           href={{ pathname: "/stays/[id]", params: { id: item.id } }}
@@ -844,6 +851,7 @@ export default function FavoritesScreen() {
 
 const styles = StyleSheet.create({
   list: { padding: 16 },
+  refreshed: { fontSize: 14, color: "#5A5F80", marginBottom: 8 },
   item: { fontSize: 17, paddingVertical: 8 },
 });</code></pre>
         <div>
@@ -852,6 +860,7 @@ const styles = StyleSheet.create({
             <li><a href="https://docs.expo.dev/router/reference/hooks/#usefocuseffect" target="_blank"><code>useFocusEffect</code></a> (d'<code>expo-router</code>) s'exécute à <strong>chaque</strong> affichage de l'écran</li>
             <li>La fonction renvoyée, si vous en écrivez une, s'exécute quand l'écran perd le focus</li>
             <li><a href="https://react.dev/reference/react/useCallback" target="_blank"><code>useCallback</code></a> évite de relancer l'effet à chaque rendu</li>
+            <li>Pour <strong>voir</strong> l'effet, l'écran affiche l'heure de la dernière actualisation : elle change à chaque retour sur l'onglet</li>
           </ul>
         </div>
       </div>
@@ -1063,8 +1072,8 @@ export function groupByCity(stays: Stay[]): CitySection[] {
     <h2><code>SectionList</code> : afficher les groupes</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="3,8,24-25,29-30,32-34,53-59">import { Link, useFocusEffect } from "expo-router";
-import { useCallback } from "react";
+        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="3,8,26-27,31-32,39-41,61-67">import { Link, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { SectionList, StyleSheet, Text } from "react-native";
 
 import { StateMessage } from "@/components/state-message";
@@ -1075,12 +1084,14 @@ import { groupByCity } from "@/models/stay";
 export default function FavoritesScreen() {
   const { state, reload } = useStays();
   const { isFavorite } = useFavorites();
+  const [refreshedAt, setRefreshedAt] = useState("");
 
   // À chaque fois que l'onglet redevient visible, on recharge les
-  // séjours
+  // séjours et on note l'heure pour le voir à l'écran
   useFocusEffect(
     useCallback(() =&gt; {
       reload();
+      setRefreshedAt(new Date().toLocaleTimeString("fr-FR"));
     }, [reload]),
   );
 
@@ -1094,6 +1105,11 @@ export default function FavoritesScreen() {
     &lt;SectionList
       sections={sections}
       keyExtractor={(stay) =&gt; stay.id}
+      ListHeaderComponent={
+        &lt;Text style={styles.refreshed}&gt;
+          Actualisé à {refreshedAt}
+        &lt;/Text&gt;
+      }
       renderSectionHeader={({ section }) =&gt; (
         &lt;Text style={styles.city}&gt;{section.title}&lt;/Text&gt;
       )}
@@ -1115,6 +1131,7 @@ export default function FavoritesScreen() {
 
 const styles = StyleSheet.create({
   list: { padding: 16 },
+  refreshed: { fontSize: 14, color: "#5A5F80", marginBottom: 8 },
   city: {
     fontSize: 14,
     fontWeight: "700",
