@@ -269,6 +269,12 @@
 .reveal .corps pre.compact { font-size: 16px; }
 .reveal .corps pre.mini { font-size: 14px; line-height: 1.42; }
 .reveal .corps pre.mini code, .reveal .corps pre.compact code { padding: 10px 16px; max-height: 436px; }
+/* Puce liée à l'étape de surlignage en cours */
+.reveal [data-etape], .reveal .corps li { transition: opacity .25s ease, background-color .25s ease; border-radius: 6px; }
+.reveal li.etape-active { background: rgba(46, 196, 182, .14); box-shadow: -10px 0 0 rgba(46, 196, 182, .14); }
+.reveal tr.etape-active td { background: rgba(46, 196, 182, .18); }
+.reveal .etape-estompee { opacity: .45; }
+@media (prefers-reduced-motion: reduce) { .reveal [data-etape] { transition: none; } }
 /* Étapes de surlignage : reveal.js empile une copie du code par étape, sous la barre de titre et sur un fond opaque */
 .reveal pre code.hljs.fragment { background: var(--code-fond); }
 .reveal pre code.hljs:not(:first-child).fragment { top: 34px; }

@@ -43,7 +43,7 @@
     <h2>Un écran qui fait tout</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-fichier="demos/cours2/src/app/avant.tsx" data-titre="src/app/avant.tsx"><code class="language-tsx" data-line-numbers="">// AVANT le refactoring : tout est dans l'écran (exemple à ne pas
+        <pre class="mini" data-fichier="demos/etapes/cours2/avant/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="">// AVANT le refactoring : tout est dans l'écran (exemple à ne pas
 // suivre)
 import { useEffect, useState } from "react";
 import {
@@ -125,7 +125,7 @@ export default function CatalogScreenBefore() {
       <div class="colonnes c3">
         <div class="carte">
           <h3>Les données changent</h3>
-          On passe des données locales à une API, puis à Firebase. Seul le <strong>service</strong> change
+          On passe des données locales à une API. Seul le <strong>service</strong> change
         </div>
         <div class="carte">
           <h3>Une règle change</h3>
@@ -158,6 +158,9 @@ export default function CatalogScreenBefore() {
       <div class="encadre neutre" style="margin-top: 20px;">
         MVC vient des interfaces graphiques des années 1970. Dans React, le contrôleur n'est pas une classe : c'est un <strong>hook personnalisé</strong>.
       </div>
+      <div class="encadre corail" style="margin-top: 12px;">
+        <strong>Erreur fréquente</strong> : écrire la logique métier dans le hook. Les règles vivent dans le <strong>modèle</strong>, l'accès aux données dans les <strong>services</strong>. Le contrôleur ne fait qu'orchestrer : il les appelle et tient l'état.
+      </div>
     </div>
   </section>
 
@@ -184,22 +187,23 @@ export default function CatalogScreenBefore() {
 src/
 ├── app/                      VUE : écrans
 │   ├── _layout.tsx           fournit le Context
-│   ├── index.tsx             catalogue
-│   └── favorites.tsx         favoris
+│   └── index.tsx             catalogue
 ├── components/               VUE : composants purs
 │   ├── stay-card.tsx
 │   ├── stay-filters-bar.tsx
-│   └── state-message.tsx
+│   ├── state-message.tsx
+│   └── favorites-badge.tsx
 ├── hooks/                    CONTRÔLEUR
 │   ├── use-stays.ts
-│   └── use-stay-filters.ts
+│   ├── use-stay-filters.ts
+│   └── use-favorites.ts
 ├── context/                  CONTRÔLEUR partagé
 │   └── favorites-context.tsx
 ├── services/                 MODÈLE : accès aux données
 │   └── stays-service.ts
 ├── models/                   MODÈLE : types et règles
 │   └── stay.ts
-└── data/stays.ts             données locales
+└── data/stays.ts             données locales (cours 1)
         </code></pre>
         <div>
           <ul class="dense">
@@ -266,8 +270,8 @@ export function matchesFilters(
 }</code></pre>
         <div>
           <ul class="dense">
-            <li>Les types sont le <strong>contrat</strong> entre toutes les couches</li>
-            <li><code>StayType | null</code> : « aucun type choisi » est une valeur prévue</li>
+            <li data-etape="1">Les types sont le <strong>contrat</strong> entre toutes les couches</li>
+            <li data-etape="2"><code>StayType | null</code> : « aucun type choisi » est une valeur prévue</li>
             <li><code>Record&lt;StayType, string&gt;</code> : un objet avec <strong>une entrée par type</strong>. En ajouter un sans libellé est une erreur</li>
           </ul>
         </div>
@@ -322,9 +326,9 @@ export function matchesFilters(
 }</code></pre>
         <div>
           <ul class="dense">
-            <li><strong>Pure</strong> : le même résultat pour les mêmes paramètres, sans effet de bord</li>
-            <li>Elle ne connaît ni React ni l'écran : on peut la <strong>tester</strong> en une ligne et la <strong>réutiliser</strong> partout</li>
-            <li>Une règle change ? On modifie cette fonction, et seulement elle</li>
+            <li data-etape="2"><strong>Pure</strong> : le même résultat pour les mêmes paramètres, sans effet de bord</li>
+            <li data-etape="2">Elle ne connaît ni React ni l'écran : on peut la <strong>tester</strong> en une ligne et la <strong>réutiliser</strong> partout</li>
+            <li data-etape="2">Une règle change ? On modifie cette fonction, et seulement elle</li>
           </ul>
         </div>
       </div>
@@ -342,23 +346,24 @@ export function matchesFilters(
     <h2>Le service : un contrat d'accès aux données</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours2/src/services/stays-service.ts" data-titre="src/services/stays-service.ts"><code class="language-typescript" data-line-numbers="">import { STAYS } from "@/data/stays";
-import { Stay } from "@/models/stay";
+        <pre class="mini"  data-surligne="const STAYS_URL..stays.json|await fetch(STAYS_URL)|if (!response.ok)" data-fichier="demos/cours2/src/services/stays-service.ts" data-titre="src/services/stays-service.ts"><code class="language-typescript" data-line-numbers="3-4|9|10">import { Stay } from "@/models/stay";
 
-const wait = (ms: number) =&gt;
-  new Promise((resolve) =&gt; setTimeout(resolve, ms));
+const STAYS_URL =
+  "https://chris-chevalier.github.io/react-native-supports/api/stays.json";
 
-// Accès aux données : aujourd'hui des données locales, demain une API
-// ou Firebase
+// Accès aux données : le reste de l'application ne sait pas d'où
+// viennent les séjours
 export async function fetchStays(): Promise&lt;Stay[]&gt; {
-  await wait(600);
-  return STAYS;
+  const response = await fetch(STAYS_URL);
+  if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
+  return (await response.json()) as Stay[];
 }</code></pre>
         <div>
           <ul class="dense">
-            <li>Le service promet une chose : <code>Promise&lt;Stay[]&gt;</code></li>
-            <li>Le délai simule le réseau : l'écran doit déjà gérer le <strong>chargement</strong></li>
-            <li>Au TP3, son contenu deviendra un <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch()</code></a>. Au TP4, un appel à Firebase. <strong>Ni les hooks ni les vues ne changeront</strong></li>
+            <li data-etape="1">Les séjours sont servis en JSON par <a href="https://chris-chevalier.github.io/react-native-supports/api/stays.json" target="_blank">le site des supports</a> : une vraie API, gratuite et sans clé</li>
+            <li data-etape="2"><a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a> fait un vrai appel réseau. L'écran doit gérer le <strong>chargement</strong> et l'<strong>erreur</strong></li>
+            <li data-etape="3"><code>fetch</code> ne lève pas d'erreur sur une réponse 404 ou 500 : testez <code>response.ok</code></li>
+            <li>Le service promet une chose : <code>Promise&lt;Stay[]&gt;</code>. Si la source des données change, <strong>seul ce fichier change</strong></li>
           </ul>
         </div>
       </div>
@@ -642,9 +647,9 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li>Il n'assemble que des <strong>composants de base</strong> (<a href="https://reactnative.dev/docs/textinput" target="_blank"><code>TextInput</code></a>, <a href="https://reactnative.dev/docs/pressable" target="_blank"><code>Pressable</code></a>, <a href="https://reactnative.dev/docs/switch" target="_blank"><code>Switch</code></a>) et leurs styles</li>
-            <li>Il <strong>reçoit</strong> les filtres et <strong>signale</strong> les changements</li>
-            <li>Aucun état, aucun service, aucun <a href="https://react.dev/reference/react/useEffect" target="_blank"><code>useEffect</code></a></li>
+            <li data-etape="2">Il n'assemble que des <strong>composants de base</strong> (<a href="https://reactnative.dev/docs/textinput" target="_blank"><code>TextInput</code></a>, <a href="https://reactnative.dev/docs/pressable" target="_blank"><code>Pressable</code></a>, <a href="https://reactnative.dev/docs/switch" target="_blank"><code>Switch</code></a>) et leurs styles</li>
+            <li data-etape="1">Il <strong>reçoit</strong> les filtres et <strong>signale</strong> les changements</li>
+            <li data-etape="2">Aucun état, aucun service, aucun <a href="https://react.dev/reference/react/useEffect" target="_blank"><code>useEffect</code></a></li>
             <li>On peut le réutiliser ailleurs ou changer son design sans toucher à la logique</li>
           </ul>
         </div>
@@ -706,9 +711,9 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li>Trois affichages possibles : un indicateur de chargement, un message, un bouton « Réessayer »</li>
-            <li>Il ne sait pas <strong>pourquoi</strong> il s'affiche : c'est l'écran qui décide</li>
-            <li>Toutes les props sont facultatives : <code>&lt;StateMessage loading /&gt;</code> suffit pendant un chargement</li>
+            <li data-etape="2">Trois affichages possibles : un indicateur de chargement, un message, un bouton « Réessayer »</li>
+            <li data-etape="2">Il ne sait pas <strong>pourquoi</strong> il s'affiche : c'est l'écran qui décide</li>
+            <li data-etape="1">Toutes les props sont facultatives : <code>&lt;StateMessage loading /&gt;</code> suffit pendant un chargement</li>
           </ul>
         </div>
       </div>
@@ -716,7 +721,7 @@ const styles = StyleSheet.create({
   </section>
 
   <section>
-    <h2>L'écran assemble</h2>
+    <h2>L'écran assemblé</h2>
     <div class="corps">
       <div class="colonnes code-large">
         <pre class="mini" data-surligne="const columns = useColumns()..useStayFilters(stays);|const [favorites..=    );|if (state.status === &quot;loading&quot;)..onRetry={reload}" data-fichier="demos/etapes/cours2/catalogue-1/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="14-18|19-26|28-30">import { useState } from "react";
@@ -754,9 +759,7 @@ export default function CatalogScreen() {
     &lt;View style={styles.container}&gt;
       &lt;View style={styles.header}&gt;
         &lt;Text style={styles.heading}&gt;Séjours&lt;/Text&gt;
-        &lt;Text style={styles.link}&gt;
-          {favorites.length} favori(s)
-        &lt;/Text&gt;
+        &lt;Text style={styles.count}&gt;{favorites.length} favori(s)&lt;/Text&gt;
       &lt;/View&gt;
       &lt;StayFiltersBar filters={filters} onChange={updateFilters} /&gt;
       &lt;FlatList
@@ -796,15 +799,15 @@ const styles = StyleSheet.create({
     margin: 8,
   },
   heading: { fontSize: 24, fontWeight: "800" },
-  link: { fontSize: 16, fontWeight: "600", color: "#0B7A70" },
+  count: { fontSize: 16, fontWeight: "600", color: "#0B7A70" },
   empty: { margin: 8, fontSize: 16 },
 });</code></pre>
         <div>
           <ul class="dense">
-            <li>L'écran ne contient <strong>aucune règle</strong> : il branche les hooks sur les composants</li>
-            <li>Il gère les trois états : chargement, erreur, succès</li>
-            <li>Pour l'instant, les favoris sont un état local de l'écran</li>
-            <li>Les hooks sont appelés <strong>avant</strong> tout <code>return</code> : c'est une règle de React</li>
+            <li data-etape="1">L'écran ne contient <strong>aucune règle</strong> : il branche les hooks sur les composants</li>
+            <li data-etape="3">Il gère les trois états : chargement, erreur, succès</li>
+            <li data-etape="2">Pour l'instant, les favoris sont un état local de l'écran</li>
+            <li data-etape="1">Les hooks sont appelés <strong>avant</strong> tout <code>return</code> : c'est une règle de React</li>
           </ul>
         </div>
       </div>
@@ -865,22 +868,16 @@ const styles = StyleSheet.create({
     <h2>Créer un Context typé</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-surligne="type FavoritesContextValue..=}" data-fichier="demos/cours2/src/context/favorites-context.tsx" data-titre="src/context/favorites-context.tsx"><code class="language-tsx" data-line-numbers="8-40">import {
-  createContext,
-  ReactNode,
-  useContext,
-  useState,
-} from "react";
+        <pre class="mini" data-surligne="export type FavoritesContextValue..=};|export const FavoritesContext..createContext|export function FavoritesProvider..=}" data-fichier="demos/cours2/src/context/favorites-context.tsx" data-titre="src/context/favorites-context.tsx"><code class="language-tsx" data-line-numbers="3-7|9-10|12-34">import { createContext, ReactNode, useState } from "react";
 
-type FavoritesContextValue = {
+export type FavoritesContextValue = {
   favorites: string[];
   isFavorite: (id: string) =&gt; boolean;
   toggleFavorite: (id: string) =&gt; void;
 };
 
-const FavoritesContext = createContext&lt;FavoritesContextValue | null&gt;(
-  null,
-);
+export const FavoritesContext =
+  createContext&lt;FavoritesContextValue | null&gt;(null);
 
 export function FavoritesProvider({
   children,
@@ -904,22 +901,12 @@ export function FavoritesProvider({
       {children}
     &lt;/FavoritesContext.Provider&gt;
   );
-}
-
-export function useFavorites(): FavoritesContextValue {
-  const context = useContext(FavoritesContext);
-  if (!context) {
-    throw new Error(
-      "useFavorites doit être utilisé dans un FavoritesProvider",
-    );
-  }
-  return context;
 }</code></pre>
         <div>
           <ul class="dense">
-            <li>Le type décrit ce que le Context <strong>met à disposition</strong></li>
-            <li><code>null</code> par défaut : la valeur n'existe que sous un Provider</li>
-            <li>Le <strong>Provider</strong> tient l'état et le transmet à tous ses descendants</li>
+            <li data-etape="1">Le type décrit ce que le Context <strong>met à disposition</strong></li>
+            <li data-etape="2"><code>null</code> par défaut : la valeur n'existe que sous un Provider</li>
+            <li data-etape="3">Le <strong>Provider</strong> tient l'état et le transmet à tous ses descendants</li>
           </ul>
         </div>
       </div>
@@ -930,47 +917,14 @@ export function useFavorites(): FavoritesContextValue {
     <h2>Lire le Context avec un hook</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-surligne="export function useFavorites..=}" data-fichier="demos/cours2/src/context/favorites-context.tsx" data-titre="src/context/favorites-context.tsx"><code class="language-tsx" data-line-numbers="42-50">import {
-  createContext,
-  ReactNode,
-  useContext,
-  useState,
-} from "react";
+        <pre class="mini" data-surligne="export function useFavorites..=}" data-fichier="demos/cours2/src/hooks/use-favorites.ts" data-titre="src/hooks/use-favorites.ts"><code class="language-tsx" data-line-numbers="9-17">import { useContext } from "react";
 
-type FavoritesContextValue = {
-  favorites: string[];
-  isFavorite: (id: string) =&gt; boolean;
-  toggleFavorite: (id: string) =&gt; void;
-};
+import {
+  FavoritesContext,
+  FavoritesContextValue,
+} from "@/context/favorites-context";
 
-const FavoritesContext = createContext&lt;FavoritesContextValue | null&gt;(
-  null,
-);
-
-export function FavoritesProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const [favorites, setFavorites] = useState&lt;string[]&gt;([]);
-
-  const isFavorite = (id: string) =&gt; favorites.includes(id);
-  const toggleFavorite = (id: string) =&gt;
-    setFavorites((current) =&gt;
-      current.includes(id)
-        ? current.filter((f) =&gt; f !== id)
-        : [...current, id],
-    );
-
-  return (
-    &lt;FavoritesContext.Provider
-      value={{ favorites, isFavorite, toggleFavorite }}
-    &gt;
-      {children}
-    &lt;/FavoritesContext.Provider&gt;
-  );
-}
-
+// Seule porte d'entrée vers les favoris partagés
 export function useFavorites(): FavoritesContextValue {
   const context = useContext(FavoritesContext);
   if (!context) {
@@ -982,6 +936,7 @@ export function useFavorites(): FavoritesContextValue {
 }</code></pre>
         <div>
           <ul class="dense">
+            <li>Comme tout hook, il est rangé dans <code>src/hooks/</code>. Le fichier du Context ne contient que le Context et son Provider</li>
             <li>Le hook <code>useFavorites()</code> est la seule porte d'entrée. Les écrans n'importent jamais le Context directement</li>
             <li>L'erreur explicite signale un oubli du Provider dès le premier test</li>
             <li>Après le <code>if</code>, TypeScript sait que <code>context</code> n'est plus <code>null</code></li>
@@ -1017,67 +972,46 @@ export default function RootLayout() {
   </section>
 
   <section>
-    <h2>Lire le Context dans un autre écran</h2>
+    <h2>Un composant qui lit le Context</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini"  data-surligne="useFavorites();|isFavorite(stay.id)" data-fichier="demos/cours2/src/app/favorites.tsx" data-titre="src/app/favorites.tsx"><code class="language-tsx" data-line-numbers="9|14">import { FlatList, StyleSheet, Text } from "react-native";
+        <pre class="mini"  data-surligne="import { useFavorites }|const { favorites } = useFavorites();" data-fichier="demos/cours2/src/components/favorites-badge.tsx" data-titre="src/components/favorites-badge.tsx"><code class="language-tsx" data-line-numbers="3|7">import { StyleSheet, Text } from "react-native";
 
-import { StateMessage } from "@/components/state-message";
-import { useFavorites } from "@/context/favorites-context";
-import { useStays } from "@/hooks/use-stays";
+import { useFavorites } from "@/hooks/use-favorites";
 
-export default function FavoritesScreen() {
-  const { state } = useStays();
-  const { isFavorite } = useFavorites();
-
-  if (state.status !== "success")
-    return &lt;StateMessage loading={state.status === "loading"} /&gt;;
-  const favoriteStays = state.stays.filter((stay) =&gt;
-    isFavorite(stay.id),
-  );
-
+// Lit les favoris dans le Context : aucune prop à recevoir
+export function FavoritesBadge() {
+  const { favorites } = useFavorites();
   return (
-    &lt;FlatList
-      data={favoriteStays}
-      keyExtractor={(stay) =&gt; stay.id}
-      renderItem={({ item }) =&gt; (
-        &lt;Text style={styles.item}&gt;
-          {item.title} · {item.city}
-        &lt;/Text&gt;
-      )}
-      ListEmptyComponent={
-        &lt;Text style={styles.item}&gt;Aucun favori pour le moment.&lt;/Text&gt;
-      }
-      contentContainerStyle={styles.list}
-    /&gt;
+    &lt;Text style={styles.badge}&gt;★ {favorites.length} favori(s)&lt;/Text&gt;
   );
 }
 
 const styles = StyleSheet.create({
-  list: { padding: 16, gap: 8 },
-  item: { fontSize: 17 },
+  badge: { fontSize: 16, fontWeight: "600", color: "#0B7A70" },
 });</code></pre>
         <div>
           <ul class="dense">
-            <li><code>useFavorites()</code> donne accès aux favoris, sans les recevoir en props</li>
-            <li>Le catalogue ajoute un favori, cet écran le voit aussitôt</li>
-            <li>La liste affichée se <strong>calcule</strong> à partir des séjours et des favoris : aucun état en double</li>
+            <li data-etape="1">Le badge importe le hook <code>useFavorites</code>, pas le Context</li>
+            <li data-etape="2"><strong>Aucune prop</strong> : il lit les favoris directement, où qu'il soit placé sous le Provider</li>
+            <li>Sans Context, il faudrait passer les favoris de parent en enfant jusqu'à lui</li>
           </ul>
         </div>
       </div>
     </div>
   </section>
+
   <section>
     <h2>Le catalogue partage ses favoris</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini"  data-surligne="import { Link }+import { useFavorites }|useFavorites();|&lt;Link..&lt;/Link&gt;" data-fichier="demos/cours2/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="1,7|20|30-32">import { Link } from "expo-router";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+        <pre class="mini"  data-surligne="import { FavoritesBadge }+import { useFavorites }|useFavorites();|&lt;FavoritesBadge /&gt;" data-fichier="demos/cours2/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="3,7|20|30">import { FlatList, StyleSheet, Text, View } from "react-native";
 
+import { FavoritesBadge } from "@/components/favorites-badge";
 import { StateMessage } from "@/components/state-message";
 import { StayCard } from "@/components/stay-card";
 import { StayFiltersBar } from "@/components/stay-filters-bar";
-import { useFavorites } from "@/context/favorites-context";
+import { useFavorites } from "@/hooks/use-favorites";
 import { useColumns } from "@/hooks/use-columns";
 import { useStayFilters } from "@/hooks/use-stay-filters";
 import { useStays } from "@/hooks/use-stays";
@@ -1090,7 +1024,7 @@ export default function CatalogScreen() {
   const stays = state.status === "success" ? state.stays : [];
   const { filters, updateFilters, visibleStays } =
     useStayFilters(stays);
-  const { favorites, isFavorite, toggleFavorite } = useFavorites();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   if (state.status === "loading") return &lt;StateMessage loading /&gt;;
   if (state.status === "error")
@@ -1100,9 +1034,7 @@ export default function CatalogScreen() {
     &lt;View style={styles.container}&gt;
       &lt;View style={styles.header}&gt;
         &lt;Text style={styles.heading}&gt;Séjours&lt;/Text&gt;
-        &lt;Link href="/favorites" style={styles.link}&gt;
-          Mes favoris ({favorites.length})
-        &lt;/Link&gt;
+        &lt;FavoritesBadge /&gt;
       &lt;/View&gt;
       &lt;StayFiltersBar filters={filters} onChange={updateFilters} /&gt;
       &lt;FlatList
@@ -1142,14 +1074,13 @@ const styles = StyleSheet.create({
     margin: 8,
   },
   heading: { fontSize: 24, fontWeight: "800" },
-  link: { fontSize: 16, fontWeight: "600", color: "#0B7A70" },
   empty: { margin: 8, fontSize: 16 },
 });</code></pre>
         <div>
           <ul class="dense">
-            <li>Les favoris ne sont plus un état local de l'écran : ils viennent du Context</li>
-            <li><code>&lt;Link href="/favorites"&gt;</code> ouvre l'autre écran, comme un <code>&lt;a href&gt;</code> sur le web</li>
-            <li>Ajoutez un favori, puis ouvrez « Mes favoris » : il y est déjà</li>
+            <li data-etape="1">Le catalogue importe le badge et le hook des favoris</li>
+            <li data-etape="2">Les favoris ne sont plus un état local de l'écran : ils viennent du Context</li>
+            <li data-etape="3"><code>&lt;FavoritesBadge /&gt;</code> se met à jour à chaque favori ajouté, sans recevoir de props</li>
           </ul>
         </div>
       </div>
@@ -1198,7 +1129,7 @@ const styles = StyleSheet.create({
         <li><strong>Vue</strong> : des composants qui reçoivent des props et signalent des événements</li>
         <li>Un état en <strong>union discriminée</strong> rend les états absurdes impossibles</li>
         <li>Ce qui se calcule ne se stocke pas</li>
-        <li><strong>Context</strong> pour l'état partagé entre écrans, exposé par un hook</li>
+        <li><strong>Context</strong> pour l'état partagé entre composants, exposé par un hook rangé dans <code>src/hooks/</code></li>
       </ul>
     </div>
   </section>

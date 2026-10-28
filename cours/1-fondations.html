@@ -570,8 +570,8 @@ const styles = StyleSheet.create({
         <div>
           <ul class="dense">
             <li>Sur mobile, il n'y a pas de survol. L'utilisateur doit <strong>voir</strong> que son doigt a été pris en compte</li>
-            <li><code>style</code> accepte une fonction qui reçoit <code>{ pressed }</code></li>
-            <li>Un tableau de styles applique les suivants par-dessus les premiers. <code>false</code> est ignoré</li>
+            <li data-etape="1"><code>style</code> accepte une fonction qui reçoit <code>{ pressed }</code></li>
+            <li data-etape="2">Un tableau de styles applique les suivants par-dessus les premiers. <code>false</code> est ignoré</li>
           </ul>
         </div>
       </div>
@@ -857,10 +857,10 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li><strong>1.</strong> Les favoris sont un état : <code>toggleFavorite</code> ajoute ou retire un identifiant</li>
-            <li><strong>2.</strong> <code>visibleStays</code> se calcule à partir de la recherche : ce n'est pas un état</li>
-            <li><strong>3.</strong> <code>FlatList</code> ne crée que les cartes <strong>visibles</strong> à l'écran, puis les suivantes au fil du défilement. Une liste de 1 000 séjours reste donc fluide</li>
-            <li><code>keyExtractor</code> joue le rôle de la prop <code>key</code> de <code>map()</code></li>
+            <li data-etape="1"><strong>1.</strong> Les favoris sont un état : <code>toggleFavorite</code> ajoute ou retire un identifiant</li>
+            <li data-etape="2"><strong>2.</strong> <code>visibleStays</code> se calcule à partir de la recherche : ce n'est pas un état</li>
+            <li data-etape="3"><strong>3.</strong> <code>FlatList</code> ne crée que les cartes <strong>visibles</strong> à l'écran, puis les suivantes au fil du défilement. Une liste de 1 000 séjours reste donc fluide</li>
+            <li data-etape="3"><code>keyExtractor</code> joue le rôle de la prop <code>key</code> de <code>map()</code></li>
             <li><code>ScrollView</code> affiche tout d'un coup : réservez-la aux contenus courts</li>
           </ul>
         </div>

@@ -47,13 +47,13 @@
     <h2><span class="num">0</span> Le dépôt et l'équipe</h2>
     <div class="meta"><span class="etiquette clair">Git · organisation</span></div>
     <ol>
-      <li>Un seul membre crée le projet Expo (<code>npx create-expo-app@latest</code>, puis <code>npm run reset-project</code> en répondant <code>n</code> pour supprimer l'exemple, et <code>"output": "single"</code> dans <code>app.json</code>), le pousse sur le dépôt <code>rn-projet-nom1-nom2-nom3</code>, puis invite les deux autres et <strong>Chris-CHEVALIER</strong>.</li>
+      <li>Un seul membre crée le projet Expo (<code>npx create-expo-app@latest</code>, puis <code>npm run reset-project</code> en répondant <code>n</code> pour supprimer l'exemple, et <code>"output": "single"</code> dans <code>app.json</code>), le pousse sur le dépôt <code>rn-projet-nom1-nom2-nom3</code>, puis invite les deux autres et <strong>Chris-CHEVALIER</strong>, si ce n'est pas déjà fait.</li>
       <li>Les deux autres clonent le dépôt et lancent <code>npm install</code> puis <code>npx expo start</code>.</li>
       <li>Répartissez les <strong>trois parties</strong> du projet (A · Catalogue, B · Navigation et compte, C · Données partagées : voir le sujet du projet). Créez le <code>README.md</code> : le sujet en trois phrases, l'API publique envisagée, les membres (prénom, nom, compte GitHub) et le <strong>propriétaire de chaque partie</strong>.</li>
     </ol>
     <div class="encadre">
       <span class="intitule">Travailler à trois sans se marcher dessus</span>
-      Chacun travaille sur sa partie : <strong>A</strong> sur les étapes 1 à 4 (modèle, service, hooks et catalogue), <strong>B</strong> sur le modèle et le service de votre première collection, <strong>C</strong> sur l'étape 5 (Context et deuxième écran).
+      Chacun travaille sur sa partie : <strong>A</strong> sur les étapes 1 à 4 (modèle, service, hooks et catalogue), <strong>B</strong> sur le modèle et le service de votre première collection, <strong>C</strong> sur l'étape 5 (Context et composant qui le lit).
       Faites des commits courts et faites <code>git pull</code> avant chaque <code>git push</code>. Chacun commite avec son propre compte.
     </div>
   </section>
@@ -135,12 +135,11 @@
     <h2><span class="num">5</span> Un état global</h2>
     <div class="meta"><span class="etiquette clair">Context · Provider</span></div>
     <ol>
-      <li>Choisissez une donnée que <strong>plusieurs écrans</strong> partageront : des favoris, une sélection, des préférences d'affichage…</li>
-      <li>Dans <code>src/context/</code>, créez le Context typé, son Provider et un hook d'accès qui lève une erreur hors du Provider.</li>
+      <li>Choisissez une donnée que <strong>plusieurs composants</strong> partageront : des favoris, une sélection, des préférences d'affichage…</li>
+      <li>Dans <code>src/context/</code>, créez le Context typé et son Provider. Dans <code>src/hooks/</code>, écrivez le hook d'accès, qui lève une erreur hors du Provider.</li>
       <li>Placez le Provider dans <code>src/app/_layout.tsx</code>.</li>
-      <li>Créez un <strong>deuxième écran</strong> (par exemple <code>src/app/favorites.tsx</code>) qui lit cet état. Reliez-le au catalogue avec <code>&lt;Link href="/favorites"&gt;</code>, importé depuis <code>expo-router</code>.</li>
+      <li>Dans <code>src/components/</code>, écrivez un composant qui lit cet état <strong>sans recevoir de props</strong> (un badge « ★ 3 favoris », par exemple). Affichez-le dans l'en-tête du catalogue.</li>
     </ol>
-    <p class="muet">La navigation complète (onglets, détail, URL) est l'objet du cours 3 et du TP3.</p>
   </section>
 
   <!-- ================================================================== -->
@@ -151,7 +150,7 @@
       <li><code>npx tsc --noEmit</code> n'affiche aucune erreur.</li>
       <li>Les trois états (chargement, erreur, succès) s'affichent correctement.</li>
       <li>Le catalogue est une grille sur ordinateur et une liste sur téléphone.</li>
-      <li>Une modification de l'état global se voit sur les deux écrans.</li>
+      <li>Une modification de l'état global se voit aussitôt dans le composant qui le lit.</li>
       <li>Le README indique le propriétaire de chaque partie, et chacun a commité sur la sienne.</li>
     </ul>
     <div class="encadre neutre">
