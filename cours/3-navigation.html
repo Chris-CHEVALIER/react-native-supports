@@ -26,7 +26,7 @@
       <li>Naviguer sur mobile et sur le web</li>
       <li>Expo Router : les fichiers sont les routes</li>
       <li>Onglets, pile et routes dynamiques</li>
-      <li>Les données distantes</li>
+      <li>Une deuxième API : la météo</li>
       <li>Le cycle de vie</li>
       <li>Les listes volumineuses</li>
     </ol>
@@ -319,17 +319,42 @@ const styles = StyleSheet.create({
     <h2>Charger un seul séjour</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini"  data-surligne="export async function fetchStay..=}" data-fichier="demos/cours3/src/services/stays-service.ts" data-titre="src/services/stays-service.ts"><code class="language-typescript" data-line-numbers="8-12">import { Stay } from "@/models/stay";
+        <pre class="mini"  data-surligne="export async function fetchStay..=}" data-fichier="demos/cours3/src/services/stays-service.ts" data-titre="src/services/stays-service.ts"><code class="language-typescript" data-line-numbers="32-37">import { Stay, StayType } from "@/models/stay";
 
-const STAYS_URL =
-  "https://chris-chevalier.github.io/react-native-supports/api/stays.json";
+const SITE = "https://chris-chevalier.github.io/react-native-supports";
+const STAYS_URL = `${SITE}/api/stays.json`;
 
-// Accès aux données : le reste de l'application ne sait pas d'où
-// viennent les séjours
+// Forme de la réponse de l'API, limitée à ce qu'on utilise
+type StayResponse = {
+  id: string;
+  title: string;
+  type: StayType;
+  price_per_night: number;
+  is_available: boolean;
+  image_url: string | null;
+  location: { city: string; latitude: number; longitude: number };
+};
+
+// Traduit une réponse de l'API dans le vocabulaire du modèle
+function toStay(response: StayResponse): Stay {
+  return {
+    id: response.id,
+    title: response.title,
+    city: response.location.city,
+    type: response.type,
+    pricePerNight: response.price_per_night,
+    available: response.is_available,
+    latitude: response.location.latitude,
+    longitude: response.location.longitude,
+    imageUrl: response.image_url ?? undefined,
+  };
+}
+
 export async function fetchStays(): Promise&lt;Stay[]&gt; {
   const response = await fetch(STAYS_URL);
   if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
-  return (await response.json()) as Stay[];
+  const data: StayResponse[] = await response.json();
+  return data.map(toStay);
 }
 
 export async function fetchStay(
@@ -730,8 +755,8 @@ const styles = StyleSheet.create({
   <!-- ================================================================== -->
   <section data-layout="section">
     <div class="numero">04</div>
-    <h2>Les données distantes</h2>
-    <div class="sous-titre">Consommer une API publique</div>
+    <h2>Une deuxième API : la météo</h2>
+    <div class="sous-titre">Des paramètres dans l'URL, une API dans le détail</div>
   </section>
   <section>
     <h2>Le modèle de la météo</h2>
@@ -765,10 +790,10 @@ export function describeWeather(code: number): string {
   </section>
 
   <section>
-    <h2>Un service qui appelle une API</h2>
+    <h2>Une deuxième API : Open-Meteo</h2>
     <div class="corps">
-      <div class="colonnes code-large">
-        <pre class="mini" data-surligne="type OpenMeteoResponse..=};|const response = await fetch..=}" data-fichier="demos/cours3/src/services/weather-service.ts" data-titre="src/services/weather-service.ts"><code class="language-typescript" data-line-numbers="4-10|21-31">import { Weather } from "@/models/weather";
+      <div class="colonnes code-texte">
+        <pre class="mini"  data-surligne="type OpenMeteoResponse..=};|const url =..weather_code|const response = await fetch..=}" data-fichier="demos/cours3/src/services/weather-service.ts" data-titre="src/services/weather-service.ts"><code class="language-typescript" data-line-numbers="4-10|16-19|21-31">import { Weather } from "@/models/weather";
 
 // Forme de la réponse de l'API, limitée à ce qu'on utilise
 type OpenMeteoResponse = {
@@ -801,14 +826,15 @@ export async function fetchWeather(
 }</code></pre>
         <div>
           <ul class="dense">
-            <li data-etape="2"><a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a> fonctionne de la même façon sur le web et sur mobile</li>
-            <li data-etape="2"><code>fetch</code> ne lève <strong>pas</strong> d'erreur sur une réponse 404 ou 500 : testez <code>response.ok</code></li>
-            <li data-etape="1">Le service <strong>traduit</strong> la réponse de l'API dans le vocabulaire du modèle. Si l'API change, seul ce fichier change</li>
+            <li data-etape="1">Même démarche que pour les séjours : le type décrit la réponse avec <strong>ses</strong> noms (<code>temperature_2m</code>…)</li>
+            <li data-etape="2"><strong>Nouveau</strong> : l'adresse porte des <strong>paramètres</strong> (latitude, longitude, mesures voulues). Le <a href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Template_literals" target="_blank">gabarit de chaîne</a> <code>`…${latitude}…`</code> les insère</li>
+            <li data-etape="3">Puis <code>fetch</code>, <code>response.ok</code> et la conversion en modèle, comme pour les séjours</li>
+            <li><a href="https://open-meteo.com" target="_blank">Open-Meteo</a> est gratuite et sans clé</li>
           </ul>
         </div>
       </div>
     </div>
-    <aside class="notes">API : Open-Meteo, gratuite et sans clé. Montrer la réponse brute dans le navigateur avant de montrer le service.</aside>
+    <aside class="notes">Ouvrir l'adresse complète dans le navigateur (avec les coordonnées de Paris) avant de montrer le service. Insister sur ce qui est nouveau : les paramètres. Le reste est un rappel du cours précédent.</aside>
   </section>
 
   <section>
