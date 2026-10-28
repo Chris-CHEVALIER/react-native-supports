@@ -976,20 +976,23 @@ export function useFavorites(): FavoritesContextValue {
     <h2>Fournir le Context à toute l'application</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours2/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="">import { Stack } from "expo-router";
+        <pre class="mini" data-surligne="=    &lt;FavoritesProvider&gt;+=    &lt;/FavoritesProvider&gt;" data-fichier="demos/cours2/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="7,11">import { Stack } from "expo-router";
 
 import { FavoritesProvider } from "@/context/favorites-context";
 
 export default function RootLayout() {
   return (
     &lt;FavoritesProvider&gt;
-      &lt;Stack /&gt;
+      &lt;Stack screenOptions={{ headerTransparent: false }}&gt;
+        &lt;Stack.Screen name="index" options={{ title: "Catalogue" }} /&gt;
+      &lt;/Stack&gt;
     &lt;/FavoritesProvider&gt;
   );
 }</code></pre>
         <div>
           <ul class="dense">
             <li><code>_layout.tsx</code> enveloppe <strong>tous les écrans</strong> : c'est l'endroit du Provider</li>
+            <li>Le <code>Stack</code> et ses options ne changent pas : le Provider l'entoure</li>
             <li>Chaque modification de la valeur affiche à nouveau <strong>tous</strong> les composants qui lisent ce Context. Ne mettez pas tout dedans</li>
           </ul>
         </div>

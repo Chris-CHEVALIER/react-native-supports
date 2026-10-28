@@ -225,6 +225,33 @@ tsconfig.json         configuration TypeScript
     <aside class="notes">Les dossiers models, data et hooks n'existent pas après reset-project : on les crée au fil des exemples.</aside>
   </section>
   <section>
+    <h2>Le navigateur racine</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-surligne="&lt;Stack screenOptions|&lt;Stack.Screen name=&quot;index&quot;" data-fichier="demos/cours1/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="8|9">import { Stack } from "expo-router";
+
+// Navigateur racine : une pile d'écrans avec un en-tête
+export default function RootLayout() {
+  return (
+    // Sur iOS 26, l'en-tête est transparent par défaut : l'écran
+    // passerait dessous
+    &lt;Stack screenOptions={{ headerTransparent: false }}&gt;
+      &lt;Stack.Screen name="index" options={{ title: "Catalogue" }} /&gt;
+    &lt;/Stack&gt;
+  );
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>_layout.tsx</code> enveloppe tous les écrans de <code>src/app/</code>. <a href="https://docs.expo.dev/router/advanced/stack/"><code>Stack</code></a> les empile, avec un <strong>en-tête</strong> et un bouton retour</li>
+            <li data-etape="1">Sur iOS 26, l'en-tête est <strong>transparent</strong> par défaut. Sans <code>headerTransparent: false</code>, l'écran passe sous l'heure et sous le titre</li>
+            <li data-etape="2"><code>Stack.Screen</code> règle un écran par son nom de route. Sans <code>title</code>, l'en-tête affiche « index »</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">Montrer d'abord le défaut sur le simulateur iOS avec le Stack nu du modèle, puis coller ce fichier. Sur le web et Android, l'en-tête est opaque : rien ne se voit.</aside>
+  </section>
+  <section>
     <h2>TypeScript : rappels</h2>
     <div class="corps">
       <div class="colonnes code-texte">

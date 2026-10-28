@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Corrigé du TP1 – React Native</title>
+  <link rel="stylesheet" href="../assets/css/enonce.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="titre">
+    <h1>Corrigé du TP1 – Le catalogue du disquaire</h1>
+    <p><span class="code-module">React Native</span> · Une solution complète, fichier par fichier</p>
+  </div>
+</header>
+
+<main>
+
+  <p>
+    Voici une solution complète du TP1. Chaque bloc est un <strong>fichier entier</strong> : copiez-le dans le fichier indiqué par son titre.
+    Comparez-le avec le vôtre plutôt que de le recopier : une autre solution peut être tout aussi juste.
+  </p>
+
+  <div class="encadre neutre">
+    <span class="intitule">Pour lancer la solution</span>
+    Partez d'un projet créé comme à l'étape 0 (<code>create-expo-app</code>, <code>reset-project</code>, <code>"output": "single"</code>),
+    puis copiez les fichiers dans l'ordre de cette page. Vérifiez avec <code>npx tsc --noEmit</code>, puis lancez <code>npm start</code>.
+  </div>
+
+  <nav class="sommaire">
+    <a href="#etape-1"><span class="n">Étape 1</span><br>Le modèle et les données</a>
+    <a href="#etape-2"><span class="n">Étape 2</span><br>La carte d'un album</a>
+    <a href="#etape-3"><span class="n">Étape 3</span><br>Le hook des colonnes</a>
+    <a href="#etape-5"><span class="n">Étape 5</span><br>Le filtre par genre</a>
+    <a href="#ecran"><span class="n">Étapes 2 à 5</span><br>L'écran du catalogue</a>
+  </nav>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-1">
+    <h2><span class="num">1</span> Le modèle et les données</h2>
+    <p>Le type <code>Genre</code> est une union : une faute de frappe dans un genre est refusée par TypeScript. <code>GENRES</code> sert à afficher les boutons du filtre.</p>
+    <pre data-fichier="corriges/tp1/src/models/album.ts" data-titre="src/models/album.ts"><code class="language-typescript" data-line-numbers="">export type Genre = "rock" | "jazz" | "pop" | "hip-hop" | "electro";
+
+export type Album = {
+  id: string;
+  title: string;
+  artist: string;
+  year: number;
+  genre: Genre;
+  price: number;
+  inStock: boolean;
+  coverUrl: string;
+};
+
+export const GENRES: Genre[] = [
+  "rock",
+  "jazz",
+  "pop",
+  "hip-hop",
+  "electro",
+];</code></pre>
+    <p>Les données sont celles de l'énoncé. Le type <code>Album[]</code> fait vérifier chaque album.</p>
+    <pre data-fichier="corriges/tp1/src/data/albums.ts" data-titre="src/data/albums.ts"><code class="language-typescript" data-line-numbers="">import { Album } from "@/models/album";
+
+export const ALBUMS: Album[] = [
+  {
+    id: "a1",
+    title: "Kind of Blue",
+    artist: "Miles Davis",
+    year: 1959,
+    genre: "jazz",
+    price: 24.9,
+    inStock: true,
+    coverUrl: "https://picsum.photos/id/100/400/400",
+  },
+  {
+    id: "a2",
+    title: "Random Access Memories",
+    artist: "Daft Punk",
+    year: 2013,
+    genre: "electro",
+    price: 34.9,
+    inStock: true,
+    coverUrl: "https://picsum.photos/id/101/400/400",
+  },
+  {
+    id: "a3",
+    title: "Rumours",
+    artist: "Fleetwood Mac",
+    year: 1977,
+    genre: "rock",
+    price: 27.5,
+    inStock: false,
+    coverUrl: "https://picsum.photos/id/102/400/400",
+  },
+  {
+    id: "a4",
+    title: "To Pimp a Butterfly",
+    artist: "Kendrick Lamar",
+    year: 2015,
+    genre: "hip-hop",
+    price: 32,
+    inStock: true,
+    coverUrl: "https://picsum.photos/id/103/400/400",
+  },
+  {
+    id: "a5",
+    title: "Thriller",
+    artist: "Michael Jackson",
+    year: 1982,
+    genre: "pop",
+    price: 22.9,
+    inStock: true,
+    coverUrl: "https://picsum.photos/id/104/400/400",
+  },
+  {
+    id: "a6",
+    title: "A Love Supreme",
+    artist: "John Coltrane",
+    year: 1965,
+    genre: "jazz",
+    price: 26,
+    inStock: true,
+    coverUrl: "https://picsum.photos/id/106/400/400",
+  },
+  {
+    id: "a7",
+    title: "OK Computer",
+    artist: "Radiohead",
+    year: 1997,
+    genre: "rock",
+    price: 29.9,
+    inStock: true,
+    coverUrl: "https://picsum.photos/id/107/400/400",
+  },
+  {
+    id: "a8",
+    title: "Discovery",
+    artist: "Daft Punk",
+    year: 2001,
+    genre: "electro",
+    price: 31.5,
+    inStock: false,
+    coverUrl: "https://picsum.photos/id/108/400/400",
+  },
+  {
+    id: "a9",
+    title: "Illmatic",
+    artist: "Nas",
+    year: 1994,
+    genre: "hip-hop",
+    price: 25,
+    inStock: true,
+    coverUrl: "https://picsum.photos/id/109/400/400",
+  },
+  {
+    id: "a10",
+    title: "L'Homme à tête de chou",
+    artist: "Serge Gainsbourg",
+    year: 1976,
+    genre: "pop",
+    price: 23.5,
+    inStock: true,
+    coverUrl: "https://picsum.photos/id/110/400/400",
+  },
+  {
+    id: "a11",
+    title: "Moanin'",
+    artist: "Art Blakey",
+    year: 1958,
+    genre: "jazz",
+    price: 21.9,
+    inStock: true,
+    coverUrl: "https://picsum.photos/id/111/400/400",
+  },
+  {
+    id: "a12",
+    title: "Homework",
+    artist: "Daft Punk",
+    year: 1997,
+    genre: "electro",
+    price: 28.9,
+    inStock: true,
+    coverUrl: "https://picsum.photos/id/112/400/400",
+  },
+];</code></pre>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-2">
+    <h2><span class="num">2</span> La carte d'un album</h2>
+    <p>La mise en forme des prix sert à la carte et au total du panier : elle a son propre fichier.</p>
+    <pre data-fichier="corriges/tp1/src/models/price.ts" data-titre="src/models/price.ts"><code class="language-typescript" data-line-numbers="">// Mise en forme des prix, partagée par la carte et le total du panier
+export const formatPrice = (price: number) =&gt;
+  new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(price);</code></pre>
+    <p>La carte ne reçoit que des props. Elle affiche l'album et signale l'appui sur le bouton du panier, sans rien décider elle-même.</p>
+    <pre data-fichier="corriges/tp1/src/components/album-card.tsx" data-titre="src/components/album-card.tsx"><code class="language-tsx" data-line-numbers="">import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
+import { formatPrice } from "@/models/price";
+import { Album } from "@/models/album";
+
+type AlbumCardProps = {
+  album: Album;
+  inCart: boolean;
+  onToggleCart: (id: string) =&gt; void;
+};
+
+export function AlbumCard({
+  album,
+  inCart,
+  onToggleCart,
+}: AlbumCardProps) {
+  return (
+    &lt;View style={styles.card}&gt;
+      &lt;Image source={{ uri: album.coverUrl }} style={styles.cover} /&gt;
+      &lt;View style={styles.body}&gt;
+        &lt;Text style={styles.genre}&gt;{album.genre}&lt;/Text&gt;
+        &lt;Text style={styles.title} numberOfLines={1}&gt;
+          {album.title}
+        &lt;/Text&gt;
+        &lt;Text style={styles.artist}&gt;
+          {album.artist} · {album.year}
+        &lt;/Text&gt;
+        &lt;Text style={styles.price}&gt;{formatPrice(album.price)}&lt;/Text&gt;
+        &lt;Pressable
+          disabled={!album.inStock}
+          onPress={() =&gt; onToggleCart(album.id)}
+          style={({ pressed }) =&gt; [
+            styles.button,
+            inCart &amp;&amp; styles.buttonInCart,
+            !album.inStock &amp;&amp; styles.buttonDisabled,
+            pressed &amp;&amp; styles.buttonPressed,
+          ]}
+        &gt;
+          &lt;Text style={styles.buttonLabel}&gt;
+            {!album.inStock
+              ? "Épuisé"
+              : inCart
+                ? "Dans le panier ✓"
+                : "Ajouter au panier"}
+          &lt;/Text&gt;
+        &lt;/Pressable&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    flex: 1,
+    margin: 8,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  cover: { width: "100%", aspectRatio: 1 },
+  body: { padding: 12, gap: 2 },
+  genre: {
+    fontSize: 12,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    color: "#0B7A70",
+  },
+  title: { fontSize: 17, fontWeight: "700" },
+  artist: { fontSize: 14, color: "#5A5F80" },
+  price: { fontSize: 16, fontWeight: "600", marginTop: 4 },
+  button: {
+    marginTop: 10,
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: "center",
+    backgroundColor: "#E2F7F4",
+  },
+  buttonInCart: { backgroundColor: "#2EC4B6" },
+  buttonDisabled: { backgroundColor: "#ECEDF3" },
+  buttonPressed: { opacity: 0.6 },
+  buttonLabel: { fontSize: 15, fontWeight: "600" },
+});</code></pre>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-3">
+    <h2><span class="num">3</span> Le hook des colonnes</h2>
+    <p><code>useWindowDimensions()</code> provoque un nouveau rendu quand la fenêtre change de taille : le nombre de colonnes suit sans recharger la page.</p>
+    <pre data-fichier="corriges/tp1/src/hooks/use-columns.ts" data-titre="src/hooks/use-columns.ts"><code class="language-typescript" data-line-numbers="">import { useWindowDimensions } from "react-native";
+
+export function useColumns(): number {
+  const { width } = useWindowDimensions();
+  if (width &gt;= 1200) return 4;
+  if (width &gt;= 900) return 3;
+  if (width &gt;= 600) return 2;
+  return 1;
+}</code></pre>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-5">
+    <h2><span class="num">5</span> Le filtre par genre</h2>
+    <p>Comme la carte, le filtre est un composant d'affichage : il reçoit le genre choisi et signale chaque appui.</p>
+    <pre data-fichier="corriges/tp1/src/components/genre-filter.tsx" data-titre="src/components/genre-filter.tsx"><code class="language-tsx" data-line-numbers="">import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+} from "react-native";
+
+import { Genre, GENRES } from "@/models/album";
+
+type GenreFilterProps = {
+  selected: Genre | null;
+  onSelect: (genre: Genre | null) =&gt; void;
+};
+
+export function GenreFilter({
+  selected,
+  onSelect,
+}: GenreFilterProps) {
+  const options: (Genre | null)[] = [null, ...GENRES];
+  return (
+    &lt;ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.row}
+    &gt;
+      {options.map((genre) =&gt; (
+        &lt;Pressable
+          key={genre ?? "all"}
+          onPress={() =&gt; onSelect(genre)}
+          style={[
+            styles.chip,
+            selected === genre &amp;&amp; styles.chipSelected,
+          ]}
+        &gt;
+          &lt;Text style={styles.label}&gt;{genre ?? "Tous"}&lt;/Text&gt;
+        &lt;/Pressable&gt;
+      ))}
+    &lt;/ScrollView&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  row: { gap: 8, paddingHorizontal: 8 },
+  chip: {
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#D9DCEA",
+    backgroundColor: "#fff",
+  },
+  chipSelected: {
+    backgroundColor: "#2EC4B6",
+    borderColor: "#2EC4B6",
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "600",
+    textTransform: "capitalize",
+  },
+});</code></pre>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="ecran">
+    <h2><span class="num">✓</span> L'écran du catalogue</h2>
+    <p>Le titre de l'application est défini une fois pour toutes dans le navigateur racine. <code>headerTransparent: false</code> rend l'en-tête opaque : sur iOS 26, il est transparent par défaut et l'écran passerait dessous.</p>
+    <pre data-fichier="corriges/tp1/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="">import { Stack } from "expo-router";
+
+export default function RootLayout() {
+  return (
+    &lt;Stack
+      screenOptions={{ title: "Disquaire", headerTransparent: false }}
+    /&gt;
+  );
+}</code></pre>
+    <p>
+      L'écran assemble tout. Le panier, la recherche et le genre choisi sont des <strong>états</strong>.
+      La liste affichée et le total se <strong>calculent</strong> à partir d'eux à chaque rendu : ce ne sont pas des états.
+      La prop <code>key</code> de la <code>FlatList</code> la reconstruit quand le nombre de colonnes change.
+    </p>
+    <pre data-fichier="corriges/tp1/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="">import { useState } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+
+import { AlbumCard } from "@/components/album-card";
+import { formatPrice } from "@/models/price";
+import { GenreFilter } from "@/components/genre-filter";
+import { ALBUMS } from "@/data/albums";
+import { useColumns } from "@/hooks/use-columns";
+import { Genre } from "@/models/album";
+
+export default function CatalogScreen() {
+  const columns = useColumns();
+  const [query, setQuery] = useState("");
+  const [genre, setGenre] = useState&lt;Genre | null&gt;(null);
+  const [cart, setCart] = useState&lt;string[]&gt;([]);
+
+  const toggleCart = (id: string) =&gt;
+    setCart((current) =&gt;
+      current.includes(id)
+        ? current.filter((c) =&gt; c !== id)
+        : [...current, id],
+    );
+
+  const search = query.trim().toLowerCase();
+  const visibleAlbums = ALBUMS.filter(
+    (album) =&gt;
+      (genre === null || album.genre === genre) &amp;&amp;
+      (album.title.toLowerCase().includes(search) ||
+        album.artist.toLowerCase().includes(search)),
+  );
+
+  const total = ALBUMS.filter((album) =&gt;
+    cart.includes(album.id),
+  ).reduce((sum, album) =&gt; sum + album.price, 0);
+
+  return (
+    &lt;View style={styles.screen}&gt;
+      &lt;View style={styles.container}&gt;
+        &lt;View style={styles.header}&gt;
+          &lt;Text style={styles.heading}&gt;Disquaire&lt;/Text&gt;
+          &lt;Text style={styles.cart}&gt;
+            Panier : {cart.length} · {formatPrice(total)}
+          &lt;/Text&gt;
+        &lt;/View&gt;
+        &lt;TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Rechercher un album ou un artiste"
+          style={styles.search}
+        /&gt;
+        &lt;GenreFilter selected={genre} onSelect={setGenre} /&gt;
+        &lt;FlatList
+          key={columns}
+          numColumns={columns}
+          data={visibleAlbums}
+          keyExtractor={(album) =&gt; album.id}
+          renderItem={({ item }) =&gt; (
+            &lt;AlbumCard
+              album={item}
+              inCart={cart.includes(item.id)}
+              onToggleCart={toggleCart}
+            /&gt;
+          )}
+          ListEmptyComponent={
+            &lt;Text style={styles.empty}&gt;
+              Aucun album ne correspond à votre recherche.
+            &lt;/Text&gt;
+          }
+          contentContainerStyle={styles.list}
+        /&gt;
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: "#F2F3F9" },
+  container: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 1280,
+    alignSelf: "center",
+    paddingTop: 8,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  heading: { fontSize: 26, fontWeight: "800" },
+  cart: { fontSize: 16, fontWeight: "600" },
+  search: {
+    marginHorizontal: 16,
+    marginVertical: 8,
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#D9DCEA",
+    backgroundColor: "#fff",
+    fontSize: 16,
+  },
+  list: { padding: 8 },
+  empty: { margin: 8, fontSize: 16 },
+});</code></pre>
+  </section>
+
+</main>
+
+<footer class="pied">React Native · Corrigé du TP1 · Chris CHEVALIER</footer>
+
+<script src="../assets/vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="../assets/js/enonce.js"></script>
+</body>
+</html>

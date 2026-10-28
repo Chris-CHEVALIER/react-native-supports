@@ -139,10 +139,10 @@ export const unstable_settings = { anchor: "(tabs)" };
 export default function RootLayout() {
   return (
     &lt;FavoritesProvider&gt;
-      &lt;Stack&gt;
+      &lt;Stack screenOptions={{ headerTransparent: false }}&gt;
         &lt;Stack.Screen
           name="(tabs)"
-          options={{ headerShown: false }}
+          options={{ headerShown: false, title: "Séjours" }}
         /&gt;
       &lt;/Stack&gt;
     &lt;/FavoritesProvider&gt;
@@ -150,7 +150,7 @@ export default function RootLayout() {
 }</code></pre>
         <div>
           <ul class="dense">
-            <li>Les onglets forment <strong>un seul écran</strong> de la pile, sans en-tête (ils ont le leur)</li>
+            <li>Les onglets forment <strong>un seul écran</strong> de la pile, sans en-tête (ils ont le leur). Son <code>title</code> sert au bouton retour du détail, qui afficherait sinon « (tabs) »</li>
             <li>Le détail se pose par-dessus</li>
             <li><code>anchor</code> : sans lui, une page ouverte par son URL n'a pas de flèche de retour</li>
           </ul>
