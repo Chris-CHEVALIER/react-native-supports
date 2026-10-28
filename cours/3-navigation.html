@@ -124,40 +124,6 @@ mv src/app/index.tsx "src/app/(tabs)/"
     <aside class="notes">On part du projet obtenu à la fin du cours précédent. Le catalogue garde son code : seul son dossier change.</aside>
   </section>
 
-  <section>
-    <h2>La pile racine</h2>
-    <div class="corps">
-      <div class="colonnes code-large">
-        <pre class="mini" data-fichier="demos/cours3/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="">import { Stack } from "expo-router";
-
-import { FavoritesProvider } from "@/context/favorites-context";
-
-// Ouvert directement par son URL, un séjour garde un retour vers les
-// onglets
-export const unstable_settings = { anchor: "(tabs)" };
-
-export default function RootLayout() {
-  return (
-    &lt;FavoritesProvider&gt;
-      &lt;Stack screenOptions={{ headerTransparent: false }}&gt;
-        &lt;Stack.Screen
-          name="(tabs)"
-          options={{ headerShown: false, title: "Séjours" }}
-        /&gt;
-      &lt;/Stack&gt;
-    &lt;/FavoritesProvider&gt;
-  );
-}</code></pre>
-        <div>
-          <ul class="dense">
-            <li>Les onglets forment <strong>un seul écran</strong> de la pile, sans en-tête (ils ont le leur). Son <code>title</code> sert au bouton retour du détail, qui afficherait sinon « (tabs) »</li>
-            <li>Le détail se pose par-dessus</li>
-            <li><code>anchor</code> : sans lui, une page ouverte par son URL n'a pas de flèche de retour</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ================================================================== -->
   <section data-layout="section">
@@ -269,12 +235,47 @@ export default function TabsLayout() {
           <ul class="dense">
             <li>Depuis le SDK 58, importez <code>Tabs</code> depuis <code>expo-router/js-tabs</code>. L'import depuis <code>expo-router</code> est <strong>déprécié</strong></li>
             <li><code>name</code> reprend le nom du fichier</li>
+            <li>Deux en-têtes s'empilent : celui de la pile et celui des onglets. La diapo suivante masque celui de la pile</li>
             <li>Icônes : <a href="https://icons.expo.fyi" target="_blank"><code>@expo/vector-icons</code></a>, à installer avec <code>npx expo install</code></li>
           </ul>
         </div>
       </div>
     </div>
-    <aside class="notes">Il existe aussi NativeTabs (expo-router/native-tabs) pour la barre d'onglets native du système. On garde les onglets JavaScript, identiques sur le web et sur mobile.</aside>
+    <aside class="notes">À cette étape, Metro avertit : No route named "index" exists. La pile racine nomme encore l'écran index, qui est maintenant dans (tabs). La diapo suivante règle l'avertissement et le double en-tête. Il existe aussi NativeTabs (expo-router/native-tabs) pour la barre d'onglets native du système. On garde les onglets JavaScript, identiques sur le web et sur mobile.</aside>
+  </section>
+  <section>
+    <h2>La pile racine</h2>
+    <div class="corps">
+      <div class="colonnes code-large">
+        <pre class="mini" data-fichier="demos/cours3/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="">import { Stack } from "expo-router";
+
+import { FavoritesProvider } from "@/context/favorites-context";
+
+// Ouvert directement par son URL, un séjour garde un retour vers les
+// onglets
+export const unstable_settings = { anchor: "(tabs)" };
+
+export default function RootLayout() {
+  return (
+    &lt;FavoritesProvider&gt;
+      &lt;Stack screenOptions={{ headerTransparent: false }}&gt;
+        &lt;Stack.Screen
+          name="(tabs)"
+          options={{ headerShown: false, title: "Séjours" }}
+        /&gt;
+      &lt;/Stack&gt;
+    &lt;/FavoritesProvider&gt;
+  );
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Les onglets forment <strong>un seul écran</strong> de la pile, sans en-tête (ils ont le leur). Masquer cet en-tête avant d'avoir écrit les onglets laisserait l'écran sans en-tête, sous l'heure sur iOS. Son <code>title</code> sert au bouton retour du détail, qui afficherait sinon « (tabs) »</li>
+            <li>Le détail se pose par-dessus</li>
+            <li><code>anchor</code> : sans lui, une page ouverte par son URL n'a pas de flèche de retour</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </section>
   <section>
     <h2>Une page introuvable : <code>+not-found</code></h2>
