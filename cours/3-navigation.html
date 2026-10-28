@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Navigation et cycle de vie – React Native</title>
+  <title>Navigation et listes – React Native</title>
   <link rel="stylesheet" href="../assets/vendor/reveal/dist/reset.css">
   <link rel="stylesheet" href="../assets/vendor/reveal/dist/reveal.css">
   <link rel="stylesheet" href="../assets/css/theme.css">
 </head>
-<body data-pied="React Native · Cours 3 · Navigation et cycle de vie">
+<body data-pied="React Native · Cours 3 · Navigation et listes">
 <div class="reveal">
 <div class="slides">
 
   <section data-layout="titre">
-    <h1>Navigation et cycle de vie</h1>
+    <h1>Navigation et listes</h1>
     <div class="sous-titre">
       <span class="code-module">Cours 3</span> – Expo Router, données distantes et listes<br>
       Chris CHEVALIER
@@ -26,7 +26,6 @@
       <li>Naviguer sur mobile et sur le web</li>
       <li>Expo Router : les fichiers sont les routes</li>
       <li>Onglets, pile et routes dynamiques</li>
-      <li>Le cycle de vie</li>
       <li>Les listes volumineuses</li>
     </ol>
   </section>
@@ -696,7 +695,7 @@ const styles = StyleSheet.create({
     <h2>Naviguer par le code : <code>useRouter</code></h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/etapes/cours3/catalogue-1/src/app/(tabs)/index.tsx" data-titre="src/app/(tabs)/index.tsx"><code class="language-tsx" data-line-numbers="1,13,21-22,41">import { useRouter } from "expo-router";
+        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/index.tsx" data-titre="src/app/(tabs)/index.tsx"><code class="language-tsx" data-line-numbers="1,13,21-22,41">import { useRouter } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { StateMessage } from "@/components/state-message";
@@ -788,215 +787,6 @@ const styles = StyleSheet.create({
   <!-- ================================================================== -->
   <section data-layout="section">
     <div class="numero">04</div>
-    <h2>Le cycle de vie</h2>
-    <div class="sous-titre">Écrans et application</div>
-  </section>
-
-  <section>
-    <h2>Un écran ne se démonte pas toujours</h2>
-    <div class="corps">
-      <div class="colonnes code-large">
-        <pre class="mini" data-fichier="demos/etapes/cours3/favoris-2/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="1-2,10,12,14-21,33-37,56">import { Link, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
-import { FlatList, StyleSheet, Text } from "react-native";
-
-import { StateMessage } from "@/components/state-message";
-import { useFavorites } from "@/hooks/use-favorites";
-import { useStays } from "@/hooks/use-stays";
-
-export default function FavoritesScreen() {
-  const { state, reload } = useStays();
-  const { isFavorite } = useFavorites();
-  const [refreshedAt, setRefreshedAt] = useState("");
-
-  // À chaque fois que l'onglet redevient visible, on recharge les
-  // séjours et on note l'heure pour le voir à l'écran
-  useFocusEffect(
-    useCallback(() =&gt; {
-      reload();
-      setRefreshedAt(new Date().toLocaleTimeString("fr-FR"));
-    }, [reload]),
-  );
-
-  if (state.status !== "success")
-    return &lt;StateMessage loading={state.status === "loading"} /&gt;;
-  const favoriteStays = state.stays.filter((stay) =&gt;
-    isFavorite(stay.id),
-  );
-
-  return (
-    &lt;FlatList
-      data={favoriteStays}
-      keyExtractor={(stay) =&gt; stay.id}
-      ListHeaderComponent={
-        &lt;Text style={styles.refreshed}&gt;
-          Actualisé à {refreshedAt}
-        &lt;/Text&gt;
-      }
-      renderItem={({ item }) =&gt; (
-        &lt;Link
-          href={{ pathname: "/stays/[id]", params: { id: item.id } }}
-          style={styles.item}
-        &gt;
-          {item.title}
-        &lt;/Link&gt;
-      )}
-      ListEmptyComponent={
-        &lt;Text style={styles.item}&gt;Aucun favori pour le moment.&lt;/Text&gt;
-      }
-      contentContainerStyle={styles.list}
-    /&gt;
-  );
-}
-
-const styles = StyleSheet.create({
-  list: { padding: 16 },
-  refreshed: { fontSize: 14, color: "#5A5F80", marginBottom: 8 },
-  item: { fontSize: 17, paddingVertical: 8 },
-});</code></pre>
-        <div>
-          <ul class="dense">
-            <li>Un onglet quitté reste <strong>monté</strong> : son <code>useEffect(…, [])</code> ne s'exécutera plus</li>
-            <li><a href="https://docs.expo.dev/router/reference/hooks/#usefocuseffect" target="_blank"><code>useFocusEffect</code></a> (d'<code>expo-router</code>) s'exécute à <strong>chaque</strong> affichage de l'écran</li>
-            <li>La fonction renvoyée, si vous en écrivez une, s'exécute quand l'écran perd le focus</li>
-            <li><a href="https://react.dev/reference/react/useCallback" target="_blank"><code>useCallback</code></a> évite de relancer l'effet à chaque rendu</li>
-            <li>Pour <strong>voir</strong> l'effet, l'écran affiche l'heure de la dernière actualisation : elle change à chaque retour sur l'onglet</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>L'application revient au premier plan</h2>
-    <div class="corps">
-      <div class="colonnes code-large">
-        <pre class="mini" data-fichier="demos/cours3/src/hooks/use-on-foreground.ts" data-titre="src/hooks/use-on-foreground.ts"><code class="language-typescript" data-line-numbers="">import { useEffect } from "react";
-import { AppState } from "react-native";
-
-// Appelle onForeground chaque fois que l'application revient au
-// premier plan
-export function useOnForeground(onForeground: () =&gt; void) {
-  useEffect(() =&gt; {
-    const subscription = AppState.addEventListener(
-      "change",
-      (status) =&gt; {
-        if (status === "active") onForeground();
-      },
-    );
-    // Au démontage, on retire l'écouteur
-    return () =&gt; subscription.remove();
-  }, [onForeground]);
-}</code></pre>
-        <div>
-          <ul class="dense">
-            <li><a href="https://reactnative.dev/docs/appstate" target="_blank"><code>AppState</code></a> signale le premier plan (<code>"active"</code>) et l'arrière-plan (<code>"background"</code>). Sur le web, il suit la visibilité de l'onglet du navigateur</li>
-            <li>Le hook reçoit une <strong>fonction</strong> à appeler au retour dans l'application</li>
-            <li>Toujours <strong>retirer l'écouteur</strong> au démontage, sinon il s'accumule</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Recharger le catalogue au retour</h2>
-    <div class="corps">
-      <div class="colonnes code-large">
-        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/index.tsx" data-titre="src/app/(tabs)/index.tsx"><code class="language-tsx" data-line-numbers="9,17-18">import { useRouter } from "expo-router";
-import { FlatList, StyleSheet, Text, View } from "react-native";
-
-import { StateMessage } from "@/components/state-message";
-import { StayCard } from "@/components/stay-card";
-import { StayFiltersBar } from "@/components/stay-filters-bar";
-import { useFavorites } from "@/hooks/use-favorites";
-import { useColumns } from "@/hooks/use-columns";
-import { useOnForeground } from "@/hooks/use-on-foreground";
-import { useStayFilters } from "@/hooks/use-stay-filters";
-import { useStays } from "@/hooks/use-stays";
-
-export default function CatalogScreen() {
-  const router = useRouter();
-  const columns = useColumns();
-  const { state, reload } = useStays();
-  // De retour dans l'application, le catalogue est rechargé
-  useOnForeground(reload);
-  const stays = state.status === "success" ? state.stays : [];
-  const { filters, updateFilters, visibleStays } =
-    useStayFilters(stays);
-  const { isFavorite, toggleFavorite } = useFavorites();
-
-  const openStay = (id: string) =&gt;
-    router.push({ pathname: "/stays/[id]", params: { id } });
-
-  if (state.status === "loading") return &lt;StateMessage loading /&gt;;
-  if (state.status === "error")
-    return &lt;StateMessage message={state.message} onRetry={reload} /&gt;;
-
-  return (
-    &lt;View style={styles.container}&gt;
-      &lt;StayFiltersBar filters={filters} onChange={updateFilters} /&gt;
-      &lt;FlatList
-        key={columns}
-        numColumns={columns}
-        data={visibleStays}
-        keyExtractor={(stay) =&gt; stay.id}
-        renderItem={({ item }) =&gt; (
-          &lt;StayCard
-            stay={item}
-            isFavorite={isFavorite(item.id)}
-            onToggleFavorite={toggleFavorite}
-            onPress={openStay}
-          /&gt;
-        )}
-        ListEmptyComponent={
-          &lt;Text style={styles.empty}&gt;
-            Aucun logement ne correspond.
-          &lt;/Text&gt;
-        }
-      /&gt;
-    &lt;/View&gt;
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    maxWidth: 1100,
-    alignSelf: "center",
-    padding: 8,
-  },
-  empty: { margin: 8, fontSize: 16 },
-});</code></pre>
-        <div>
-          <ul class="dense">
-            <li>Une ligne suffit : <code>useOnForeground(reload)</code></li>
-            <li>De retour dans l'application après une heure, l'utilisateur voit des disponibilités à jour</li>
-            <li>Pour tester sur le web, changez d'onglet du navigateur puis revenez</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Quel outil pour quel moment ?</h2>
-    <div class="corps">
-      <table>
-        <tr><th>Moment</th><th>Outil</th><th>Exemple</th></tr>
-        <tr><td>Le composant apparaît pour la première fois</td><td><code>useEffect(…, [])</code></td><td>Charger le détail d'un séjour</td></tr>
-        <tr><td>Un paramètre change</td><td><code>useEffect(…, [id])</code></td><td>Recharger quand l'identifiant change</td></tr>
-        <tr><td>L'écran redevient visible</td><td><code>useFocusEffect</code></td><td>Rafraîchir l'onglet des favoris</td></tr>
-        <tr><td>L'application revient au premier plan</td><td><code>AppState</code></td><td>Recharger le catalogue</td></tr>
-        <tr><td>Le composant disparaît</td><td>la fonction renvoyée par l'effet</td><td>Retirer un écouteur, ignorer une réponse tardive</td></tr>
-      </table>
-    </div>
-  </section>
-
-  <!-- ================================================================== -->
-  <section data-layout="section">
-    <div class="numero">05</div>
     <h2>Les listes volumineuses</h2>
     <div class="sous-titre">FlatList et SectionList</div>
   </section>
@@ -1072,8 +862,7 @@ export function groupByCity(stays: Stay[]): CitySection[] {
     <h2><code>SectionList</code> : afficher les groupes</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="3,8,26-27,31-32,39-41,61-67">import { Link, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="2,7,15-16,20-21,23-25,44-50">import { Link } from "expo-router";
 import { SectionList, StyleSheet, Text } from "react-native";
 
 import { StateMessage } from "@/components/state-message";
@@ -1082,18 +871,8 @@ import { useStays } from "@/hooks/use-stays";
 import { groupByCity } from "@/models/stay";
 
 export default function FavoritesScreen() {
-  const { state, reload } = useStays();
+  const { state } = useStays();
   const { isFavorite } = useFavorites();
-  const [refreshedAt, setRefreshedAt] = useState("");
-
-  // À chaque fois que l'onglet redevient visible, on recharge les
-  // séjours et on note l'heure pour le voir à l'écran
-  useFocusEffect(
-    useCallback(() =&gt; {
-      reload();
-      setRefreshedAt(new Date().toLocaleTimeString("fr-FR"));
-    }, [reload]),
-  );
 
   if (state.status !== "success")
     return &lt;StateMessage loading={state.status === "loading"} /&gt;;
@@ -1105,11 +884,6 @@ export default function FavoritesScreen() {
     &lt;SectionList
       sections={sections}
       keyExtractor={(stay) =&gt; stay.id}
-      ListHeaderComponent={
-        &lt;Text style={styles.refreshed}&gt;
-          Actualisé à {refreshedAt}
-        &lt;/Text&gt;
-      }
       renderSectionHeader={({ section }) =&gt; (
         &lt;Text style={styles.city}&gt;{section.title}&lt;/Text&gt;
       )}
@@ -1131,7 +905,6 @@ export default function FavoritesScreen() {
 
 const styles = StyleSheet.create({
   list: { padding: 16 },
-  refreshed: { fontSize: 14, color: "#5A5F80", marginBottom: 8 },
   city: {
     fontSize: 14,
     fontWeight: "700",
@@ -1155,8 +928,8 @@ const styles = StyleSheet.create({
   <section>
     <h2>Quiz</h2>
     <div class="corps">
-      <p><strong>L'onglet « Favoris » charge ses données dans un <code>useEffect(…, [])</code>. J'ajoute un favori depuis le catalogue puis je reviens. Que se passe-t-il ?</strong></p>
-      <div class="reponse fragment">L'onglet n'est pas rechargé : il est resté monté, l'effet ne se relance pas. Il faut <code>useFocusEffect</code>.</div>
+      <p><strong>Où regrouper les séjours par ville avant de les donner à une <code>SectionList</code> ?</strong></p>
+      <div class="reponse fragment">Dans le modèle, avec une fonction pure (<code>groupByCity</code>). L'écran ne fait qu'afficher les sections.</div>
       <p style="margin-top: 22px;"><strong><code>fetch</code> reçoit une réponse 404. Le bloc <code>catch</code> s'exécute-t-il ?</strong></p>
       <div class="reponse fragment">Non : <code>fetch</code> ne lève une erreur qu'en cas d'échec réseau. Il faut tester <code>response.ok</code> et lever l'erreur soi-même.</div>
     </div>
@@ -1170,7 +943,6 @@ const styles = StyleSheet.create({
         <li><code>_layout.tsx</code> choisit le navigateur : pile (<code>Stack</code>) ou onglets (<code>Tabs</code> depuis <code>expo-router/js-tabs</code>)</li>
         <li>Une route dynamique reçoit un identifiant et <strong>recharge</strong> ses données</li>
         <li>Un service appelle l'API avec <code>fetch</code>, teste <code>response.ok</code> et traduit la réponse en modèle</li>
-        <li><code>useFocusEffect</code> pour un écran qui redevient visible, <code>AppState</code> pour l'application</li>
         <li>Des listes légères, filtrées en amont. <code>SectionList</code> pour des groupes</li>
       </ul>
     </div>

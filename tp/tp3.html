@@ -19,13 +19,13 @@
 
   <p>
     Votre projet a son architecture. Il devient maintenant une vraie application : plusieurs écrans reliés entre eux,
-    des adresses sur le web, un détail chargé depuis votre <strong>API publique</strong> et des écrans qui réagissent à leur cycle de vie.
+    des adresses sur le web, un détail chargé depuis votre <strong>API publique</strong> et des listes groupées.
   </p>
 
   <div class="encadre neutre">
     <span class="intitule">Ce TP en bref</span>
     <ul>
-      <li><strong>Objectifs</strong> : mettre en place la navigation avec Expo Router (onglets, pile, route dynamique), charger un élément par son identifiant depuis l'API avec <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a>, gérer le cycle de vie des écrans et des listes plus riches.</li>
+      <li><strong>Objectifs</strong> : mettre en place la navigation avec Expo Router (onglets, pile, route dynamique), charger un élément par son identifiant depuis l'API avec <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a>, afficher des listes groupées.</li>
       <li>En trinôme, dans le dépôt du projet. <strong>Lancé en séance le 29 octobre</strong>, puis en autonomie jusqu'au 24 novembre.</li>
       <li>Ce jalon n'est pas noté. Ses critères font partie de la grille de production du projet, évaluée le 17 décembre.</li>
       <li>Le cours 3 (catalogue de séjours) vous sert de modèle.</li>
@@ -37,7 +37,7 @@
     <ul>
       <li><strong>A · Catalogue</strong> : étape 2 (charger un élément) et étape 4 (catalogue et filtres).</li>
       <li><strong>B · Navigation et compte</strong> : étape 1 (navigation) et étape 3 (détail).</li>
-      <li><strong>C · Données partagées</strong> : la <a href="https://reactnative.dev/docs/sectionlist" target="_blank"><code>SectionList</code></a> de l'étape 4 et l'étape 5 (cycle de vie).</li>
+      <li><strong>C · Données partagées</strong> : la <a href="https://reactnative.dev/docs/sectionlist" target="_blank"><code>SectionList</code></a> de l'étape 4.</li>
     </ul>
   </div>
 
@@ -46,7 +46,6 @@
     <a href="#etape-2"><span class="n">Étape 2</span><br>Charger un élément</a>
     <a href="#etape-3"><span class="n">Étape 3</span><br>L'écran de détail</a>
     <a href="#etape-4"><span class="n">Étape 4</span><br>Le catalogue et ses filtres</a>
-    <a href="#etape-5"><span class="n">Étape 5</span><br>Le cycle de vie</a>
     <a href="#rendu"><span class="n">Checklist</span><br>Point d'étape</a>
   </nav>
 
@@ -115,23 +114,12 @@
   </section>
 
   <!-- ================================================================== -->
-  <section class="defi" id="etape-5">
-    <h2><span class="num">5</span> Le cycle de vie</h2>
-    <div class="meta"><span class="etiquette clair">useFocusEffect · AppState</span></div>
-    <ol>
-      <li>Repérez un écran dont les données peuvent changer pendant qu'il est caché (un onglet de favoris, par exemple). Rechargez-le avec <a href="https://docs.expo.dev/router/reference/hooks/#usefocuseffect" target="_blank"><code>useFocusEffect</code></a>.</li>
-      <li>Dans le README, expliquez en deux ou trois phrases <strong>pourquoi</strong> un <code>useEffect(…, [])</code> ne suffisait pas à cet endroit.</li>
-      <li><strong>Facultatif</strong> : rafraîchissez une donnée au retour de l'application au premier plan, avec <a href="https://reactnative.dev/docs/appstate" target="_blank"><code>AppState</code></a>.</li>
-    </ol>
-  </section>
-
-  <!-- ================================================================== -->
   <section class="defi" id="rendu">
     <h2><span class="num">✓</span> Avant le point d'étape</h2>
     <ul class="checklist">
       <li><code>npx tsc --noEmit</code> et <code>npx expo lint</code> n'affichent aucune erreur.</li>
       <li>L'application se lance sur le web et sur Expo Go.</li>
-      <li>Le README liste les écrans et leurs URL, l'API utilisée et l'explication de l'étape 5.</li>
+      <li>Le README liste les écrans et leurs URL et l'API utilisée.</li>
       <li>Chaque membre a avancé sur sa partie et sait l'expliquer.</li>
     </ul>
     <p>
