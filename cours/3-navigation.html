@@ -26,7 +26,6 @@
       <li>Naviguer sur mobile et sur le web</li>
       <li>Expo Router : les fichiers sont les routes</li>
       <li>Onglets, pile et routes dynamiques</li>
-      <li>Une deuxième API : la météo</li>
       <li>Le cycle de vie</li>
       <li>Les listes volumineuses</li>
     </ol>
@@ -423,7 +422,7 @@ export function useStay(id: string) {
     <h2>Une route dynamique</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-fichier="demos/etapes/cours3/detail-1/src/app/stays/[id].tsx" data-titre="src/app/stays/[id].tsx"><code class="language-tsx" data-line-numbers="">import { Stack, useLocalSearchParams } from "expo-router";
+        <pre class="mini" data-fichier="demos/cours3/src/app/stays/[id].tsx" data-titre="src/app/stays/[id].tsx"><code class="language-tsx" data-line-numbers="">import { Stack, useLocalSearchParams } from "expo-router";
 import {
   Image,
   ScrollView,
@@ -478,7 +477,23 @@ const styles = StyleSheet.create({
         </div>
       </div>
     </div>
-    <aside class="notes">StayDetails est un composant séparé car useWeather ne peut pas être appelé après les return conditionnels (règles des hooks).</aside>
+    <aside class="notes">StayDetails est une vue pure : elle reçoit un séjour déjà chargé, ce qui évite de tester state.status dans tout le JSX.</aside>
+  </section>
+
+  <section>
+    <h2>Ce qui peut mal se passer</h2>
+    <div class="corps">
+      <table>
+        <tr><th>Situation</th><th>Ce qui se passe</th><th>Ce que voit l'utilisateur</th></tr>
+        <tr><td>Pas de réseau</td><td><code>fetch</code> lève une erreur</td><td>Un message et « Réessayer »</td></tr>
+        <tr><td>Erreur 404 ou 500</td><td><code>response.ok</code> vaut <code>false</code></td><td>Un message et « Réessayer »</td></tr>
+        <tr><td>Réponse lente</td><td>La promesse attend</td><td>Un indicateur de chargement</td></tr>
+        <tr><td>L'écran est quitté avant la réponse</td><td>Le drapeau <code>cancelled</code> ignore le résultat</td><td>Rien</td></tr>
+      </table>
+      <div class="encadre corail" style="margin-top: 20px;">
+        Une clé d'API placée dans le code de l'application est <strong>lisible par tous</strong> : le code JavaScript est livré avec l'application. N'y mettez jamais de secret. Préférez des API sans clé ou passez par votre propre serveur.
+      </div>
+    </div>
   </section>
 
   <section>
@@ -664,7 +679,7 @@ const styles = StyleSheet.create({
     <h2>Naviguer par le code : <code>useRouter</code></h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/index.tsx" data-titre="src/app/(tabs)/index.tsx"><code class="language-tsx" data-line-numbers="">import { useRouter } from "expo-router";
+        <pre class="mini" data-fichier="demos/etapes/cours3/catalogue-1/src/app/(tabs)/index.tsx" data-titre="src/app/(tabs)/index.tsx"><code class="language-tsx" data-line-numbers="">import { useRouter } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { StateMessage } from "@/components/state-message";
@@ -756,275 +771,6 @@ const styles = StyleSheet.create({
   <!-- ================================================================== -->
   <section data-layout="section">
     <div class="numero">04</div>
-    <h2>Une deuxième API : la météo</h2>
-    <div class="sous-titre">Des paramètres dans l'URL, une API dans le détail</div>
-  </section>
-  <section>
-    <h2>Le modèle de la météo</h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/models/weather.ts" data-titre="src/models/weather.ts"><code class="language-typescript" data-line-numbers="">export type Weather = {
-  temperature: number;
-  windSpeed: number;
-  code: number;
-};
-
-// Codes météo de l'Organisation météorologique mondiale (WMO),
-// simplifiés
-export function describeWeather(code: number): string {
-  if (code === 0) return "Ciel dégagé";
-  if (code &lt;= 3) return "Nuageux";
-  if (code &lt;= 48) return "Brouillard";
-  if (code &lt;= 67) return "Pluie";
-  if (code &lt;= 77) return "Neige";
-  if (code &lt;= 82) return "Averses";
-  return "Orage";
-}</code></pre>
-        <div>
-          <ul class="dense">
-            <li>Le type décrit la météo <strong>dans notre vocabulaire</strong>, pas dans celui de l'API</li>
-            <li><code>describeWeather</code> traduit un code numérique en texte : une règle métier pure</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Une deuxième API : Open-Meteo</h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/services/weather-service.ts" data-titre="src/services/weather-service.ts"><code class="language-typescript" data-line-numbers="">import { Weather } from "@/models/weather";
-
-// Forme de la réponse de l'API, limitée à ce qu'on utilise
-type OpenMeteoResponse = {
-  current: {
-    temperature_2m: number;
-    wind_speed_10m: number;
-    weather_code: number;
-  };
-};
-
-export async function fetchWeather(
-  latitude: number,
-  longitude: number,
-): Promise&lt;Weather&gt; {
-  const url =
-    "https://api.open-meteo.com/v1/forecast" +
-    `?latitude=${latitude}&amp;longitude=${longitude}` +
-    "&amp;current=temperature_2m,wind_speed_10m,weather_code";
-
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
-  const data: OpenMeteoResponse = await response.json();
-
-  // On convertit la réponse de l'API en objet du modèle
-  return {
-    temperature: data.current.temperature_2m,
-    windSpeed: data.current.wind_speed_10m,
-    code: data.current.weather_code,
-  };
-}</code></pre>
-        <div>
-          <ul class="dense">
-            <li>Même démarche que pour les séjours : le type décrit la réponse avec <strong>ses</strong> noms (<code>temperature_2m</code>…)</li>
-            <li><strong>Nouveau</strong> : l'adresse porte des <strong>paramètres</strong> (latitude, longitude, mesures voulues). Le <a href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Template_literals" target="_blank">gabarit de chaîne</a> <code>`…${latitude}…`</code> les insère</li>
-            <li>Puis <code>fetch</code>, <code>response.ok</code> et la conversion en modèle, comme pour les séjours</li>
-            <li><a href="https://open-meteo.com" target="_blank">Open-Meteo</a> est gratuite et sans clé</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <aside class="notes">Ouvrir l'adresse complète dans le navigateur (avec les coordonnées de Paris) avant de montrer le service. Insister sur ce qui est nouveau : les paramètres. Le reste est un rappel du cours précédent.</aside>
-  </section>
-
-  <section>
-    <h2>Le contrôleur : <code>useWeather</code></h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/etapes/cours3/meteo-1/src/hooks/use-weather.ts" data-titre="src/hooks/use-weather.ts"><code class="language-typescript" data-line-numbers="">import { useEffect, useState } from "react";
-
-import { Weather } from "@/models/weather";
-import { fetchWeather } from "@/services/weather-service";
-
-export type WeatherState =
-  | { status: "loading" }
-  | { status: "error"; message: string }
-  | { status: "success"; weather: Weather };
-
-// Charge la météo à l'ouverture de l'écran
-export function useWeather(latitude: number, longitude: number) {
-  const [state, setState] = useState&lt;WeatherState&gt;({
-    status: "loading",
-  });
-
-  useEffect(() =&gt; {
-    let cancelled = false;
-    fetchWeather(latitude, longitude)
-      .then((weather) =&gt; {
-        if (!cancelled) setState({ status: "success", weather });
-      })
-      .catch(() =&gt; {
-        if (!cancelled)
-          setState({
-            status: "error",
-            message: "Météo indisponible",
-          });
-      });
-    return () =&gt; {
-      cancelled = true;
-    };
-  }, [latitude, longitude]);
-
-  return state;
-}</code></pre>
-        <div>
-          <ul class="dense">
-            <li>Le même modèle d'état que pour les séjours : chargement, erreur ou succès</li>
-            <li>Le hook appelle le service et tient l'état. Il ne sait pas comment il sera affiché</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>La vue : <code>WeatherBadge</code></h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/components/weather-badge.tsx" data-titre="src/components/weather-badge.tsx"><code class="language-tsx" data-line-numbers="">import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-
-import { WeatherState } from "@/hooks/use-weather";
-import { describeWeather } from "@/models/weather";
-
-type WeatherBadgeProps = { state: WeatherState };
-
-// Vue pure : elle affiche l'état de la météo qu'on lui donne
-export function WeatherBadge({ state }: WeatherBadgeProps) {
-  return (
-    &lt;View style={styles.badge}&gt;
-      {state.status === "loading" &amp;&amp; &lt;ActivityIndicator /&gt;}
-      {state.status === "error" &amp;&amp; &lt;Text&gt;{state.message}&lt;/Text&gt;}
-      {state.status === "success" &amp;&amp; (
-        &lt;Text style={styles.text}&gt;
-          {describeWeather(state.weather.code)} ·{" "}
-          {Math.round(state.weather.temperature)} °C · vent{" "}
-          {Math.round(state.weather.windSpeed)} km/h
-        &lt;/Text&gt;
-      )}
-    &lt;/View&gt;
-  );
-}
-
-const styles = StyleSheet.create({
-  badge: {
-    alignSelf: "flex-start",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    backgroundColor: "#E2F7F4",
-  },
-  text: { fontSize: 15, fontWeight: "600" },
-});</code></pre>
-        <div>
-          <ul class="dense">
-            <li>La vue reçoit l'état en props et affiche chaque cas</li>
-            <li>Le service parle à l'API, le hook tient l'état, la vue affiche ce qu'on lui donne</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section>
-    <h2>La météo dans le détail</h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/app/stays/[id].tsx" data-titre="src/app/stays/[id].tsx"><code class="language-tsx" data-line-numbers="">import { Stack, useLocalSearchParams } from "expo-router";
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-
-import { StateMessage } from "@/components/state-message";
-import { WeatherBadge } from "@/components/weather-badge";
-import { useStay } from "@/hooks/use-stay";
-import { Stay } from "@/models/stay";
-import { useWeather } from "@/hooks/use-weather";
-
-export default function StayScreen() {
-  const { id } = useLocalSearchParams&lt;{ id: string }&gt;();
-  const state = useStay(id);
-
-  if (state.status === "loading") return &lt;StateMessage loading /&gt;;
-  if (state.status === "not-found")
-    return &lt;StateMessage message="Ce séjour est introuvable." /&gt;;
-  return &lt;StayDetails stay={state.stay} /&gt;;
-}
-
-// Composant séparé : les hooks ne peuvent pas être appelés après un
-// return
-function StayDetails({ stay }: { stay: Stay }) {
-  const weather = useWeather(stay.latitude, stay.longitude);
-
-  return (
-    &lt;ScrollView contentContainerStyle={styles.content}&gt;
-      &lt;Stack.Screen options={{ title: stay.title }} /&gt;
-      &lt;Image source={{ uri: stay.imageUrl }} style={styles.image} /&gt;
-      &lt;View style={styles.body}&gt;
-        &lt;Text style={styles.title}&gt;{stay.title}&lt;/Text&gt;
-        &lt;Text style={styles.city}&gt;
-          {stay.city} · {stay.pricePerNight} € / nuit
-        &lt;/Text&gt;
-        &lt;WeatherBadge state={weather} /&gt;
-      &lt;/View&gt;
-    &lt;/ScrollView&gt;
-  );
-}
-
-const styles = StyleSheet.create({
-  content: { width: "100%", maxWidth: 800, alignSelf: "center" },
-  image: { width: "100%", aspectRatio: 16 / 9 },
-  body: { padding: 16, gap: 8 },
-  title: { fontSize: 26, fontWeight: "800" },
-  city: { fontSize: 17, color: "#5A5F80" },
-});</code></pre>
-        <div>
-          <ul class="dense">
-            <li>Un composant séparé, <code>StayDetails</code> : un hook ne peut pas être appelé après un <code>return</code></li>
-            <li>Le détail charge d'abord le séjour, puis la météo de ses coordonnées</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Ce qui peut mal se passer</h2>
-    <div class="corps">
-      <table>
-        <tr><th>Situation</th><th>Ce qui se passe</th><th>Ce que voit l'utilisateur</th></tr>
-        <tr><td>Pas de réseau</td><td><code>fetch</code> lève une erreur</td><td>Un message et « Réessayer »</td></tr>
-        <tr><td>Erreur 404 ou 500</td><td><code>response.ok</code> vaut <code>false</code></td><td>Un message et « Réessayer »</td></tr>
-        <tr><td>Réponse lente</td><td>La promesse attend</td><td>Un indicateur de chargement</td></tr>
-        <tr><td>L'écran est quitté avant la réponse</td><td>Le drapeau <code>cancelled</code> ignore le résultat</td><td>Rien</td></tr>
-      </table>
-      <div class="encadre corail" style="margin-top: 20px;">
-        Une clé d'API placée dans le code de l'application est <strong>lisible par tous</strong> : le code JavaScript est livré avec l'application. N'y mettez jamais de secret. Préférez des API sans clé ou passez par votre propre serveur.
-      </div>
-    </div>
-  </section>
-
-  <!-- ================================================================== -->
-  <section data-layout="section">
-    <div class="numero">05</div>
     <h2>Le cycle de vie</h2>
     <div class="sous-titre">Écrans et application</div>
   </section>
@@ -1096,85 +842,112 @@ const styles = StyleSheet.create({
   </section>
 
   <section>
-    <h2>L'application passe en arrière-plan</h2>
+    <h2>L'application revient au premier plan</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-fichier="demos/cours3/src/hooks/use-is-app-active.ts" data-titre="src/hooks/use-is-app-active.ts"><code class="language-typescript" data-line-numbers="">import { useEffect, useState } from "react";
+        <pre class="mini" data-fichier="demos/cours3/src/hooks/use-on-foreground.ts" data-titre="src/hooks/use-on-foreground.ts"><code class="language-typescript" data-line-numbers="">import { useEffect } from "react";
 import { AppState } from "react-native";
 
-// true quand l'application est au premier plan, false en arrière-plan
-export function useIsAppActive(): boolean {
-  const [isActive, setIsActive] = useState(true);
-
+// Appelle onForeground chaque fois que l'application revient au
+// premier plan
+export function useOnForeground(onForeground: () =&gt; void) {
   useEffect(() =&gt; {
     const subscription = AppState.addEventListener(
       "change",
-      (status) =&gt; setIsActive(status === "active"),
+      (status) =&gt; {
+        if (status === "active") onForeground();
+      },
     );
+    // Au démontage, on retire l'écouteur
     return () =&gt; subscription.remove();
-  }, []);
-
-  return isActive;
+  }, [onForeground]);
 }</code></pre>
         <div>
           <ul class="dense">
-            <li><a href="https://reactnative.dev/docs/appstate" target="_blank"><code>AppState</code></a> signale le premier plan (<code>"active"</code>) et l'arrière-plan (<code>"background"</code>)</li>
-            <li>Sur le web, il suit la visibilité de l'onglet du navigateur</li>
+            <li><a href="https://reactnative.dev/docs/appstate" target="_blank"><code>AppState</code></a> signale le premier plan (<code>"active"</code>) et l'arrière-plan (<code>"background"</code>). Sur le web, il suit la visibilité de l'onglet du navigateur</li>
+            <li>Le hook reçoit une <strong>fonction</strong> à appeler au retour dans l'application</li>
             <li>Toujours <strong>retirer l'écouteur</strong> au démontage, sinon il s'accumule</li>
-            <li><code>useWeather</code> s'en sert pour recharger la météo au retour dans l'application</li>
           </ul>
         </div>
       </div>
     </div>
   </section>
+
   <section>
-    <h2>Recharger au retour au premier plan</h2>
+    <h2>Recharger le catalogue au retour</h2>
     <div class="corps">
-      <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/hooks/use-weather.ts" data-titre="src/hooks/use-weather.ts"><code class="language-typescript" data-line-numbers="">import { useEffect, useState } from "react";
+      <div class="colonnes code-large">
+        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/index.tsx" data-titre="src/app/(tabs)/index.tsx"><code class="language-tsx" data-line-numbers="">import { useRouter } from "expo-router";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
-import { useIsAppActive } from "@/hooks/use-is-app-active";
-import { Weather } from "@/models/weather";
-import { fetchWeather } from "@/services/weather-service";
+import { StateMessage } from "@/components/state-message";
+import { StayCard } from "@/components/stay-card";
+import { StayFiltersBar } from "@/components/stay-filters-bar";
+import { useFavorites } from "@/hooks/use-favorites";
+import { useColumns } from "@/hooks/use-columns";
+import { useOnForeground } from "@/hooks/use-on-foreground";
+import { useStayFilters } from "@/hooks/use-stay-filters";
+import { useStays } from "@/hooks/use-stays";
 
-export type WeatherState =
-  | { status: "loading" }
-  | { status: "error"; message: string }
-  | { status: "success"; weather: Weather };
+export default function CatalogScreen() {
+  const router = useRouter();
+  const columns = useColumns();
+  const { state, reload } = useStays();
+  // De retour dans l'application, le catalogue est rechargé
+  useOnForeground(reload);
+  const stays = state.status === "success" ? state.stays : [];
+  const { filters, updateFilters, visibleStays } =
+    useStayFilters(stays);
+  const { isFavorite, toggleFavorite } = useFavorites();
 
-// Recharge la météo à l'ouverture de l'écran et à chaque retour au
-// premier plan
-export function useWeather(latitude: number, longitude: number) {
-  const [state, setState] = useState&lt;WeatherState&gt;({
-    status: "loading",
-  });
-  const isActive = useIsAppActive();
+  const openStay = (id: string) =&gt;
+    router.push({ pathname: "/stays/[id]", params: { id } });
 
-  useEffect(() =&gt; {
-    if (!isActive) return;
-    let cancelled = false;
-    fetchWeather(latitude, longitude)
-      .then((weather) =&gt; {
-        if (!cancelled) setState({ status: "success", weather });
-      })
-      .catch(() =&gt; {
-        if (!cancelled)
-          setState({
-            status: "error",
-            message: "Météo indisponible",
-          });
-      });
-    return () =&gt; {
-      cancelled = true;
-    };
-  }, [latitude, longitude, isActive]);
+  if (state.status === "loading") return &lt;StateMessage loading /&gt;;
+  if (state.status === "error")
+    return &lt;StateMessage message={state.message} onRetry={reload} /&gt;;
 
-  return state;
-}</code></pre>
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;StayFiltersBar filters={filters} onChange={updateFilters} /&gt;
+      &lt;FlatList
+        key={columns}
+        numColumns={columns}
+        data={visibleStays}
+        keyExtractor={(stay) =&gt; stay.id}
+        renderItem={({ item }) =&gt; (
+          &lt;StayCard
+            stay={item}
+            isFavorite={isFavorite(item.id)}
+            onToggleFavorite={toggleFavorite}
+            onPress={openStay}
+          /&gt;
+        )}
+        ListEmptyComponent={
+          &lt;Text style={styles.empty}&gt;
+            Aucun logement ne correspond.
+          &lt;/Text&gt;
+        }
+      /&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 1100,
+    alignSelf: "center",
+    padding: 8,
+  },
+  empty: { margin: 8, fontSize: 16 },
+});</code></pre>
         <div>
           <ul class="dense">
-            <li><code>isActive</code> devient une dépendance : l'effet se relance quand l'application revient au premier plan</li>
-            <li>En arrière-plan, rien n'est chargé</li>
+            <li>Une ligne suffit : <code>useOnForeground(reload)</code></li>
+            <li>De retour dans l'application après une heure, l'utilisateur voit des disponibilités à jour</li>
+            <li>Pour tester sur le web, changez d'onglet du navigateur puis revenez</li>
           </ul>
         </div>
       </div>
@@ -1189,7 +962,7 @@ export function useWeather(latitude: number, longitude: number) {
         <tr><td>Le composant apparaît pour la première fois</td><td><code>useEffect(…, [])</code></td><td>Charger le détail d'un séjour</td></tr>
         <tr><td>Un paramètre change</td><td><code>useEffect(…, [id])</code></td><td>Recharger quand l'identifiant change</td></tr>
         <tr><td>L'écran redevient visible</td><td><code>useFocusEffect</code></td><td>Rafraîchir l'onglet des favoris</td></tr>
-        <tr><td>L'application revient au premier plan</td><td><code>AppState</code></td><td>Recharger la météo</td></tr>
+        <tr><td>L'application revient au premier plan</td><td><code>AppState</code></td><td>Recharger le catalogue</td></tr>
         <tr><td>Le composant disparaît</td><td>la fonction renvoyée par l'effet</td><td>Retirer un écouteur, ignorer une réponse tardive</td></tr>
       </table>
     </div>
@@ -1197,26 +970,11 @@ export function useWeather(latitude: number, longitude: number) {
 
   <!-- ================================================================== -->
   <section data-layout="section">
-    <div class="numero">06</div>
+    <div class="numero">05</div>
     <h2>Les listes volumineuses</h2>
     <div class="sous-titre">FlatList et SectionList</div>
   </section>
 
-  <section>
-    <h2>Une <code>FlatList</code> qui reste fluide</h2>
-    <div class="corps">
-      <table class="serre">
-        <tr><th>Prop ou pratique</th><th>Effet</th></tr>
-        <tr><td><code>keyExtractor</code></td><td>Une clé stable par élément : React réutilise les lignes au lieu de les recréer</td></tr>
-        <tr><td><code>initialNumToRender</code></td><td>Le nombre d'éléments affichés au premier rendu (10 par défaut)</td></tr>
-        <tr><td><code>windowSize</code></td><td>Combien d'écrans de contenu sont gardés en mémoire autour de la zone visible</td></tr>
-        <tr><td><code>getItemLayout</code></td><td>Si toutes les lignes ont la même hauteur, la liste n'a plus à les mesurer</td></tr>
-        <tr><td>Des éléments légers</td><td>Peu de vues imbriquées, des images à la bonne taille</td></tr>
-        <tr><td>Pas de calcul dans <code>renderItem</code></td><td>Filtrer ou trier <strong>avant</strong>, dans le hook</td></tr>
-      </table>
-      <p class="petit muet" style="margin-top: 12px;">Pour des milliers de lignes, <a href="https://shopify.github.io/flash-list/" target="_blank">FlashList</a> (Shopify) réutilise encore mieux les éléments.</p>
-    </div>
-  </section>
 
   <section>
     <h2><code>SectionList</code> : regrouper dans le modèle</h2>
@@ -1353,6 +1111,7 @@ const styles = StyleSheet.create({
           <ul class="dense">
             <li><a href="https://reactnative.dev/docs/sectionlist" target="_blank"><code>SectionList</code></a> est un composant de base, comme <a href="https://reactnative.dev/docs/flatlist" target="_blank"><code>FlatList</code></a> : <code>sections</code> remplace son <code>data</code></li>
             <li><code>renderSectionHeader</code> affiche le titre de chaque groupe, <code>renderItem</code> chaque élément</li>
+            <li>Une liste longue reste fluide si chaque élément a une clé stable (<code>keyExtractor</code>) et si le tri est fait <strong>avant</strong>, dans le modèle ou le hook. Au-delà de quelques milliers de lignes : <a href="https://shopify.github.io/flash-list/" target="_blank">FlashList</a></li>
           </ul>
         </div>
       </div>
