@@ -107,24 +107,4 @@
     pdfSeparateFragments: false,
     plugins: [RevealHighlight, RevealNotes],
   });
-
-  // Chaque puce marquée data-etape="n" (ou "n m") est mise en avant quand le code surligne l'étape n
-  if (!/print-pdf/.test(location.search)) {
-    const suivreEtapes = () => {
-      const diapo = Reveal.getCurrentSlide();
-      if (!diapo) return;
-      const reperes = diapo.querySelectorAll("[data-etape]");
-      if (!reperes.length) return;
-      const pre = diapo.querySelector("pre[data-fichier]");
-      const etape = pre ? 1 + pre.querySelectorAll("code.fragment.visible").length : 1;
-      const concernes = [...reperes].filter((el) => el.dataset.etape.split(" ").includes(String(etape)));
-      // Toutes les puces de la diapo s'estompent, sauf celles de l'étape en cours
-      const puces = new Set([...diapo.querySelectorAll(".corps li"), ...reperes]);
-      puces.forEach((el) => {
-        el.classList.toggle("etape-active", concernes.includes(el));
-        el.classList.toggle("etape-estompee", concernes.length > 0 && !concernes.includes(el));
-      });
-    };
-    ["ready", "slidechanged", "fragmentshown", "fragmenthidden"].forEach((evenement) => Reveal.on(evenement, suivreEtapes));
-  }
 })();

@@ -227,7 +227,7 @@ src/
     <h2>Modéliser les données</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-surligne="export type StayType..=};|export type StayFilters..=};" data-fichier="demos/cours2/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="1-13|15-19">export type StayType = "apartment" | "house" | "cabin";
+        <pre class="mini" data-fichier="demos/cours2/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="">export type StayType = "apartment" | "house" | "cabin";
 
 export type Stay = {
   id: string;
@@ -270,8 +270,8 @@ export function matchesFilters(
 }</code></pre>
         <div>
           <ul class="dense">
-            <li data-etape="1">Les types sont le <strong>contrat</strong> entre toutes les couches</li>
-            <li data-etape="2"><code>StayType | null</code> : « aucun type choisi » est une valeur prévue</li>
+            <li>Les types sont le <strong>contrat</strong> entre toutes les couches</li>
+            <li><code>StayType | null</code> : « aucun type choisi » est une valeur prévue</li>
             <li><code>Record&lt;StayType, string&gt;</code> : un objet avec <strong>une entrée par type</strong>. En ajouter un sans libellé est une erreur</li>
           </ul>
         </div>
@@ -283,7 +283,7 @@ export function matchesFilters(
     <h2>Les règles métier : des fonctions pures</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-surligne="export const STAY_TYPE_LABELS..=};|// Règle métier..=}" data-fichier="demos/cours2/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="21-25|27-41">export type StayType = "apartment" | "house" | "cabin";
+        <pre class="mini" data-fichier="demos/cours2/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="">export type StayType = "apartment" | "house" | "cabin";
 
 export type Stay = {
   id: string;
@@ -326,9 +326,9 @@ export function matchesFilters(
 }</code></pre>
         <div>
           <ul class="dense">
-            <li data-etape="2"><strong>Pure</strong> : le même résultat pour les mêmes paramètres, sans effet de bord</li>
-            <li data-etape="2">Elle ne connaît ni React ni l'écran : on peut la <strong>tester</strong> en une ligne et la <strong>réutiliser</strong> partout</li>
-            <li data-etape="2">Une règle change ? On modifie cette fonction, et seulement elle</li>
+            <li><strong>Pure</strong> : le même résultat pour les mêmes paramètres, sans effet de bord</li>
+            <li>Elle ne connaît ni React ni l'écran : on peut la <strong>tester</strong> en une ligne et la <strong>réutiliser</strong> partout</li>
+            <li>Une règle change ? On modifie cette fonction, et seulement elle</li>
           </ul>
         </div>
       </div>
@@ -346,7 +346,7 @@ export function matchesFilters(
     <h2>Le service : appeler l'API et convertir</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini"  data-surligne="type StayResponse..=};|function toStay..=}|await fetch(STAYS_URL)+if (!response.ok)|return data.map(toStay)" data-fichier="demos/cours2/src/services/stays-service.ts" data-titre="src/services/stays-service.ts"><code class="language-typescript" data-line-numbers="7-15|18-30|33,34|36">import { Stay, StayType } from "@/models/stay";
+        <pre class="mini" data-fichier="demos/cours2/src/services/stays-service.ts" data-titre="src/services/stays-service.ts"><code class="language-typescript" data-line-numbers="">import { Stay, StayType } from "@/models/stay";
 
 const SITE = "https://chris-chevalier.github.io/react-native-supports";
 const STAYS_URL = `${SITE}/api/stays.json`;
@@ -385,10 +385,10 @@ export async function fetchStays(): Promise&lt;Stay[]&gt; {
 }</code></pre>
         <div>
           <ul class="dense">
-            <li data-etape="1"><code>StayResponse</code> décrit la <a href="https://chris-chevalier.github.io/react-native-supports/api/stays.json" target="_blank">réponse de l'API</a> avec <strong>ses</strong> noms : <code>price_per_night</code>, <code>location.city</code>…</li>
-            <li data-etape="2"><code>toStay</code> la <strong>traduit</strong> dans le vocabulaire du modèle. Le reste de l'application ne connaît jamais les noms de l'API</li>
-            <li data-etape="3"><a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a> fait un vrai appel réseau. Il ne lève pas d'erreur sur une réponse 404 ou 500 : testez <code>response.ok</code></li>
-            <li data-etape="4">Le service tient sa promesse : <code>Promise&lt;Stay[]&gt;</code>. Si l'API change, <strong>seul ce fichier change</strong></li>
+            <li><code>StayResponse</code> décrit la <a href="https://chris-chevalier.github.io/react-native-supports/api/stays.json" target="_blank">réponse de l'API</a> avec <strong>ses</strong> noms : <code>price_per_night</code>, <code>location.city</code>…</li>
+            <li><code>toStay</code> la <strong>traduit</strong> dans le vocabulaire du modèle. Le reste de l'application ne connaît jamais les noms de l'API</li>
+            <li><a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a> fait un vrai appel réseau. Il ne lève pas d'erreur sur une réponse 404 ou 500 : testez <code>response.ok</code></li>
+            <li>Le service tient sa promesse : <code>Promise&lt;Stay[]&gt;</code>. Si l'API change, <strong>seul ce fichier change</strong></li>
           </ul>
         </div>
       </div>
@@ -400,7 +400,7 @@ export async function fetchStays(): Promise&lt;Stay[]&gt; {
     <h2>Un état qui ne peut pas mentir</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-surligne="export type StaysState..status: &quot;success&quot;" data-fichier="demos/cours2/src/hooks/use-stays.ts" data-titre="src/hooks/use-stays.ts"><code class="language-typescript" data-line-numbers="6-9">import { useEffect, useState } from "react";
+        <pre class="mini" data-fichier="demos/cours2/src/hooks/use-stays.ts" data-titre="src/hooks/use-stays.ts"><code class="language-typescript" data-line-numbers="">import { useEffect, useState } from "react";
 
 import { Stay } from "@/models/stay";
 import { fetchStays } from "@/services/stays-service";
@@ -458,7 +458,7 @@ export function useStays() {
     <h2>Le hook contrôleur <code>useStays</code></h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-surligne="export function useStays..=}" data-fichier="demos/cours2/src/hooks/use-stays.ts" data-titre="src/hooks/use-stays.ts"><code class="language-typescript" data-line-numbers="13-43">import { useEffect, useState } from "react";
+        <pre class="mini" data-fichier="demos/cours2/src/hooks/use-stays.ts" data-titre="src/hooks/use-stays.ts"><code class="language-typescript" data-line-numbers="">import { useEffect, useState } from "react";
 
 import { Stay } from "@/models/stay";
 import { fetchStays } from "@/services/stays-service";
@@ -574,7 +574,7 @@ export function useStayFilters(stays: Stay[]) {
     <h2>Un composant d'affichage pur</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-surligne="type StayFiltersBarProps..=};|export function StayFiltersBar..}: StayFiltersBarProps" data-fichier="demos/cours2/src/components/stay-filters-bar.tsx" data-titre="src/components/stay-filters-bar.tsx"><code class="language-tsx" data-line-numbers="16-19|24-27">import {
+        <pre class="mini" data-fichier="demos/cours2/src/components/stay-filters-bar.tsx" data-titre="src/components/stay-filters-bar.tsx"><code class="language-tsx" data-line-numbers="">import {
   Pressable,
   StyleSheet,
   Switch,
@@ -673,9 +673,9 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li data-etape="2">Il n'assemble que des <strong>composants de base</strong> (<a href="https://reactnative.dev/docs/textinput" target="_blank"><code>TextInput</code></a>, <a href="https://reactnative.dev/docs/pressable" target="_blank"><code>Pressable</code></a>, <a href="https://reactnative.dev/docs/switch" target="_blank"><code>Switch</code></a>) et leurs styles</li>
-            <li data-etape="1">Il <strong>reçoit</strong> les filtres et <strong>signale</strong> les changements</li>
-            <li data-etape="2">Aucun état, aucun service, aucun <a href="https://react.dev/reference/react/useEffect" target="_blank"><code>useEffect</code></a></li>
+            <li>Il n'assemble que des <strong>composants de base</strong> (<a href="https://reactnative.dev/docs/textinput" target="_blank"><code>TextInput</code></a>, <a href="https://reactnative.dev/docs/pressable" target="_blank"><code>Pressable</code></a>, <a href="https://reactnative.dev/docs/switch" target="_blank"><code>Switch</code></a>) et leurs styles</li>
+            <li>Il <strong>reçoit</strong> les filtres et <strong>signale</strong> les changements</li>
+            <li>Aucun état, aucun service, aucun <a href="https://react.dev/reference/react/useEffect" target="_blank"><code>useEffect</code></a></li>
             <li>On peut le réutiliser ailleurs ou changer son design sans toucher à la logique</li>
           </ul>
         </div>
@@ -686,7 +686,7 @@ const styles = StyleSheet.create({
     <h2>Un autre composant pur : <code>StateMessage</code></h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini"  data-surligne="type StateMessageProps..=};|{loading &amp;&amp;..=      )}" data-fichier="demos/cours2/src/components/state-message.tsx" data-titre="src/components/state-message.tsx"><code class="language-tsx" data-line-numbers="9-13|22-28">import {
+        <pre class="mini" data-fichier="demos/cours2/src/components/state-message.tsx" data-titre="src/components/state-message.tsx"><code class="language-tsx" data-line-numbers="">import {
   ActivityIndicator,
   Pressable,
   StyleSheet,
@@ -737,9 +737,9 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li data-etape="2">Trois affichages possibles : un indicateur de chargement, un message, un bouton « Réessayer »</li>
-            <li data-etape="2">Il ne sait pas <strong>pourquoi</strong> il s'affiche : c'est l'écran qui décide</li>
-            <li data-etape="1">Toutes les props sont facultatives : <code>&lt;StateMessage loading /&gt;</code> suffit pendant un chargement</li>
+            <li>Trois affichages possibles : un indicateur de chargement, un message, un bouton « Réessayer »</li>
+            <li>Il ne sait pas <strong>pourquoi</strong> il s'affiche : c'est l'écran qui décide</li>
+            <li>Toutes les props sont facultatives : <code>&lt;StateMessage loading /&gt;</code> suffit pendant un chargement</li>
           </ul>
         </div>
       </div>
@@ -750,7 +750,7 @@ const styles = StyleSheet.create({
     <h2>L'écran assemblé</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-surligne="const columns = useColumns()..useStayFilters(stays);|const [favorites..=    );|if (state.status === &quot;loading&quot;)..onRetry={reload}" data-fichier="demos/etapes/cours2/catalogue-1/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="14-18|19-26|28-30">import { useState } from "react";
+        <pre class="mini" data-fichier="demos/etapes/cours2/catalogue-1/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="">import { useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { StateMessage } from "@/components/state-message";
@@ -830,10 +830,10 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li data-etape="1">L'écran ne contient <strong>aucune règle</strong> : il branche les hooks sur les composants</li>
-            <li data-etape="3">Il gère les trois états : chargement, erreur, succès</li>
-            <li data-etape="2">Pour l'instant, les favoris sont un état local de l'écran</li>
-            <li data-etape="1">Les hooks sont appelés <strong>avant</strong> tout <code>return</code> : c'est une règle de React</li>
+            <li>L'écran ne contient <strong>aucune règle</strong> : il branche les hooks sur les composants</li>
+            <li>Il gère les trois états : chargement, erreur, succès</li>
+            <li>Pour l'instant, les favoris sont un état local de l'écran</li>
+            <li>Les hooks sont appelés <strong>avant</strong> tout <code>return</code> : c'est une règle de React</li>
           </ul>
         </div>
       </div>
@@ -894,7 +894,7 @@ const styles = StyleSheet.create({
     <h2>Créer un Context typé</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-surligne="export type FavoritesContextValue..=};|export const FavoritesContext..createContext|export function FavoritesProvider..=}" data-fichier="demos/cours2/src/context/favorites-context.tsx" data-titre="src/context/favorites-context.tsx"><code class="language-tsx" data-line-numbers="3-7|9-10|12-34">import { createContext, ReactNode, useState } from "react";
+        <pre class="mini" data-fichier="demos/cours2/src/context/favorites-context.tsx" data-titre="src/context/favorites-context.tsx"><code class="language-tsx" data-line-numbers="">import { createContext, ReactNode, useState } from "react";
 
 export type FavoritesContextValue = {
   favorites: string[];
@@ -930,9 +930,9 @@ export function FavoritesProvider({
 }</code></pre>
         <div>
           <ul class="dense">
-            <li data-etape="1">Le type décrit ce que le Context <strong>met à disposition</strong></li>
-            <li data-etape="2"><code>null</code> par défaut : la valeur n'existe que sous un Provider</li>
-            <li data-etape="3">Le <strong>Provider</strong> tient l'état et le transmet à tous ses descendants</li>
+            <li>Le type décrit ce que le Context <strong>met à disposition</strong></li>
+            <li><code>null</code> par défaut : la valeur n'existe que sous un Provider</li>
+            <li>Le <strong>Provider</strong> tient l'état et le transmet à tous ses descendants</li>
           </ul>
         </div>
       </div>
@@ -943,7 +943,7 @@ export function FavoritesProvider({
     <h2>Lire le Context avec un hook</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-surligne="export function useFavorites..=}" data-fichier="demos/cours2/src/hooks/use-favorites.ts" data-titre="src/hooks/use-favorites.ts"><code class="language-tsx" data-line-numbers="9-17">import { useContext } from "react";
+        <pre class="mini" data-fichier="demos/cours2/src/hooks/use-favorites.ts" data-titre="src/hooks/use-favorites.ts"><code class="language-tsx" data-line-numbers="">import { useContext } from "react";
 
 import {
   FavoritesContext,
@@ -976,7 +976,7 @@ export function useFavorites(): FavoritesContextValue {
     <h2>Fournir le Context à toute l'application</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-surligne="=    &lt;FavoritesProvider&gt;+=    &lt;/FavoritesProvider&gt;" data-fichier="demos/cours2/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="7,11">import { Stack } from "expo-router";
+        <pre class="mini" data-fichier="demos/cours2/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="">import { Stack } from "expo-router";
 
 import { FavoritesProvider } from "@/context/favorites-context";
 
@@ -1004,7 +1004,7 @@ export default function RootLayout() {
     <h2>Un composant qui lit le Context</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini"  data-surligne="import { useFavorites }|const { favorites } = useFavorites();" data-fichier="demos/cours2/src/components/favorites-badge.tsx" data-titre="src/components/favorites-badge.tsx"><code class="language-tsx" data-line-numbers="3|7">import { StyleSheet, Text } from "react-native";
+        <pre class="mini" data-fichier="demos/cours2/src/components/favorites-badge.tsx" data-titre="src/components/favorites-badge.tsx"><code class="language-tsx" data-line-numbers="">import { StyleSheet, Text } from "react-native";
 
 import { useFavorites } from "@/hooks/use-favorites";
 
@@ -1021,8 +1021,8 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li data-etape="1">Le badge importe le hook <code>useFavorites</code>, pas le Context</li>
-            <li data-etape="2"><strong>Aucune prop</strong> : il lit les favoris directement, où qu'il soit placé sous le Provider</li>
+            <li>Le badge importe le hook <code>useFavorites</code>, pas le Context</li>
+            <li><strong>Aucune prop</strong> : il lit les favoris directement, où qu'il soit placé sous le Provider</li>
             <li>Sans Context, il faudrait passer les favoris de parent en enfant jusqu'à lui</li>
           </ul>
         </div>
@@ -1034,7 +1034,7 @@ const styles = StyleSheet.create({
     <h2>Le catalogue partage ses favoris</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini"  data-surligne="import { FavoritesBadge }+import { useFavorites }|useFavorites();|&lt;FavoritesBadge /&gt;" data-fichier="demos/cours2/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="3,7|20|30">import { FlatList, StyleSheet, Text, View } from "react-native";
+        <pre class="mini" data-fichier="demos/cours2/src/app/index.tsx" data-titre="src/app/index.tsx"><code class="language-tsx" data-line-numbers="">import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { FavoritesBadge } from "@/components/favorites-badge";
 import { StateMessage } from "@/components/state-message";
@@ -1107,9 +1107,9 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li data-etape="1">Le catalogue importe le badge et le hook des favoris</li>
-            <li data-etape="2">Les favoris ne sont plus un état local de l'écran : ils viennent du Context</li>
-            <li data-etape="3"><code>&lt;FavoritesBadge /&gt;</code> se met à jour à chaque favori ajouté, sans recevoir de props</li>
+            <li>Le catalogue importe le badge et le hook des favoris</li>
+            <li>Les favoris ne sont plus un état local de l'écran : ils viennent du Context</li>
+            <li><code>&lt;FavoritesBadge /&gt;</code> se met à jour à chaque favori ajouté, sans recevoir de props</li>
           </ul>
         </div>
       </div>
