@@ -82,7 +82,7 @@
     </p>
     <table>
       <tr><th>Partie</th><th>Contenu</th><th>Au fil des TP</th></tr>
-      <tr><td><strong>A · Catalogue</strong></td><td>Modèle et service de l'API publique, catalogue responsive, filtres, CRUD lié au catalogue (favoris annotés, par exemple)</td><td>TP2 : modèle, service factice et catalogue. TP3 : API publique et filtres. TP4 : CRUD A</td></tr>
+      <tr><td><strong>A · Catalogue</strong></td><td>Modèle et service de l'API publique, catalogue responsive, filtres, CRUD lié au catalogue (favoris annotés, par exemple)</td><td>TP2 : modèle, service de l'API publique et catalogue. TP3 : filtres et chargement d'un élément par son identifiant. TP4 : CRUD A</td></tr>
       <tr><td><strong>B · Navigation et compte</strong></td><td>Structure de navigation, écran de détail, authentification, CRUD B</td><td>TP2 : modèle et service de la collection B. TP3 : navigation et détail. TP4 : authentification et CRUD B</td></tr>
       <tr><td><strong>C · Données partagées</strong></td><td>État partagé (Context), écran groupé (<a href="https://reactnative.dev/docs/sectionlist" target="_blank"><code>SectionList</code></a>), rafraîchissement au focus, CRUD C</td><td>TP2 : Context et composant qui le lit. TP3 : <code>SectionList</code> et cycle de vie. TP4 : CRUD C</td></tr>
     </table>
@@ -113,8 +113,8 @@
     <table>
       <tr><th>Quand</th><th>Jalon</th><th>Ce qui doit exister</th></tr>
       <tr><td>Mar. 27 oct.</td><td><strong>Lancement</strong></td><td>Trinôme formé, sujet et parties notés avec moi, dépôt commun créé, Chris-CHEVALIER invité</td></tr>
-      <tr><td>Mer. 28 oct.</td><td><strong>TP2</strong></td><td>Arborescence MVC, modèles typés, service de données factices, hook contrôleur, catalogue responsive, un Context</td></tr>
-      <tr><td>Du 29 oct. au 24 nov.</td><td><strong>TP3</strong></td><td>Navigation complète (onglets, pile, détail), API publique, filtres, cycle de vie</td></tr>
+      <tr><td>Mer. 28 oct.</td><td><strong>TP2</strong></td><td>Arborescence MVC, modèles typés, service de l'API publique, hook contrôleur, catalogue responsive, un Context</td></tr>
+      <tr><td>Du 29 oct. au 24 nov.</td><td><strong>TP3</strong></td><td>Navigation complète (onglets, pile, détail chargé par son identifiant), filtres, cycle de vie</td></tr>
       <tr><td>Mer. 25 nov.</td><td><strong>TP4</strong></td><td>Authentification Firebase et trois CRUD</td></tr>
       <tr><td>Jeu. 17 déc.</td><td><strong>Soutenance</strong></td><td>10 minutes par groupe (voir la partie 6)</td></tr>
       <tr><td>Jeu. 17 déc. avant 23h59</td><td><strong>Rendu final</strong></td><td>Application complète, version web déployée à jour, README, bonus éventuels</td></tr>
@@ -128,8 +128,9 @@
     <h2><span class="num">5</span> Le dépôt et le rendu</h2>
     <ul>
       <li>Un dépôt GitHub <strong>privé</strong> nommé <code>rn-projet-nom1-nom2-nom3</code>, avec <strong>Chris-CHEVALIER</strong> invité dès le premier jour.</li>
-      <li><strong>Chacun commite avec son propre compte</strong>, régulièrement, sur la branche <code>main</code>.</li>
-      <li>Le projet se lance avec <code>npm install</code> puis <code>npx expo start</code>, sans autre manipulation que celles du README. Aucun fichier APK ou IPA n'est demandé.</li>
+      <li><strong>Chacun commite avec son propre compte</strong>, régulièrement.</li>
+      <li><strong>Une branche par fonctionnalité</strong> (<a href="https://docs.github.com/fr/get-started/using-github/github-flow" target="_blank">GitHub Flow</a>) : une pull request relue par un autre membre, puis fusionnée dans <code>main</code> une fois testée. Le rendu final est la branche <code>main</code>.</li>
+      <li>Le projet se lance avec <code>npm install</code> puis <code>npm start</code>, sans autre manipulation que celles du README. Aucun fichier APK ou IPA n'est demandé.</li>
     </ul>
     <h3>Le README contient</h3>
     <ul>

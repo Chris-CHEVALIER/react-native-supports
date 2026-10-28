@@ -19,13 +19,13 @@
 
   <p>
     Votre sujet est choisi, votre dépôt commun existe. Ce TP pose l'<strong>architecture MVC</strong> de votre projet :
-    tout ce que vous ajouterez ensuite (navigation, API, Firebase) viendra s'y brancher sans tout réécrire.
+    tout ce que vous ajouterez ensuite (navigation, Firebase) viendra s'y brancher sans tout réécrire.
   </p>
 
   <div class="encadre neutre">
     <span class="intitule">Ce TP en bref</span>
     <ul>
-      <li><strong>Objectifs</strong> : organiser le code en modèles, services, hooks contrôleurs et vues, typer les données, gérer un chargement asynchrone et partager un état global.</li>
+      <li><strong>Objectifs</strong> : organiser le code en modèles, services, hooks contrôleurs et vues, typer les données, charger les données d'une API publique et partager un état global.</li>
       <li>En trinôme, dans le <strong>dépôt du projet</strong>. Ce jalon n'est pas noté : il pose les bases de votre rendu final.</li>
       <li>Le cours 2 (catalogue de séjours) vous sert de <strong>modèle</strong> : appliquez la même structure à <strong>votre</strong> sujet.</li>
       <li>L'IA est autorisée, à une condition : chaque membre doit pouvoir expliquer chaque fichier.</li>
@@ -35,7 +35,7 @@
   <nav class="sommaire">
     <a href="#etape-0"><span class="n">Étape 0</span><br>Le dépôt et l'équipe</a>
     <a href="#etape-1"><span class="n">Étape 1</span><br>Le modèle</a>
-    <a href="#etape-2"><span class="n">Étape 2</span><br>Le service</a>
+    <a href="#etape-2"><span class="n">Étape 2</span><br>Le service et l'API</a>
     <a href="#etape-3"><span class="n">Étape 3</span><br>Les hooks contrôleurs</a>
     <a href="#etape-4"><span class="n">Étape 4</span><br>Les vues et l'écran</a>
     <a href="#etape-5"><span class="n">Étape 5</span><br>Un état global</a>
@@ -48,13 +48,24 @@
     <div class="meta"><span class="etiquette clair">Git · organisation</span></div>
     <ol>
       <li>Un seul membre crée le projet Expo (<code>npx create-expo-app@latest</code>, puis <code>npm run reset-project</code> en répondant <code>n</code> pour supprimer l'exemple, et <code>"output": "single"</code> dans <code>app.json</code>), le pousse sur le dépôt <code>rn-projet-nom1-nom2-nom3</code>, puis invite les deux autres et <strong>Chris-CHEVALIER</strong>, si ce n'est pas déjà fait.</li>
-      <li>Les deux autres clonent le dépôt et lancent <code>npm install</code> puis <code>npx expo start</code>.</li>
+      <li>Les deux autres clonent le dépôt et lancent <code>npm install</code> puis <code>npm start</code>.</li>
       <li>Répartissez les <strong>trois parties</strong> du projet (A · Catalogue, B · Navigation et compte, C · Données partagées : voir le sujet du projet). Créez le <code>README.md</code> : le sujet en trois phrases, l'API publique envisagée, les membres (prénom, nom, compte GitHub) et le <strong>propriétaire de chaque partie</strong>.</li>
     </ol>
     <div class="encadre">
       <span class="intitule">Travailler à trois sans se marcher dessus</span>
       Chacun travaille sur sa partie : <strong>A</strong> sur les étapes 1 à 4 (modèle, service, hooks et catalogue), <strong>B</strong> sur le modèle et le service de votre première collection, <strong>C</strong> sur l'étape 5 (Context et composant qui le lit).
-      Faites des commits courts et faites <code>git pull</code> avant chaque <code>git push</code>. Chacun commite avec son propre compte.
+      Chacun commite avec son propre compte.
+    </div>
+    <div class="encadre neutre">
+      <span class="intitule">Une branche par fonctionnalité</span>
+      Suivez le <a href="https://docs.github.com/fr/get-started/using-github/github-flow" target="_blank">GitHub Flow</a> : ne travaillez jamais directement sur <code>main</code>.
+      Créez une branche pour chaque fonctionnalité, faites-y des commits courts, puis ouvrez une <strong>pull request</strong>. Un autre membre la relit et vous la fusionnez dans <code>main</code> une fois la fonctionnalité testée.
+      <pre data-titre="Terminal"><code class="language-bash">
+        git switch main
+        git pull
+        git switch -c feature/catalogue
+        git push -u origin feature/catalogue
+      </code></pre>
     </div>
   </section>
 
@@ -68,7 +79,7 @@
       <li>Écrivez le type de ses <strong>filtres</strong> : au moins une recherche textuelle et un filtre par catégorie.</li>
       <li>Écrivez une <strong>fonction pure</strong> <code>matchesFilters(item, filters)</code> qui renvoie un booléen.</li>
     </ol>
-    <p>Dans <code>src/data/</code>, créez <strong>au moins 10 éléments</strong> réalistes. Ils seront remplacés par l'API au TP3.</p>
+    <p>Le type décrit vos données <strong>telles que votre application les utilise</strong>, pas telles que l'API les renvoie : le service fera la conversion à l'étape 2.</p>
     <div class="encadre neutre">
       <span class="intitule">Partie B</span>
       Sur le même modèle, écrivez le type, les données factices et le service de votre <strong>première collection</strong> Firebase (par exemple vos recettes personnelles). Firebase la remplacera au TP4.
@@ -77,18 +88,26 @@
 
   <!-- ================================================================== -->
   <section class="defi" id="etape-2">
-    <h2><span class="num">2</span> Le service</h2>
-    <div class="meta"><span class="etiquette clair">async · Promise</span></div>
-    <p>Dans <code>src/services/</code>, écrivez une fonction asynchrone qui renvoie vos données, par exemple <code>fetchRecipes(): Promise&lt;Recipe[]&gt;</code>.</p>
-    <ul>
-      <li>Elle attend <strong>800 ms</strong> avant de répondre, pour simuler le réseau.</li>
-      <li>Ajoutez temporairement une ligne qui <strong>lève une erreur</strong> : vous en aurez besoin pour tester l'étape 4. Retirez-la ensuite.</li>
-    </ul>
+    <h2><span class="num">2</span> Le service et l'API publique</h2>
+    <div class="meta"><span class="etiquette clair">fetch · async · typage</span></div>
+    <ol>
+      <li>Choisissez l'API de votre sujet. Elle doit être <strong>gratuite et sans clé secrète</strong> (TheMealDB, Open Library, REST Countries, Open Food Facts…). Notez son adresse dans le README.</li>
+      <li>Ouvrez une réponse de l'API dans votre navigateur. Écrivez le <strong>type de la réponse</strong>, limité aux champs que vous utilisez.</li>
+      <li>Dans <code>src/services/</code>, écrivez une fonction asynchrone qui renvoie vos données, par exemple <code>fetchRecipes(): Promise&lt;Recipe[]&gt;</code>.
+        <ul>
+          <li>Elle appelle l'API avec <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a>, vérifie <code>response.ok</code> et lève une erreur sinon ;</li>
+          <li>elle <strong>convertit</strong> la réponse en objets de votre modèle. Le reste de l'application ne doit pas connaître les noms de champs de l'API.</li>
+        </ul>
+      </li>
+      <li>Pour tester l'étape 4, faites échouer l'appel (une adresse erronée, ou le mode avion) : l'erreur doit s'afficher. Rétablissez ensuite l'adresse.</li>
+    </ol>
     <details>
-      <summary>Indice : simuler une attente</summary>
-      <pre data-titre="Simuler le réseau"><code class="language-typescript">
-        const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-      </code></pre>
+      <summary>Indice : l'API renvoie beaucoup plus de champs que nécessaire</summary>
+      <p>C'est normal. Ne typez que ce que vous utilisez, puis construisez vos objets du modèle avec les bons noms. Un champ facultatif de l'API devient une propriété facultative (<code>?</code>) de votre type.</p>
+    </details>
+    <details>
+      <summary>Indice : l'API ne fournit pas tout</summary>
+      <p>Si votre API ne fournit pas une donnée dont vous avez besoin (vos catégories, par exemple), gardez-la dans <code>src/data/</code>. Ce sont vos CRUD Firebase du TP4 qui compléteront le reste.</p>
     </details>
   </section>
 

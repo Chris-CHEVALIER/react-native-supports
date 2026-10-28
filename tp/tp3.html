@@ -19,13 +19,13 @@
 
   <p>
     Votre projet a son architecture. Il devient maintenant une vraie application : plusieurs écrans reliés entre eux,
-    des adresses sur le web, des données qui viennent d'une <strong>API publique</strong> et des écrans qui réagissent à leur cycle de vie.
+    des adresses sur le web, un détail chargé depuis votre <strong>API publique</strong> et des écrans qui réagissent à leur cycle de vie.
   </p>
 
   <div class="encadre neutre">
     <span class="intitule">Ce TP en bref</span>
     <ul>
-      <li><strong>Objectifs</strong> : mettre en place la navigation avec Expo Router (onglets, pile, route dynamique), consommer une API avec <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a>, gérer le cycle de vie des écrans et des listes plus riches.</li>
+      <li><strong>Objectifs</strong> : mettre en place la navigation avec Expo Router (onglets, pile, route dynamique), charger un élément par son identifiant depuis l'API avec <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch</code></a>, gérer le cycle de vie des écrans et des listes plus riches.</li>
       <li>En trinôme, dans le dépôt du projet. <strong>Lancé en séance le 29 octobre</strong>, puis en autonomie jusqu'au 24 novembre.</li>
       <li>Ce jalon n'est pas noté. Ses critères font partie de la grille de production du projet, évaluée le 17 décembre.</li>
       <li>Le cours 3 (catalogue de séjours avec météo) vous sert de modèle.</li>
@@ -35,7 +35,7 @@
   <div class="encadre">
     <span class="intitule">Qui fait quoi ?</span>
     <ul>
-      <li><strong>A · Catalogue</strong> : étape 2 (API publique) et étape 4 (catalogue et filtres).</li>
+      <li><strong>A · Catalogue</strong> : étape 2 (charger un élément) et étape 4 (catalogue et filtres).</li>
       <li><strong>B · Navigation et compte</strong> : étape 1 (navigation) et étape 3 (détail).</li>
       <li><strong>C · Données partagées</strong> : la <a href="https://reactnative.dev/docs/sectionlist" target="_blank"><code>SectionList</code></a> de l'étape 4 et l'étape 5 (cycle de vie).</li>
     </ul>
@@ -43,7 +43,7 @@
 
   <nav class="sommaire">
     <a href="#etape-1"><span class="n">Étape 1</span><br>La navigation</a>
-    <a href="#etape-2"><span class="n">Étape 2</span><br>L'API publique</a>
+    <a href="#etape-2"><span class="n">Étape 2</span><br>Charger un élément</a>
     <a href="#etape-3"><span class="n">Étape 3</span><br>L'écran de détail</a>
     <a href="#etape-4"><span class="n">Étape 4</span><br>Le catalogue et ses filtres</a>
     <a href="#etape-5"><span class="n">Étape 5</span><br>Le cycle de vie</a>
@@ -72,27 +72,17 @@
 
   <!-- ================================================================== -->
   <section class="defi" id="etape-2">
-    <h2><span class="num">2</span> L'API publique</h2>
-    <div class="meta"><span class="etiquette clair">fetch · async · typage</span></div>
+    <h2><span class="num">2</span> Charger un élément par son identifiant</h2>
+    <div class="meta"><span class="etiquette clair">fetch · union discriminée</span></div>
     <ol>
-      <li>Choisissez l'API de votre sujet et notez son adresse dans le README. Elle doit être <strong>gratuite et sans clé secrète</strong>.</li>
-      <li>Ouvrez une réponse de l'API dans votre navigateur. Écrivez le <strong>type de la réponse</strong>, limité aux champs que vous utilisez.</li>
-      <li>Remplacez le contenu de votre service par un appel à <code>fetch</code> :
-        <ul>
-          <li>vérifiez <code>response.ok</code> et levez une erreur sinon ;</li>
-          <li><strong>convertissez</strong> la réponse en objets de votre modèle. Le reste de l'application ne doit pas connaître les noms de champs de l'API.</li>
-        </ul>
-      </li>
-      <li>Vérifiez que vos hooks et vos composants <strong>n'ont pas changé</strong>. Si vous avez dû les modifier, c'est qu'une responsabilité était mal placée au TP2.</li>
-      <li>Coupez le réseau (mode avion ou outils de développement du navigateur) : l'erreur et le bouton « Réessayer » doivent s'afficher.</li>
+      <li>Dans votre service, ajoutez une fonction qui charge <strong>un seul élément</strong> par son identifiant, par exemple <code>fetchRecipe(id): Promise&lt;Recipe | undefined&gt;</code>.
+        Utilisez la route de l'API prévue pour un élément si elle existe, sinon cherchez l'élément dans la liste.</li>
+      <li>Comme pour la liste, vérifiez <code>response.ok</code> et convertissez la réponse en objet de votre modèle.</li>
+      <li>Dans <code>src/hooks/</code>, écrivez le hook qui le charge (par exemple <code>useRecipe(id)</code>). Son état est une <strong>union discriminée</strong> : chargement, introuvable ou succès.</li>
     </ol>
     <details>
-      <summary>Indice : l'API renvoie beaucoup plus de champs que nécessaire</summary>
-      <p>C'est normal. Ne typez que ce que vous utilisez, puis construisez vos objets du modèle avec les bons noms. Un champ facultatif de l'API devient une propriété facultative (<code>?</code>) de votre type.</p>
-    </details>
-    <details>
-      <summary>Indice : les données locales servent encore</summary>
-      <p>Si votre API ne fournit pas tout (vos catégories, par exemple), gardez ces données dans <code>src/data/</code>. Ce sont vos trois CRUD Firebase du TP4 qui remplaceront le reste.</p>
+      <summary>Indice : trouver la route d'un élément</summary>
+      <p>Cherchez dans la documentation de votre API un mot comme <em>lookup</em>, <em>details</em> ou <em>by id</em>. TheMealDB, par exemple, renvoie une recette avec <code>lookup.php?i=</code> suivi de son identifiant.</p>
     </details>
   </section>
 

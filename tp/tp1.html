@@ -55,18 +55,18 @@
           npx create-expo-app@latest rn-tp1
           cd rn-tp1
           npm run reset-project
-          npx expo start
+          npm start
         </code></pre>
         À la question de <code>reset-project</code>, répondez <code>n</code> : l'exemple est supprimé au lieu d'être déplacé.
       </li>
-      <li>Dans <code>app.json</code>, remplacez <code>"output": "server"</code> par <code>"output": "single"</code> (rubrique <code>web</code>), puis relancez avec <code>npx expo start --clear</code>.</li>
+      <li>Dans <code>app.json</code>, remplacez <code>"output": "server"</code> par <code>"output": "single"</code> (rubrique <code>web</code>), puis relancez avec <code>npm start -- --clear</code>.</li>
       <li>Appuyez sur <code>w</code> pour ouvrir la version web, puis scannez le QR code avec <a href="https://expo.dev/go" target="_blank">Expo Go</a>. Le même écran s'affiche des deux côtés.</li>
       <li>Sur GitHub, <a href="https://github.com/new" target="_blank">créez un dépôt</a> <strong>privé</strong> nommé <code>rn-tp1-nom-prenom</code>, reliez-le à votre projet et poussez un premier commit. Il garde une trace de votre travail : prenez l'habitude de commiter à chaque étape.</li>
     </ol>
 
     <details>
       <summary>Le téléphone ne se connecte pas au projet</summary>
-      <p>Le téléphone et l'ordinateur doivent être sur le même réseau. Si le Wi-Fi de l'école bloque la connexion, lancez <code>npx expo start --tunnel</code>.</p>
+      <p>Le téléphone et l'ordinateur doivent être sur le même réseau. Si le Wi-Fi de l'école bloque la connexion, lancez <code>npm start -- --tunnel</code>.</p>
     </details>
   </section>
 

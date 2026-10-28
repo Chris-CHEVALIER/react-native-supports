@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
 npx create-expo-app@latest mon-app
 cd mon-app
 npm run reset-project
-npx expo start
+npm start
           </code></pre>
           <ul class="dense">
             <li><a href="https://expo.dev" target="_blank"><strong>Expo</strong></a> est le framework <a href="https://reactnative.dev/docs/environment-setup" target="_blank">recommandé par l'équipe de React Native</a></li>
@@ -188,12 +188,12 @@ npx expo start
             <span class="petit muet" style="display: block; margin-top: 6px;">Ce plantage s'appelle une erreur d'<strong>hydratation</strong> : le premier affichage calculé par le navigateur ne correspond pas à la page reçue.</span>
           </div>
           <div class="encadre neutre" style="margin-top: 14px;">
-            Le téléphone et l'ordinateur doivent être sur le <strong>même réseau</strong>. Si le Wi-Fi de l'école bloque la connexion, lancez <code>npx expo start --tunnel</code>.
+            Le téléphone et l'ordinateur doivent être sur le <strong>même réseau</strong>. Si le Wi-Fi de l'école bloque la connexion, lancez <code>npm start -- --tunnel</code>.
           </div>
         </div>
       </div>
     </div>
-    <aside class="notes">Les dossiers ios/ et android/ sont générés à la demande : on ne les écrit jamais à la main. Hydratation : React rattache ses événements au HTML reçu du serveur ; si le premier rendu diffère, il échoue.</aside>
+    <aside class="notes">npm start lance le script « start » du package.json, c'est-à-dire expo start. Les options passent après deux tirets : npm start -- --tunnel. Les dossiers ios/ et android/ sont générés à la demande : on ne les écrit jamais à la main. Hydratation : React rattache ses événements au HTML reçu du serveur ; si le premier rendu diffère, il échoue.</aside>
   </section>
   <section>
     <h2>L'arborescence du projet</h2>
