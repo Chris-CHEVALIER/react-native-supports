@@ -57,12 +57,48 @@
   <section>
     <h2>La pile d'écrans</h2>
     <div class="corps">
-      <div class="frise" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="etape"><div class="date">1. Onglet « Séjours »</div><code>/</code><br>Le catalogue est la base de la pile</div>
-        <div class="etape"><div class="date">2. On empile</div><code>/stays/s3</code><br>Le détail se pose par-dessus, avec une flèche de retour</div>
-        <div class="etape corail"><div class="date">3. On dépile</div><code>/</code><br>Le catalogue réapparaît <strong>dans l'état où on l'avait laissé</strong> (filtres, défilement)</div>
-      </div>
-      <div class="encadre neutre" style="margin-top: 26px;">
+      <svg class="schema-pile" viewBox="0 0 1100 330" role="img" aria-label="La pile d'écrans : on empile le détail sur le catalogue, puis on le dépile">
+        <defs>
+          <marker id="fleche-pile" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1B1E3C"/></marker>
+        </defs>
+        <g font-family="Outfit, Arial, sans-serif" fill="#1B1E3C">
+          <!-- 1. Catalogue seul -->
+          <text x="130" y="22" text-anchor="middle" font-size="19" font-weight="700">1. Au départ</text>
+          <rect x="40" y="38" width="180" height="30" rx="8" fill="#F2F3F9" stroke="#D9DCEA"/>
+          <text x="130" y="59" text-anchor="middle" font-size="16" font-family="JetBrains Mono, Menlo, monospace">/</text>
+          <rect x="40" y="88" width="180" height="200" rx="14" fill="#E2F7F4" stroke="#2EC4B6" stroke-width="2"/>
+          <text x="130" y="190" text-anchor="middle" font-size="19" font-weight="600">Catalogue</text>
+          <text x="130" y="314" text-anchor="middle" font-size="15" fill="#5A5F80">1 écran dans la pile</text>
+          <!-- flèche empiler -->
+          <line x1="245" y1="188" x2="375" y2="188" stroke="#1B1E3C" stroke-width="2.5" marker-end="url(#fleche-pile)"/>
+          <text x="310" y="172" text-anchor="middle" font-size="16" font-weight="700">empiler</text>
+          <text x="310" y="212" text-anchor="middle" font-size="14" fill="#5A5F80">Link, router.push</text>
+          <!-- 2. Détail empilé -->
+          <text x="510" y="22" text-anchor="middle" font-size="19" font-weight="700">2. On ouvre un séjour</text>
+          <rect x="420" y="38" width="180" height="30" rx="8" fill="#F2F3F9" stroke="#D9DCEA"/>
+          <text x="510" y="59" text-anchor="middle" font-size="16" font-family="JetBrains Mono, Menlo, monospace">/stays/s3</text>
+          <rect x="420" y="88" width="180" height="200" rx="14" fill="#E2F7F4" stroke="#2EC4B6" stroke-width="2"/>
+          <text x="510" y="112" text-anchor="middle" font-size="15" fill="#5A5F80">Catalogue (caché)</text>
+          <rect x="440" y="124" width="180" height="180" rx="14" fill="#FFEDE6" stroke="#FF7A59" stroke-width="2"/>
+          <text x="530" y="218" text-anchor="middle" font-size="19" font-weight="600">Détail s3</text>
+          <text x="458" y="150" font-size="17" font-weight="700">‹</text>
+          <text x="520" y="324" text-anchor="middle" font-size="15" fill="#5A5F80">2 écrans : le détail par-dessus</text>
+          <!-- flèche dépiler -->
+          <line x1="645" y1="188" x2="775" y2="188" stroke="#1B1E3C" stroke-width="2.5" marker-end="url(#fleche-pile)"/>
+          <text x="710" y="172" text-anchor="middle" font-size="16" font-weight="700">dépiler</text>
+          <text x="710" y="212" text-anchor="middle" font-size="14" fill="#5A5F80">flèche, geste, retour</text>
+          <!-- 3. Retour -->
+          <text x="910" y="22" text-anchor="middle" font-size="19" font-weight="700">3. On revient</text>
+          <rect x="820" y="38" width="180" height="30" rx="8" fill="#F2F3F9" stroke="#D9DCEA"/>
+          <text x="910" y="59" text-anchor="middle" font-size="16" font-family="JetBrains Mono, Menlo, monospace">/</text>
+          <rect x="820" y="88" width="180" height="200" rx="14" fill="#E2F7F4" stroke="#2EC4B6" stroke-width="2"/>
+          <text x="910" y="180" text-anchor="middle" font-size="19" font-weight="600">Catalogue</text>
+          <text x="910" y="206" text-anchor="middle" font-size="15" fill="#0B7A70">filtres et défilement</text>
+          <text x="910" y="226" text-anchor="middle" font-size="15" fill="#0B7A70">conservés</text>
+          <text x="910" y="314" text-anchor="middle" font-size="15" fill="#5A5F80">le détail est détruit</text>
+        </g>
+      </svg>
+      <div class="encadre neutre" style="margin-top: 14px;">
         Expo Router s'appuie sur <a href="https://reactnavigation.org/" target="_blank">React Navigation</a>, la bibliothèque de navigation de référence. Vous n'avez pas à la configurer vous-mêmes.
       </div>
     </div>
@@ -92,10 +128,10 @@ src/app/
         </code></pre>
         <div>
           <ul class="dense">
-            <li><code>_layout.tsx</code> : le <strong>navigateur</strong> (pile ou onglets) de son dossier</li>
-            <li><code>(tabs)</code> : un <strong>groupe</strong>. Les parenthèses n'apparaissent pas dans l'URL</li>
-            <li><code>[id]</code> : un <strong>segment dynamique</strong>, récupéré comme paramètre</li>
-            <li><code>+not-found</code> : l'écran des adresses inconnues</li>
+            <li>Un nom ordinaire devient un morceau d'URL. <code>_</code> : le fichier n'est <strong>pas une route</strong>. <code>_layout.tsx</code> est le navigateur de son dossier</li>
+            <li><code>( )</code> : un <strong>groupe</strong>, absent de l'URL. <code>(tabs)/favorites.tsx</code> répond à <code>/favorites</code></li>
+            <li><code>[ ]</code> : un <strong>segment dynamique</strong>, récupéré comme paramètre (<code>id</code> vaut <code>s3</code>)</li>
+            <li><code>+</code> : une <strong>route spéciale</strong> d'Expo Router. <code>+not-found</code> répond aux adresses inconnues</li>
           </ul>
         </div>
       </div>
@@ -115,7 +151,6 @@ mv src/app/index.tsx "src/app/(tabs)/"
           <ul class="dense">
             <li>Les icônes des onglets viennent de <code>@expo/vector-icons</code>. <code>npx expo install</code> choisit la version compatible avec le SDK</li>
             <li>Le catalogue devient le premier onglet : on le range dans le groupe <code>(tabs)</code></li>
-            <li>Sous Windows, déplacez le fichier dans l'explorateur de VS Code</li>
           </ul>
         </div>
       </div>
@@ -232,7 +267,6 @@ export default function TabsLayout() {
 }</code></pre>
         <div>
           <ul class="dense">
-            <li>Depuis le SDK 58, importez <code>Tabs</code> depuis <code>expo-router/js-tabs</code>. L'import depuis <code>expo-router</code> est <strong>déprécié</strong></li>
             <li><code>name</code> reprend le nom du fichier</li>
             <li>Deux en-têtes s'empilent : celui de la pile et celui des onglets. La diapo suivante masque celui de la pile</li>
             <li>Icônes : <a href="https://icons.expo.fyi" target="_blank"><code>@expo/vector-icons</code></a>, à installer avec <code>npx expo install</code></li>
@@ -246,12 +280,12 @@ export default function TabsLayout() {
     <h2>La pile racine</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-fichier="demos/cours3/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="">import { Stack } from "expo-router";
+        <pre class="mini" data-fichier="demos/cours3/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="5-7,13-16">import { Stack } from "expo-router";
 
 import { FavoritesProvider } from "@/context/favorites-context";
 
-// Ouvert directement par son URL, un séjour garde un retour vers les
-// onglets
+// Un séjour ouvert directement par son URL (lien partagé) est posé
+// sur les onglets : sa flèche de retour y mène
 export const unstable_settings = { anchor: "(tabs)" };
 
 export default function RootLayout() {
@@ -268,9 +302,9 @@ export default function RootLayout() {
 }</code></pre>
         <div>
           <ul class="dense">
-            <li>Les onglets forment <strong>un seul écran</strong> de la pile, sans en-tête (ils ont le leur). Masquer cet en-tête avant d'avoir écrit les onglets laisserait l'écran sans en-tête, sous l'heure sur iOS. Son <code>title</code> sert au bouton retour du détail, qui afficherait sinon « (tabs) »</li>
-            <li>Le détail se pose par-dessus</li>
-            <li><code>anchor</code> : sans lui, une page ouverte par son URL n'a pas de flèche de retour</li>
+            <li>Les onglets forment <strong>un seul écran</strong> de la pile. Son en-tête est masqué car les onglets ont le leur</li>
+            <li>Son <code>title</code> s'affiche dans le bouton retour du détail, à la place de « (tabs) »</li>
+            <li><code>anchor</code> : l'écran placé <strong>sous</strong> un séjour ouvert directement par son URL (un lien partagé). Sans lui, pas de flèche de retour. <code>unstable_</code> signale une option qui peut encore changer</li>
           </ul>
         </div>
       </div>
@@ -319,7 +353,7 @@ const styles = StyleSheet.create({
     <h2>Charger un seul séjour</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/services/stays-service.ts" data-titre="src/services/stays-service.ts"><code class="language-typescript" data-line-numbers="">import { Stay, StayType } from "@/models/stay";
+        <pre class="mini" data-fichier="demos/cours3/src/services/stays-service.ts" data-titre="src/services/stays-service.ts"><code class="language-typescript" data-line-numbers="39-44">import { Stay, StayType } from "@/models/stay";
 
 const SITE = "https://chris-chevalier.github.io/react-native-supports";
 const STAYS_URL = `${SITE}/api/stays.json`;
@@ -365,6 +399,7 @@ export async function fetchStay(
 }</code></pre>
         <div>
           <ul class="dense">
+            <li><strong>Seule la dernière fonction, <code>fetchStay</code>, est nouvelle</strong> : elle est surlignée. Le reste du fichier existe déjà</li>
             <li>Le détail ne reçoit qu'un identifiant : le service retrouve le séjour</li>
             <li>Il renvoie <code>undefined</code> si l'identifiant est inconnu. L'écran devra le prévoir</li>
           </ul>
@@ -480,21 +515,6 @@ const styles = StyleSheet.create({
     <aside class="notes">StayDetails est une vue pure : elle reçoit un séjour déjà chargé, ce qui évite de tester state.status dans tout le JSX.</aside>
   </section>
 
-  <section>
-    <h2>Ce qui peut mal se passer</h2>
-    <div class="corps">
-      <table>
-        <tr><th>Situation</th><th>Ce qui se passe</th><th>Ce que voit l'utilisateur</th></tr>
-        <tr><td>Pas de réseau</td><td><code>fetch</code> lève une erreur</td><td>Un message et « Réessayer »</td></tr>
-        <tr><td>Erreur 404 ou 500</td><td><code>response.ok</code> vaut <code>false</code></td><td>Un message et « Réessayer »</td></tr>
-        <tr><td>Réponse lente</td><td>La promesse attend</td><td>Un indicateur de chargement</td></tr>
-        <tr><td>L'écran est quitté avant la réponse</td><td>Le drapeau <code>cancelled</code> ignore le résultat</td><td>Rien</td></tr>
-      </table>
-      <div class="encadre corail" style="margin-top: 20px;">
-        Une clé d'API placée dans le code de l'application est <strong>lisible par tous</strong> : le code JavaScript est livré avec l'application. N'y mettez jamais de secret. Préférez des API sans clé ou passez par votre propre serveur.
-      </div>
-    </div>
-  </section>
 
   <section>
     <h2>URL et liens profonds</h2>
@@ -511,14 +531,11 @@ const styles = StyleSheet.create({
         <div class="carte">
           <h3>Sur mobile</h3>
           <ul class="dense">
-            <li>Le <code>scheme</code> d'<code>app.json</code> définit le préfixe : <code>cours3://stays/s3</code></li>
+            <li>Le <code>scheme</code> d'<code>app.json</code> définit le préfixe : <code>staybnb://stays/s3</code></li>
             <li>Dans Expo Go, l'adresse devient <code>exp://&lt;IP&gt;:8081/--/stays/s3</code></li>
             <li>Une notification ou un e-mail peut ouvrir l'application sur le bon séjour</li>
           </ul>
         </div>
-      </div>
-      <div class="encadre corail" style="margin-top: 20px;">
-        Un paramètre d'URL vient de l'extérieur : <strong>ne lui faites pas confiance</strong>. Vérifiez qu'il existe avant de l'utiliser, comme le cas <code>not-found</code> du détail.
       </div>
     </div>
   </section>
@@ -527,7 +544,7 @@ const styles = StyleSheet.create({
     <h2>Naviguer avec un lien : <code>Link</code></h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/etapes/cours3/favoris-1/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="">import { Link } from "expo-router";
+        <pre class="mini" data-fichier="demos/etapes/cours3/favoris-1/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="1,23-28,39-40">import { Link } from "expo-router";
 import { FlatList, StyleSheet, Text } from "react-native";
 
 import { StateMessage } from "@/components/state-message";
@@ -582,7 +599,7 @@ const styles = StyleSheet.create({
     <h2>Une carte qui s'ouvre au toucher</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/components/stay-card.tsx" data-titre="src/components/stay-card.tsx"><code class="language-tsx" data-line-numbers="">import {
+        <pre class="mini" data-fichier="demos/cours3/src/components/stay-card.tsx" data-titre="src/components/stay-card.tsx"><code class="language-tsx" data-line-numbers="15,29,32,55">import {
   Image,
   Pressable,
   StyleSheet,
@@ -679,7 +696,7 @@ const styles = StyleSheet.create({
     <h2>Naviguer par le code : <code>useRouter</code></h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/etapes/cours3/catalogue-1/src/app/(tabs)/index.tsx" data-titre="src/app/(tabs)/index.tsx"><code class="language-tsx" data-line-numbers="">import { useRouter } from "expo-router";
+        <pre class="mini" data-fichier="demos/etapes/cours3/catalogue-1/src/app/(tabs)/index.tsx" data-titre="src/app/(tabs)/index.tsx"><code class="language-tsx" data-line-numbers="1,13,21-22,41">import { useRouter } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { StateMessage } from "@/components/state-message";
@@ -779,7 +796,7 @@ const styles = StyleSheet.create({
     <h2>Un écran ne se démonte pas toujours</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-fichier="demos/etapes/cours3/favoris-2/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="">import { Link, useFocusEffect } from "expo-router";
+        <pre class="mini" data-fichier="demos/etapes/cours3/favoris-2/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="1-2,10,13-19">import { Link, useFocusEffect } from "expo-router";
 import { useCallback } from "react";
 import { FlatList, StyleSheet, Text } from "react-native";
 
@@ -877,7 +894,7 @@ export function useOnForeground(onForeground: () =&gt; void) {
     <h2>Recharger le catalogue au retour</h2>
     <div class="corps">
       <div class="colonnes code-large">
-        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/index.tsx" data-titre="src/app/(tabs)/index.tsx"><code class="language-tsx" data-line-numbers="">import { useRouter } from "expo-router";
+        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/index.tsx" data-titre="src/app/(tabs)/index.tsx"><code class="language-tsx" data-line-numbers="9,17-18">import { useRouter } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { StateMessage } from "@/components/state-message";
@@ -980,7 +997,7 @@ const styles = StyleSheet.create({
     <h2><code>SectionList</code> : regrouper dans le modèle</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="">export type StayType = "apartment" | "house" | "cabin";
+        <pre class="mini" data-fichier="demos/cours3/src/models/stay.ts" data-titre="src/models/stay.ts"><code class="language-typescript" data-line-numbers="43,45-52">export type StayType = "apartment" | "house" | "cabin";
 
 export type Stay = {
   id: string;
@@ -1046,7 +1063,7 @@ export function groupByCity(stays: Stay[]): CitySection[] {
     <h2><code>SectionList</code> : afficher les groupes</h2>
     <div class="corps">
       <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="">import { Link, useFocusEffect } from "expo-router";
+        <pre class="mini" data-fichier="demos/cours3/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="3,8,24-25,29-30,32-34,53-59">import { Link, useFocusEffect } from "expo-router";
 import { useCallback } from "react";
 import { SectionList, StyleSheet, Text } from "react-native";
 

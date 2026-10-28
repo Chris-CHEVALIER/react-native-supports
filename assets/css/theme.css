@@ -276,3 +276,8 @@
 /* Fichier complet : il défile dans son bloc, sans déborder sur le pied de page */
 .reveal .corps pre[data-fichier] code { max-height: 400px; }
 .reveal .colonnes.code-large { grid-template-columns: 2.1fr 1fr; gap: 26px; align-items: start; }
+
+/* Schéma de la pile d'écrans (cours 3) */
+.reveal .schema-pile { display: block; width: 100%; max-height: 360px; }
+/* Un fichier déjà vu revient : son nouveau code est surligné, le titre le signale */
+.reveal pre[data-titre]:has(code.has-highlights)::after { content: attr(data-titre) "  ·  nouveau code surligné"; }

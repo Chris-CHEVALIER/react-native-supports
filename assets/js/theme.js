@@ -26,7 +26,14 @@
       const code = pre.querySelector("code");
       const lignes = pre.dataset.source.split("\n");
       const parPage = 20;
-      code.setAttribute("data-line-numbers", "");
+      // Lignes du nouveau code (numéros dans le fichier entier), réparties ensuite entre les morceaux
+      const nouvelles = (code.getAttribute("data-line-numbers") || "").split(",").filter(Boolean).flatMap((plage) => {
+        const [a, b = a] = plage.split("-").map(Number);
+        return Array.from({ length: b - a + 1 }, (_, i) => a + i);
+      });
+      const surligner = (element, debut) => element.setAttribute("data-line-numbers",
+        nouvelles.filter((n) => n > debut && n <= debut + parPage).map((n) => n - debut).join(","));
+      surligner(code, 0);
       if (lignes.length <= parPage) return;
       code.textContent = lignes.slice(0, parPage).join("\n");
       const diapo = pre.closest("section");
@@ -39,6 +46,7 @@
         const morceau = bloc.querySelector("code");
         morceau.textContent = lignes.slice(debut, debut + parPage).join("\n");
         morceau.setAttribute("data-ln-start-from", String(debut + 1));
+        surligner(morceau, debut);
         suite.innerHTML = `<h2>${titre} (suite)</h2><div class="corps"></div>`;
         suite.querySelector(".corps").appendChild(bloc);
         precedente.after(suite);
