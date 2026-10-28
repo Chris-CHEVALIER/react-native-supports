@@ -1,0 +1,68 @@
+[
+  {
+    "id": "s1",
+    "title": "Studio lumineux",
+    "city": "Paris",
+    "type": "apartment",
+    "pricePerNight": 95,
+    "latitude": 48.8566,
+    "longitude": 2.3522,
+    "available": true,
+    "imageUrl": "https://picsum.photos/id/1067/400/300"
+  },
+  {
+    "id": "s2",
+    "title": "Loft avec vue",
+    "city": "Lyon",
+    "type": "apartment",
+    "pricePerNight": 120,
+    "latitude": 45.764,
+    "longitude": 4.8357,
+    "available": true,
+    "imageUrl": "https://picsum.photos/id/1031/400/300"
+  },
+  {
+    "id": "s3",
+    "title": "Chalet en bois",
+    "city": "Annecy",
+    "type": "cabin",
+    "pricePerNight": 160,
+    "latitude": 45.8992,
+    "longitude": 6.1294,
+    "available": false,
+    "imageUrl": "https://picsum.photos/id/1036/400/300"
+  },
+  {
+    "id": "s4",
+    "title": "Maison de pêcheur",
+    "city": "Biarritz",
+    "type": "house",
+    "pricePerNight": 140,
+    "latitude": 43.4832,
+    "longitude": -1.5586,
+    "available": true,
+    "imageUrl": "https://picsum.photos/id/1039/400/300"
+  },
+  {
+    "id": "s5",
+    "title": "Cabane perchée",
+    "city": "Gérardmer",
+    "type": "cabin",
+    "pricePerNight": 110,
+    "latitude": 48.0731,
+    "longitude": 6.8784,
+    "available": true,
+    "imageUrl": "https://picsum.photos/id/1043/400/300"
+  },
+  {
+    "id": "s6",
+    "title": "Villa provençale",
+    "city": "Aix-en-Provence",
+    "type": "house",
+    "pricePerNight": 210,
+    "latitude": 43.5297,
+    "longitude": 5.4474,
+    "available": true,
+    "imageUrl": "https://picsum.photos/id/1040/400/300"
+  }
+]
