@@ -28,14 +28,14 @@
       <li><strong>Groupes de trois</strong>, formés le premier jour. Un binôme est possible si l'effectif l'impose, jamais une personne seule.</li>
       <li><strong>Sujet libre</strong>, validé par moi avant le TP2.</li>
       <li>Il donne la <strong>note de projet</strong>, qui compte pour <strong>50 %</strong> de la note du module. C'est la moyenne de deux notes sur 20 : la <strong>production</strong> du groupe et votre <strong>soutenance individuelle</strong>. Aucune note intermédiaire.</li>
-      <li><strong>Chaque membre est propriétaire d'une partie</strong>, dont un CRUD Firebase.</li>
+      <li><strong>Répartition libre</strong> : chacun écrit une part réelle du code, dont au moins un CRUD Firebase.</li>
       <li>Soutenance le 17 décembre. Rendu : dernier commit poussé <strong>le jeudi 17 décembre avant 23h59</strong>.</li>
     </ul>
   </div>
 
   <nav class="sommaire">
     <a href="#exigences"><span class="n">1</span><br>Ce que l'application doit contenir</a>
-    <a href="#parties"><span class="n">2</span><br>Un propriétaire par partie</a>
+    <a href="#parties"><span class="n">2</span><br>Qui fait quoi ?</a>
     <a href="#idees"><span class="n">3</span><br>Des idées de sujets</a>
     <a href="#jalons"><span class="n">4</span><br>Les jalons</a>
     <a href="#rendu"><span class="n">5</span><br>Le dépôt et le rendu</a>
@@ -53,7 +53,7 @@
       <li>Sur le web, <strong>l'URL suit la navigation</strong> : une page de détail s'ouvre directement depuis son adresse.</li>
       <li>Un <strong>catalogue responsive</strong> : une grille sur ordinateur, une liste fluide sur téléphone, avec des <strong>filtres</strong> dont la logique vit dans un hook.</li>
       <li>Une <strong>API publique</strong> consommée avec <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch" target="_blank"><code>fetch()</code></a>, avec les états de chargement et d'erreur.</li>
-      <li><strong>Firebase</strong> : authentification par e-mail et <strong>trois CRUD</strong> (créer, lire, modifier, supprimer) sur trois collections différentes, un par partie.</li>
+      <li><strong>Firebase</strong> : authentification par e-mail et <strong>trois CRUD</strong> (créer, lire, modifier, supprimer) sur trois collections différentes.</li>
       <li>Une <strong>architecture MVC</strong> en TypeScript : modèles typés, services, hooks contrôleurs, composants d'affichage purs.</li>
       <li>Une interface <strong>lisible et cohérente</strong> : hiérarchie visuelle, contrastes suffisants, retours visuels au toucher.</li>
       <li>Une <strong>version web déployée</strong> en ligne (GitHub Pages ou équivalent), à jour du dernier commit.</li>
@@ -75,21 +75,21 @@
 
   <!-- ================================================================== -->
   <section class="defi" id="parties">
-    <h2><span class="num">2</span> Un propriétaire par partie</h2>
+    <h2><span class="num">2</span> Qui fait quoi ?</h2>
     <p>
-      Chaque membre est <strong>propriétaire</strong> d'une partie de l'application. Il la conçoit, l'écrit et en répond
-      à la soutenance. Les deux autres l'aident et relisent son code.
+      Répartissez le travail comme vous le souhaitez, selon vos envies et vos points forts. Une seule règle : chacun écrit une
+      <strong>part réelle du code</strong>, avec son propre compte, dont au moins un des trois CRUD. Les autres relisent son code.
+      L'application couvre trois blocs, que vous pouvez découper librement :
     </p>
     <table>
-      <tr><th>Partie</th><th>Contenu</th><th>Au fil des TP</th></tr>
-      <tr><td><strong>A · Catalogue</strong></td><td>Modèle et service de l'API publique, catalogue responsive, filtres, CRUD lié au catalogue (favoris annotés, par exemple)</td><td>TP2 : modèle, service de l'API publique et catalogue. TP3 : filtres et chargement d'un élément par son identifiant. TP4 : CRUD A</td></tr>
-      <tr><td><strong>B · Navigation et compte</strong></td><td>Structure de navigation, écran de détail, authentification, CRUD B</td><td>TP2 : modèle et service de la collection B. TP3 : navigation et détail. TP4 : authentification et CRUD B</td></tr>
-      <tr><td><strong>C · Données partagées</strong></td><td>État partagé (Context), écran groupé (<a href="https://reactnative.dev/docs/sectionlist" target="_blank"><code>SectionList</code></a>), liste en temps réel, CRUD C</td><td>TP2 : Context et composant qui le lit. TP3 : <code>SectionList</code>. TP4 : CRUD C en temps réel</td></tr>
+      <tr><th>Bloc</th><th>Contenu</th><th>Au fil des TP</th></tr>
+      <tr><td><strong>Catalogue</strong></td><td>Modèle et service de l'API publique, catalogue responsive, filtres, un CRUD lié au catalogue (favoris annotés, par exemple)</td><td>TP2 : modèle, service de l'API publique et catalogue. TP3 : filtres et chargement d'un élément par son identifiant. TP4 : CRUD lié au catalogue</td></tr>
+      <tr><td><strong>Navigation et compte</strong></td><td>Structure de navigation, écran de détail, authentification, un deuxième CRUD</td><td>TP2 : modèle et service de votre première collection. TP3 : navigation et détail. TP4 : authentification et deuxième CRUD</td></tr>
+      <tr><td><strong>Données partagées</strong></td><td>État partagé (Context), écran groupé (<a href="https://reactnative.dev/docs/sectionlist" target="_blank"><code>SectionList</code></a>), liste en temps réel, un troisième CRUD</td><td>TP2 : Context et composant qui le lit. TP3 : <code>SectionList</code>. TP4 : troisième CRUD en temps réel</td></tr>
     </table>
     <div class="encadre">
-      Je note avec vous le propriétaire de chaque partie dès le premier jour. Indiquez-le aussi dans le README <strong>dès le TP2</strong>, avec le prénom, le nom et le compte GitHub de chacun.
-      En binôme, répartissez les trois parties entre vous deux de la même façon.
-      Chacun doit aussi comprendre le reste de l'application : à la soutenance, je pose une question sur la partie d'un autre membre.
+      Indiquez dans le README <strong>dès le TP2</strong> ce que fait chacun, avec son prénom, son nom et son compte GitHub. Tenez-le à jour : la répartition peut évoluer.
+      Chacun doit aussi comprendre le reste de l'application : à la soutenance, je pose une question sur le travail d'un autre membre.
     </div>
   </section>
 
@@ -98,7 +98,7 @@
     <h2><span class="num">3</span> Des idées de sujets</h2>
     <p>Ces quatre sujets s'appuient sur des API <strong>gratuites et sans clé</strong>. Vous pouvez en proposer un autre : il doit se prêter à un catalogue et à trois CRUD.</p>
     <table>
-      <tr><th>Sujet</th><th>API publique</th><th>Idées de CRUD Firebase (A, B, C)</th></tr>
+      <tr><th>Sujet</th><th>API publique</th><th>Idées des trois CRUD Firebase</th></tr>
       <tr><td><strong>Carnet de recettes</strong></td><td><a href="https://www.themealdb.com/api.php" target="_blank">TheMealDB</a></td><td>Mes recettes favorites et leurs notes, mes recettes personnelles, ma liste de courses</td></tr>
       <tr><td><strong>Bibliothèque personnelle</strong></td><td><a href="https://openlibrary.org/developers/api" target="_blank">Open Library</a></td><td>Mes livres à lire, mes lectures (lu, en cours) et mes avis, mes étagères thématiques</td></tr>
       <tr><td><strong>Carnet de voyage</strong></td><td><a href="https://restcountries.com" target="_blank">REST Countries</a> et <a href="https://open-meteo.com" target="_blank">Open-Meteo</a></td><td>Mes pays à visiter, mes voyages, les étapes d'un voyage</td></tr>
@@ -112,14 +112,14 @@
     <h2><span class="num">4</span> Les jalons</h2>
     <table>
       <tr><th>Quand</th><th>Jalon</th><th>Ce qui doit exister</th></tr>
-      <tr><td>Mar. 27 oct.</td><td><strong>Lancement</strong></td><td>Trinôme formé, sujet et parties notés avec moi, dépôt commun créé, Chris-CHEVALIER invité</td></tr>
+      <tr><td>Mar. 27 oct.</td><td><strong>Lancement</strong></td><td>Trinôme formé, sujet noté avec moi, dépôt commun créé, Chris-CHEVALIER invité</td></tr>
       <tr><td>Mer. 28 oct.</td><td><strong>TP2</strong></td><td>Arborescence MVC, modèles typés, service de l'API publique, hook contrôleur, catalogue responsive, un Context</td></tr>
       <tr><td>Du 29 oct. au 24 nov.</td><td><strong>TP3</strong></td><td>Navigation complète (onglets, pile, détail chargé par son identifiant), filtres, <code>SectionList</code></td></tr>
       <tr><td>Mer. 25 nov.</td><td><strong>TP4</strong></td><td>Authentification Firebase et trois CRUD</td></tr>
       <tr><td>Jeu. 17 déc.</td><td><strong>Soutenance</strong></td><td>10 minutes par groupe (voir la partie 6)</td></tr>
       <tr><td>Jeu. 17 déc. avant 23h59</td><td><strong>Rendu final</strong></td><td>Application complète, version web déployée à jour, README, bonus éventuels</td></tr>
     </table>
-    <p>Le 25 novembre, pendant le TP4, je fais un <strong>point d'étape</strong> de 5 minutes avec chaque groupe : chacun me montre où en est sa partie. Il n'est pas noté. Il me sert à repérer tôt un groupe en difficulté.</p>
+    <p>Le 25 novembre, pendant le TP4, je fais un <strong>point d'étape</strong> de 5 minutes avec chaque groupe : chacun me montre où il en est. Il n'est pas noté. Il me sert à repérer tôt un groupe en difficulté.</p>
     <p class="muet">Après votre soutenance, vous pouvez encore améliorer votre projet jusqu'au soir. Je corrige la production sur le dernier commit poussé avant 23h59.</p>
   </section>
 
@@ -134,7 +134,7 @@
     </ul>
     <h3>Le README contient</h3>
     <ul>
-      <li>le sujet, les membres du groupe (prénom, nom, compte GitHub) et le <strong>propriétaire de chaque partie</strong> ;</li>
+      <li>le sujet, les membres du groupe (prénom, nom, compte GitHub) et <strong>ce que fait chacun</strong> ;</li>
       <li>le <strong>lien de la version web déployée</strong> ;</li>
       <li>les fonctionnalités, avec des captures d'écran sur le web et sur mobile ;</li>
       <li>l'API publique utilisée et le schéma des trois collections Firebase ;</li>
@@ -167,21 +167,21 @@
         README complet ·
         états de chargement, d'erreur et de liste vide ·
         interface lisible et cohérente sur le web et sur mobile</td><td>8</td></tr>
-      <tr><td><strong>A · Catalogue</strong></td><td>
+      <tr><td><strong>Catalogue</strong></td><td>
         Service de l'API (<code>fetch</code>, test de <code>response.ok</code>, réponse typée et convertie en modèle) ·
         grille sur ordinateur et liste sur téléphone ·
         deux filtres combinables dans un hook ·
-        CRUD A complet</td><td>4</td></tr>
-      <tr><td><strong>B · Navigation et compte</strong></td><td>
+        un CRUD lié au catalogue, complet</td><td>4</td></tr>
+      <tr><td><strong>Navigation et compte</strong></td><td>
         Onglets, pile, route dynamique, écran <code>+not-found</code> et au moins 4 écrans ·
         un détail s'ouvre et se recharge depuis son URL ·
         inscription, connexion et déconnexion par e-mail ·
-        CRUD B complet</td><td>4</td></tr>
-      <tr><td><strong>C · Données partagées</strong></td><td>
+        un deuxième CRUD, complet</td><td>4</td></tr>
+      <tr><td><strong>Données partagées</strong></td><td>
         Un Context partagé par plusieurs écrans ·
         une <code>SectionList</code> dont le regroupement est dans le modèle ·
-        la liste du CRUD C se met à jour en temps réel, sans recharger l'écran ·
-        CRUD C complet</td><td>4</td></tr>
+        la liste du troisième CRUD se met à jour en temps réel, sans recharger l'écran ·
+        un troisième CRUD, complet</td><td>4</td></tr>
       <tr><td colspan="2"><strong>Bonus</strong> (1 point par bonus réalisé, dans la limite de 20)</td><td>+2</td></tr>
     </table>
     <p>Un CRUD est <strong>complet</strong> s'il permet de créer, lire, modifier et supprimer, et si chaque utilisateur ne voit que ses propres données. Un critère de fonctionnalité doit marcher <strong>sur le web et sur mobile</strong>.</p>
@@ -190,14 +190,14 @@
     <h3>La soutenance individuelle (l'autre moitié)</h3>
     <p>Le 17 décembre, <strong>10 minutes par groupe</strong>, sans IA :</p>
     <ul>
-      <li><strong>4 minutes de démonstration</strong> sur le web et sur mobile : chacun présente sa partie ;</li>
-      <li><strong>2 minutes par membre</strong> : vous m'expliquez un extrait de votre partie que je choisis, puis vous répondez à une question sur la partie d'un autre membre.</li>
+      <li><strong>4 minutes de démonstration</strong> sur le web et sur mobile : chacun présente ce qu'il a réalisé ;</li>
+      <li><strong>2 minutes par membre</strong> : vous m'expliquez un extrait de votre code que je choisis, puis vous répondez à une question sur le travail d'un autre membre.</li>
     </ul>
     <table>
       <tr><th>Critère individuel</th><th>Absent</th><th>Partiel</th><th>Complet</th></tr>
-      <tr><td><strong>Démonstration de votre partie</strong> : elle fonctionne et vous la présentez clairement</td><td>0</td><td>2</td><td>4</td></tr>
-      <tr><td><strong>Explication d'un extrait de votre partie</strong> : ce que fait le code, pourquoi il est écrit ainsi</td><td>0</td><td>4</td><td>8</td></tr>
-      <tr><td><strong>Question sur la partie d'un autre membre</strong> : vous comprenez l'ensemble du projet</td><td>0</td><td>4</td><td>8</td></tr>
+      <tr><td><strong>Démonstration de votre travail</strong> : elle fonctionne et vous la présentez clairement</td><td>0</td><td>2</td><td>4</td></tr>
+      <tr><td><strong>Explication d'un extrait de votre code</strong> : ce que fait le code, pourquoi il est écrit ainsi</td><td>0</td><td>4</td><td>8</td></tr>
+      <tr><td><strong>Question sur le travail d'un autre membre</strong> : vous comprenez l'ensemble du projet</td><td>0</td><td>4</td><td>8</td></tr>
     </table>
   </section>
 
@@ -206,7 +206,7 @@
     <h2><span class="num">7</span> L'IA générative</h2>
     <ul>
       <li>L'IA (ChatGPT, Claude, Copilot…) est <strong>autorisée</strong> pour le projet.</li>
-      <li>Chaque membre doit <strong>comprendre et savoir expliquer</strong> chaque partie du code. Une fonctionnalité que personne ne sait expliquer pendant la soutenance n'est pas comptée.</li>
+      <li>Chaque membre doit <strong>comprendre et savoir expliquer</strong> l'ensemble du code. Une fonctionnalité que personne ne sait expliquer pendant la soutenance n'est pas comptée.</li>
       <li>Déclarez votre usage dans le README : quels outils, pour quelles tâches.</li>
       <li>Méfiez-vous des réponses qui datent : <code>expo eject</code>, <code>expo-cli</code> global ou React Navigation configuré à la main ne correspondent pas à la version d'Expo utilisée dans ce module.</li>
     </ul>
