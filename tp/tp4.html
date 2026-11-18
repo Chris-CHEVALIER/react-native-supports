@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TP4 – Projet, jalon 3 – React Native</title>
+  <link rel="stylesheet" href="../assets/css/enonce.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="titre">
+    <h1>TP4 – Comptes et données avec Firebase</h1>
+    <p><span class="code-module">React Native</span> · En trinôme · Projet, jalon 3</p>
+  </div>
+</header>
+
+<main>
+
+  <p>
+    Votre application navigue et lit son API publique. Elle va maintenant reconnaître ses utilisateurs et garder leurs données
+    sur un serveur : un compte par utilisateur, <strong>trois collections Firestore</strong> et des règles de sécurité qui protègent chacune d'elles.
+  </p>
+
+  <div class="encadre neutre">
+    <span class="intitule">Ce TP en bref</span>
+    <ul>
+      <li><strong>Objectifs</strong> : brancher Firebase, ajouter l'inscription et la connexion par e-mail, écrire trois CRUD Firestore dont un en temps réel, puis les protéger par des règles de sécurité.</li>
+      <li>En trinôme, dans le dépôt du projet. <strong>Lancé en séance le 25 novembre</strong>, puis en autonomie jusqu'au 17 décembre.</li>
+      <li>Chacun écrit au moins un des trois CRUD. Indiquez dans le README qui a fait quoi.</li>
+      <li>Ce jalon n'est pas noté à part. Ses critères font partie de la grille de production du projet, évaluée le 17 décembre.</li>
+      <li>Le cours 4 (favoris annotés des séjours) vous sert de modèle.</li>
+    </ul>
+  </div>
+
+  <nav class="sommaire">
+    <a href="#etape-1"><span class="n">Étape 1</span><br>Brancher Firebase</a>
+    <a href="#etape-2"><span class="n">Étape 2</span><br>L'authentification</a>
+    <a href="#etape-3"><span class="n">Étape 3</span><br>Les trois CRUD</a>
+    <a href="#etape-4"><span class="n">Étape 4</span><br>Les règles de sécurité</a>
+    <a href="#rendu"><span class="n">Checklist</span><br>Avant la soutenance</a>
+  </nav>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-1">
+    <h2><span class="num">1</span> Brancher Firebase</h2>
+    <div class="meta"><span class="etiquette clair">SDK JavaScript · variables d'environnement</span></div>
+    <ol>
+      <li>Un membre crée le projet dans la <a href="https://console.firebase.google.com/" target="_blank">console Firebase</a> et y invite les deux autres (<em>Paramètres du projet</em>, onglet <em>Utilisateurs et autorisations</em>).
+        Activez <strong>E-mail/Mot de passe</strong> dans Authentication. Créez la base Firestore en <strong>mode production</strong>, région <code>eur3</code>.</li>
+      <li>Ajoutez une <strong>application Web</strong> au projet pour obtenir sa configuration.</li>
+      <li>Installez le SDK avec <code>npx expo install firebase @react-native-async-storage/async-storage</code>.</li>
+      <li>Créez <code>.env.example</code> (versionné, sans valeurs) et <code>.env.local</code> (non versionné, avec les valeurs de la console). Expliquez dans le README comment passer de l'un à l'autre.</li>
+      <li>Copiez les trois fichiers ci-dessous tels quels.</li>
+    </ol>
+    <pre data-fichier="demos/cours4/.env.example" data-titre=".env.example"><code class="language-bash" data-line-numbers="">EXPO_PUBLIC_FIREBASE_API_KEY=
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+EXPO_PUBLIC_FIREBASE_APP_ID=</code></pre>
+    <pre data-fichier="demos/cours4/src/types/firebase-auth.d.ts" data-titre="src/types/firebase-auth.d.ts"><code class="language-typescript" data-line-numbers="">// Les types publics de Firebase oublient cette fonction, pourtant
+// bien présente sur mobile : on la déclare nous-mêmes
+import { Persistence, ReactNativeAsyncStorage } from "firebase/auth";
+
+declare module "firebase/auth" {
+  export function getReactNativePersistence(
+    storage: ReactNativeAsyncStorage,
+  ): Persistence;
+}</code></pre>
+    <pre data-fichier="demos/cours4/src/services/firebase.ts" data-titre="src/services/firebase.ts"><code class="language-typescript" data-line-numbers="">import AsyncStorage from "@react-native-async-storage/async-storage";
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  getReactNativePersistence,
+  initializeAuth,
+} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { Platform } from "react-native";
+
+// Configuration publique du projet : elle identifie le projet mais ne
+// protège rien. Ce sont les règles de sécurité qui protègent les
+// données
+const firebaseConfig = {
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId:
+    process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+};
+
+const app = initializeApp(firebaseConfig);
+
+// Sur le web, la session est gardée par le navigateur. Sur mobile, il
+// faut indiquer où la ranger : AsyncStorage
+export const auth =
+  Platform.OS === "web"
+    ? getAuth(app)
+    : initializeAuth(app, {
+        persistence: getReactNativePersistence(AsyncStorage),
+      });
+
+export const db = getFirestore(app);</code></pre>
+    <div class="encadre corail">
+      N'activez jamais le <strong>mode test</strong> de Firestore : il ouvre toutes vos données à tout le monde. La configuration de Firebase n'est pas secrète, mais elle ne protège rien. Seules les règles de l'étape 4 protègent vos données.
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-2">
+    <h2><span class="num">2</span> L'authentification</h2>
+    <div class="meta"><span class="etiquette clair">Firebase Auth · Context · Stack.Protected</span></div>
+    <ol>
+      <li>Écrivez le modèle de l'utilisateur dans <code>src/models/user.ts</code> et le service <code>src/services/auth-service.ts</code> : inscription, connexion, déconnexion, écoute de la session et traduction des erreurs en messages lisibles.</li>
+      <li>Écrivez un Context d'authentification dans <code>src/context/</code> et son hook <code>useAuth</code> dans <code>src/hooks/</code>. Il expose l'utilisateur connecté et indique si Firebase a fini de vérifier la session.</li>
+      <li>Créez un groupe <code>src/app/(auth)/</code> avec un écran de connexion (<code>sign-in.tsx</code>) et un écran d'inscription (<code>sign-up.tsx</code>).</li>
+      <li>Dans la pile racine, protégez vos écrans avec <a href="https://docs.expo.dev/router/advanced/protected/" target="_blank"><code>Stack.Protected</code></a> : les onglets et le détail pour un utilisateur connecté, le groupe <code>(auth)</code> pour un visiteur.</li>
+      <li>Ajoutez un moyen de se déconnecter, par exemple un onglet « Compte ».</li>
+    </ol>
+    <details>
+      <summary>Indice : lire l'utilisateur dans la pile racine</summary>
+      <p>Un composant ne peut pas lire le Context qu'il fournit lui-même. Placez les Providers dans <code>RootLayout</code>, puis écrivez la pile dans un petit composant placé sous eux, qui appelle <code>useAuth()</code>.</p>
+    </details>
+    <details>
+      <summary>Indice : les codes d'erreur</summary>
+      <p>Une erreur de Firebase est une <code>FirebaseError</code> avec un <code>code</code>, par exemple <code>auth/invalid-credential</code> ou <code>auth/email-already-in-use</code>. Un <code>switch</code> sur ce code donne le message à afficher.</p>
+    </details>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-3">
+    <h2><span class="num">3</span> Les trois CRUD</h2>
+    <div class="meta"><span class="etiquette clair">Firestore · services · temps réel</span></div>
+    <p>Choisissez <strong>trois collections</strong> utiles à votre sujet, par exemple des favoris annotés liés au catalogue, des recettes personnelles et une liste de courses. Chacun de vous en prend au moins une.</p>
+    <ol>
+      <li>Rangez les données de chaque utilisateur sous son identifiant : <code>users/{uid}/recipes</code>, par exemple. Chacun ne voit ainsi que ses propres données.</li>
+      <li>Pour chaque collection, écrivez :
+        <ul>
+          <li>le <strong>modèle</strong> dans <code>src/models/</code> ;</li>
+          <li>le <strong>service</strong> dans <code>src/services/</code>, qui crée, lit, modifie et supprime, et traduit chaque document en objet du modèle ;</li>
+          <li>le <strong>hook</strong> dans <code>src/hooks/</code>, que les écrans appellent. Aucun appel à Firebase dans <code>src/app/</code> ni dans <code>src/components/</code>.</li>
+        </ul>
+      </li>
+      <li>Au moins une collection se lit en <strong>temps réel</strong> avec <a href="https://firebase.google.com/docs/firestore/query-data/listen" target="_blank"><code>onSnapshot</code></a>. Son hook s'abonne au montage et se désabonne au démontage.</li>
+      <li>Chaque écran gère ses états : chargement, erreur, liste vide. Une écriture qui échoue affiche un message.</li>
+      <li>Décrivez dans le README le schéma des trois collections : leur chemin et les champs de leurs documents.</li>
+    </ol>
+    <details>
+      <summary>Indice : tester le temps réel</summary>
+      <p>Ouvrez l'application sur le web et sur Expo Go, connectés au même compte. Une modification d'un côté doit apparaître de l'autre sans rien recharger. Vous pouvez aussi modifier un document directement dans la console Firebase.</p>
+    </details>
+    <details>
+      <summary>Indice : une seule collection pour tous les utilisateurs</summary>
+      <p>Si vos documents doivent être vus par plusieurs utilisateurs (des avis publics, par exemple), gardez une collection commune et enregistrez l'auteur dans un champ <code>ownerId</code>. Les règles vérifient alors ce champ.</p>
+    </details>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="etape-4">
+    <h2><span class="num">4</span> Les règles de sécurité</h2>
+    <div class="meta"><span class="etiquette clair">firestore.rules · Rules Playground</span></div>
+    <ol>
+      <li>Écrivez vos règles dans un fichier <code>firestore.rules</code> à la racine du dépôt, puis publiez-les dans la console (onglet <em>Règles</em> de Firestore).</li>
+      <li>Chaque utilisateur ne peut lire et écrire <strong>que ses propres données</strong>. Tout le reste est refusé.</li>
+      <li>À l'écriture, vérifiez la <strong>forme</strong> du document : les champs attendus, leur type, une longueur maximale pour les textes.</li>
+      <li>Testez au moins trois cas dans le <a href="https://firebase.google.com/docs/rules/simulator" target="_blank"><em>Rules Playground</em></a> : un visiteur non connecté, le bon utilisateur, un autre utilisateur.</li>
+    </ol>
+    <details>
+      <summary>Indice : la structure d'une règle</summary>
+      <p>Un bloc <code>match /users/{userId}/recipes/{recipeId}</code> désigne les documents d'une collection. Dans ce bloc, <code>allow read: if request.auth != null &amp;&amp; request.auth.uid == userId;</code> réserve la lecture au propriétaire. Le document envoyé à l'écriture se lit dans <code>request.resource.data</code>.</p>
+    </details>
+  </section>
+
+  <!-- ================================================================== -->
+  <section class="defi" id="rendu">
+    <h2><span class="num">✓</span> Avant la soutenance</h2>
+    <ul class="checklist">
+      <li><code>npx tsc --noEmit</code> et <code>npx expo lint</code> n'affichent aucune erreur.</li>
+      <li>L'inscription, la connexion et la déconnexion marchent sur le web et sur Expo Go. La session reste ouverte après un redémarrage.</li>
+      <li>Les trois CRUD sont complets, une collection se met à jour en temps réel.</li>
+      <li>Un deuxième compte ne voit aucune donnée du premier.</li>
+      <li><code>firestore.rules</code> est dans le dépôt, identique aux règles publiées. Le mode test n'est activé nulle part.</li>
+      <li>Le README explique la configuration (<code>.env.example</code>), décrit les trois collections et dit qui a fait quoi.</li>
+    </ul>
+    <p>
+      Pendant la séance du 25 novembre, je passe voir chaque groupe pour un <strong>point d'étape</strong> de 5 minutes sur le TP3 :
+      chacun me montre où il en est. Il n'est pas noté. Le projet se termine ensuite en autonomie, jusqu'au dernier commit sur <code>main</code> le 17 décembre avant 23h59.
+    </p>
+  </section>
+
+</main>
+
+<footer class="pied">React Native · TP4 · Chris CHEVALIER</footer>
+
+<script src="../assets/vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="../assets/js/enonce.js"></script>
+</body>
+</html>

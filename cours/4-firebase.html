@@ -1,0 +1,1398 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Firebase – React Native</title>
+  <link rel="stylesheet" href="../assets/vendor/reveal/dist/reset.css">
+  <link rel="stylesheet" href="../assets/vendor/reveal/dist/reveal.css">
+  <link rel="stylesheet" href="../assets/css/theme.css">
+</head>
+<body data-pied="React Native · Cours 4 · Firebase">
+<div class="reveal">
+<div class="slides">
+
+  <section data-layout="titre">
+    <h1>Firebase</h1>
+    <div class="sous-titre">
+      <span class="code-module">Cours 4</span> – Authentification, données en temps réel et règles de sécurité<br>
+      Chris CHEVALIER
+    </div>
+  </section>
+
+  <section data-layout="sommaire">
+    <h1>Sommaire</h1>
+    <ol>
+      <li>Firebase en bref</li>
+      <li>Brancher Firebase</li>
+      <li>L'authentification</li>
+      <li>Firestore en temps réel</li>
+      <li>Les règles de sécurité</li>
+    </ol>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">01</div>
+    <h2>Firebase en bref</h2>
+    <div class="sous-titre">Un backend sans serveur à écrire</div>
+  </section>
+
+  <section>
+    <h2>Pourquoi un backend ?</h2>
+    <div class="corps">
+      <p>Jusqu'ici, les favoris vivent dans la mémoire de l'application. Ils disparaissent au redémarrage et ne suivent pas l'utilisateur d'un appareil à l'autre.</p>
+      <div class="colonnes" style="margin-top: 18px;">
+        <div class="carte">
+          <h3>Ce qu'il faut</h3>
+          <ul class="dense">
+            <li>Savoir <strong>qui</strong> est l'utilisateur : un compte</li>
+            <li>Ranger ses données <strong>sur un serveur</strong></li>
+            <li>Empêcher les autres de les lire</li>
+          </ul>
+        </div>
+        <div class="carte">
+          <h3>Ce que fournit Firebase</h3>
+          <ul class="dense">
+            <li><a href="https://firebase.google.com/docs/auth" target="_blank">Authentication</a> : inscription, connexion, session</li>
+            <li><a href="https://firebase.google.com/docs/firestore" target="_blank">Cloud Firestore</a> : une base de données en temps réel</li>
+            <li><a href="https://firebase.google.com/docs/firestore/security/get-started" target="_blank">Règles de sécurité</a> : qui peut lire ou écrire quoi</li>
+          </ul>
+        </div>
+      </div>
+      <p class="petit muet" style="margin-top: 14px;">Firebase est un <em>Backend as a Service</em> (BaaS) de Google : le serveur existe, mais vous ne l'écrivez pas. Le même SDK JavaScript fonctionne sur le web et dans Expo Go.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Firestore : des collections et des documents</h2>
+    <div class="corps">
+      <div class="colonnes">
+        <div>
+          <svg class="schema-firestore" viewBox="0 0 520 300" role="img" aria-label="Arborescence Firestore : collection users, document uid, sous-collection favorites, document s3">
+            <g font-family="JetBrains Mono, Menlo, monospace" font-size="15" fill="#1B1E3C">
+              <rect x="10" y="10" width="190" height="40" rx="8" fill="#E2F7F4" stroke="#2EC4B6" stroke-width="2"/>
+              <text x="24" y="36">users</text><text x="112" y="36" font-size="12" fill="#0B7A70">collection</text>
+              <path d="M40 50 V90 H60" fill="none" stroke="#1B1E3C" stroke-width="2"/>
+              <rect x="60" y="70" width="200" height="40" rx="8" fill="#FFFFFF" stroke="#D9DCEA" stroke-width="2"/>
+              <text x="74" y="96">{uid}</text><text x="178" y="96" font-size="12" fill="#5A5F80">document</text>
+              <path d="M90 110 V150 H110" fill="none" stroke="#1B1E3C" stroke-width="2"/>
+              <rect x="110" y="130" width="210" height="40" rx="8" fill="#E2F7F4" stroke="#2EC4B6" stroke-width="2"/>
+              <text x="124" y="156">favorites</text><text x="232" y="156" font-size="12" fill="#0B7A70">collection</text>
+              <path d="M140 170 V210 H160" fill="none" stroke="#1B1E3C" stroke-width="2"/>
+              <rect x="160" y="190" width="350" height="96" rx="8" fill="#FFEDE6" stroke="#FF7A59" stroke-width="2"/>
+              <text x="174" y="214">s3</text><text x="430" y="214" font-size="12" fill="#C2410C">document</text>
+              <text x="174" y="242">note: "Vue sur la mer"</text>
+              <text x="174" y="268">createdAt: 1763459200000</text>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <ul class="dense">
+            <li>Un <strong>document</strong> est un objet JSON : des champs et leurs valeurs</li>
+            <li>Une <strong>collection</strong> regroupe des documents, chacun avec un identifiant</li>
+            <li>Un document peut contenir des <strong>sous-collections</strong> : <code>users/{uid}/favorites</code> range les favoris de chaque utilisateur</li>
+            <li>Pas de tables ni de jointures : on range les données comme l'écran les lit</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Créer le projet Firebase</h2>
+    <div class="corps">
+      <ol>
+        <li>Dans la <a href="https://console.firebase.google.com/" target="_blank">console Firebase</a>, créez un projet (Google Analytics est inutile)</li>
+        <li><strong>Authentication</strong>, onglet <em>Sign-in method</em> : activez <strong>E-mail/Mot de passe</strong></li>
+        <li><strong>Firestore Database</strong> : créez la base en <strong>mode production</strong>, région <code>eur3</code> (Europe)</li>
+        <li><strong>Paramètres du projet</strong>, puis <strong>Ajouter une application Web</strong> : copiez le bloc <code>firebaseConfig</code></li>
+      </ol>
+      <div class="encadre corail" style="margin-top: 20px;">
+        N'utilisez pas le <strong>mode test</strong> proposé à la création de la base : il ouvre toutes les données à tout le monde pendant 30 jours. Le mode production refuse tout. Les règles de la dernière partie ouvrent ensuite le strict nécessaire.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">02</div>
+    <h2>Brancher Firebase</h2>
+    <div class="sous-titre">Installer, configurer, initialiser</div>
+  </section>
+
+  <section>
+    <h2>Installer le SDK</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre data-titre="Terminal"><code class="language-bash" data-trim>
+npx expo install firebase \
+  @react-native-async-storage/async-storage
+cp .env.example .env.local
+        </code></pre>
+        <div>
+          <ul class="dense">
+            <li><a href="https://docs.expo.dev/guides/using-firebase/" target="_blank"><code>firebase</code></a> est le SDK JavaScript officiel, le même que sur le web</li>
+            <li><a href="https://react-native-async-storage.github.io/async-storage/" target="_blank"><code>AsyncStorage</code></a> est un petit stockage clé-valeur sur le téléphone, l'équivalent de <code>localStorage</code>. Firebase y garde la session</li>
+            <li><code>.env.local</code> reçoit la configuration du projet. Le modèle d'Expo l'ignore déjà dans Git</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>La configuration dans <code>.env.local</code></h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/.env.example" data-titre=".env.example"><code class="language-bash" data-line-numbers="">EXPO_PUBLIC_FIREBASE_API_KEY=
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+EXPO_PUBLIC_FIREBASE_APP_ID=</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Recopiez chaque valeur du bloc <code>firebaseConfig</code> de la console dans <code>.env.local</code></li>
+            <li>Seules les variables qui commencent par <code>EXPO_PUBLIC_</code> arrivent dans l'application. Relancez <code>npm start</code> après une modification</li>
+            <li>Ces valeurs <strong>identifient</strong> le projet, elles ne le protègent pas : elles finissent en clair dans l'application. N'y mettez jamais de secret</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">On versionne .env.example, qui liste les variables sans valeur. Chacun copie le fichier en .env.local et le remplit.</aside>
+  </section>
+
+  <section>
+    <h2>Un type oublié par Firebase</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/types/firebase-auth.d.ts" data-titre="src/types/firebase-auth.d.ts"><code class="language-typescript" data-line-numbers="">// Les types publics de Firebase oublient cette fonction, pourtant
+// bien présente sur mobile : on la déclare nous-mêmes
+import { Persistence, ReactNativeAsyncStorage } from "firebase/auth";
+
+declare module "firebase/auth" {
+  export function getReactNativePersistence(
+    storage: ReactNativeAsyncStorage,
+  ): Persistence;
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Sur mobile, la session se range grâce à <code>getReactNativePersistence</code>. La fonction existe, mais les types publics de Firebase l'oublient</li>
+            <li>Un fichier <code>.d.ts</code> ne contient que des types. Celui-ci complète le module <code>firebase/auth</code> pour TypeScript</li>
+            <li>Aucun code n'est exécuté : c'est une simple déclaration</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Initialiser Firebase</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/services/firebase.ts" data-titre="src/services/firebase.ts"><code class="language-typescript" data-line-numbers="">import AsyncStorage from "@react-native-async-storage/async-storage";
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  getReactNativePersistence,
+  initializeAuth,
+} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { Platform } from "react-native";
+
+// Configuration publique du projet : elle identifie le projet mais ne
+// protège rien. Ce sont les règles de sécurité qui protègent les
+// données
+const firebaseConfig = {
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId:
+    process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+};
+
+const app = initializeApp(firebaseConfig);
+
+// Sur le web, la session est gardée par le navigateur. Sur mobile, il
+// faut indiquer où la ranger : AsyncStorage
+export const auth =
+  Platform.OS === "web"
+    ? getAuth(app)
+    : initializeAuth(app, {
+        persistence: getReactNativePersistence(AsyncStorage),
+      });
+
+export const db = getFirestore(app);</code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>initializeApp</code> relie l'application au projet grâce à la configuration</li>
+            <li><code>auth</code> et <code>db</code> sont exportés pour les services, jamais pour les écrans</li>
+            <li>Sur le web, le navigateur garde la session. Sur mobile, on la confie à <code>AsyncStorage</code> : sans elle, l'utilisateur serait déconnecté à chaque redémarrage</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">03</div>
+    <h2>L'authentification</h2>
+    <div class="sous-titre">Inscription, connexion, écrans protégés</div>
+  </section>
+
+  <section>
+    <h2>Le modèle de l'utilisateur</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/models/user.ts" data-titre="src/models/user.ts"><code class="language-typescript" data-line-numbers="">// L'utilisateur connecté, dans le vocabulaire de l'application
+export type AppUser = {
+  uid: string;
+  email: string;
+};</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Les écrans ne manipulent pas l'objet <code>User</code> de Firebase, mais ce type à nous</li>
+            <li>Si l'on change un jour de fournisseur d'authentification, seul le service change</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Le service d'authentification</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/services/auth-service.ts" data-titre="src/services/auth-service.ts"><code class="language-typescript" data-line-numbers="">import { FirebaseError } from "firebase/app";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+  User,
+} from "firebase/auth";
+
+import { AppUser } from "@/models/user";
+import { auth } from "@/services/firebase";
+
+function toAppUser(user: User): AppUser {
+  return { uid: user.uid, email: user.email ?? "" };
+}
+
+// Prévient à chaque connexion ou déconnexion. Renvoie la fonction qui
+// arrête l'écoute
+export function subscribeToAuth(
+  onChange: (user: AppUser | null) =&gt; void,
+) {
+  return onAuthStateChanged(auth, (user) =&gt;
+    onChange(user ? toAppUser(user) : null),
+  );
+}
+
+export async function signUp(email: string, password: string) {
+  await createUserWithEmailAndPassword(auth, email, password);
+}
+
+export async function signIn(email: string, password: string) {
+  await signInWithEmailAndPassword(auth, email, password);
+}
+
+export async function signOut() {
+  await firebaseSignOut(auth);
+}
+
+// Traduit une erreur de Firebase en message pour l'utilisateur
+export function authErrorMessage(error: unknown): string {
+  const code = error instanceof FirebaseError ? error.code : "";
+  switch (code) {
+    case "auth/invalid-email":
+      return "Adresse e-mail invalide.";
+    case "auth/invalid-credential":
+      return "E-mail ou mot de passe incorrect.";
+    case "auth/email-already-in-use":
+      return "Un compte existe déjà avec cette adresse.";
+    case "auth/weak-password":
+      return "Mot de passe trop court : 6 caractères au moins.";
+    default:
+      return "Une erreur est survenue. Réessayez.";
+  }
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>onAuthStateChanged</code> prévient à chaque connexion ou déconnexion, y compris au démarrage si une session existe</li>
+            <li>Il renvoie une fonction qui <strong>arrête l'écoute</strong> : on l'appellera au démontage</li>
+            <li><code>authErrorMessage</code> traduit les codes d'erreur de Firebase en messages lisibles</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Le Context de l'utilisateur</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/context/auth-context.tsx" data-titre="src/context/auth-context.tsx"><code class="language-tsx" data-line-numbers="">import { createContext, ReactNode, useEffect, useState } from "react";
+
+import { AppUser } from "@/models/user";
+import { subscribeToAuth } from "@/services/auth-service";
+
+export type AuthContextValue = {
+  user: AppUser | null;
+  // true tant que Firebase n'a pas dit si une session existe
+  initializing: boolean;
+};
+
+export const AuthContext = createContext&lt;AuthContextValue | null&gt;(
+  null,
+);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState&lt;AppUser | null&gt;(null);
+  const [initializing, setInitializing] = useState(true);
+
+  useEffect(() =&gt; {
+    // L'écoute commence au montage et s'arrête au démontage
+    const unsubscribe = subscribeToAuth((current) =&gt; {
+      setUser(current);
+      setInitializing(false);
+    });
+    return unsubscribe;
+  }, []);
+
+  return (
+    &lt;AuthContext.Provider value={{ user, initializing }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Même principe que les favoris : un état partagé par tous les écrans</li>
+            <li><code>initializing</code> vaut <code>true</code> tant que Firebase n'a pas répondu. Sans lui, l'écran de connexion clignoterait au démarrage</li>
+            <li>L'écoute commence au montage du Provider et s'arrête à son démontage</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Le hook <code>useAuth</code></h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/hooks/use-auth.ts" data-titre="src/hooks/use-auth.ts"><code class="language-typescript" data-line-numbers="">import { useContext } from "react";
+
+import {
+  AuthContext,
+  AuthContextValue,
+} from "@/context/auth-context";
+
+// Seule porte d'entrée vers l'utilisateur connecté
+export function useAuth(): AuthContextValue {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth doit être utilisé dans un AuthProvider");
+  }
+  return context;
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Seule porte d'entrée vers l'utilisateur connecté, comme <code>useFavorites</code></li>
+            <li>L'erreur explicite signale un Provider oublié</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Un formulaire pour deux écrans</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/components/auth-form.tsx" data-titre="src/components/auth-form.tsx"><code class="language-tsx" data-line-numbers="">import { useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+
+import { authErrorMessage } from "@/services/auth-service";
+
+type AuthFormProps = {
+  submitLabel: string;
+  onSubmit: (email: string, password: string) =&gt; Promise&lt;void&gt;;
+};
+
+// Formulaire commun à la connexion et à l'inscription
+export function AuthForm({ submitLabel, onSubmit }: AuthFormProps) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [sending, setSending] = useState(false);
+
+  const submit = async () =&gt; {
+    setError("");
+    setSending(true);
+    try {
+      await onSubmit(email.trim(), password);
+    } catch (e) {
+      setError(authErrorMessage(e));
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    &lt;View style={styles.form}&gt;
+      &lt;TextInput
+        value={email}
+        onChangeText={setEmail}
+        placeholder="E-mail"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        autoComplete="email"
+        style={styles.input}
+      /&gt;
+      &lt;TextInput
+        value={password}
+        onChangeText={setPassword}
+        placeholder="Mot de passe"
+        secureTextEntry
+        style={styles.input}
+      /&gt;
+      {error !== "" &amp;&amp; &lt;Text style={styles.error}&gt;{error}&lt;/Text&gt;}
+      &lt;Pressable
+        onPress={submit}
+        disabled={sending}
+        style={styles.button}
+      &gt;
+        {sending ? (
+          &lt;ActivityIndicator color="#FFFFFF" /&gt;
+        ) : (
+          &lt;Text style={styles.buttonLabel}&gt;{submitLabel}&lt;/Text&gt;
+        )}
+      &lt;/Pressable&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  form: { gap: 12 },
+  input: {
+    borderWidth: 1,
+    borderColor: "#D9DCEA",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    backgroundColor: "#FFFFFF",
+  },
+  error: { color: "#C2410C" },
+  button: {
+    backgroundColor: "#0B7A70",
+    borderRadius: 8,
+    padding: 14,
+    alignItems: "center",
+  },
+  buttonLabel: { color: "#FFFFFF", fontWeight: "700", fontSize: 16 },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>La connexion et l'inscription ne diffèrent que par l'action : elle arrive en prop (<code>onSubmit</code>)</li>
+            <li><code>secureTextEntry</code> masque le mot de passe, <code>keyboardType="email-address"</code> affiche le clavier adapté</li>
+            <li>L'erreur de Firebase est attrapée et traduite pour l'utilisateur</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>L'écran d'inscription</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/app/(auth)/sign-up.tsx" data-titre="src/app/(auth)/sign-up.tsx"><code class="language-tsx" data-line-numbers="">import { StyleSheet, Text, View } from "react-native";
+
+import { AuthForm } from "@/components/auth-form";
+import { signUp } from "@/services/auth-service";
+
+export default function SignUpScreen() {
+  return (
+    &lt;View style={styles.screen}&gt;
+      &lt;Text style={styles.title}&gt;Créer un compte&lt;/Text&gt;
+      &lt;AuthForm submitLabel="S'inscrire" onSubmit={signUp} /&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 420,
+    alignSelf: "center",
+    padding: 24,
+    gap: 16,
+  },
+  title: { fontSize: 24, fontWeight: "800" },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Le groupe <code>(auth)</code> range les écrans réservés aux visiteurs non connectés</li>
+            <li>L'écran ne contient que la mise en page : l'action vient du service</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>L'écran de connexion</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/app/(auth)/sign-in.tsx" data-titre="src/app/(auth)/sign-in.tsx"><code class="language-tsx" data-line-numbers="">import { Link } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
+
+import { AuthForm } from "@/components/auth-form";
+import { signIn } from "@/services/auth-service";
+
+export default function SignInScreen() {
+  return (
+    &lt;View style={styles.screen}&gt;
+      &lt;Text style={styles.title}&gt;Connexion&lt;/Text&gt;
+      &lt;AuthForm submitLabel="Se connecter" onSubmit={signIn} /&gt;
+      &lt;Link href="/sign-up" style={styles.link}&gt;
+        Pas encore de compte ? Créer un compte
+      &lt;/Link&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 420,
+    alignSelf: "center",
+    padding: 24,
+    gap: 16,
+  },
+  title: { fontSize: 24, fontWeight: "800" },
+  link: { color: "#0B7A70", fontSize: 16 },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Il répond à <code>/sign-in</code> : les parenthèses du groupe n'apparaissent pas dans l'URL</li>
+            <li>Le lien mène à l'inscription, écrite à la diapo précédente</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>La pile des visiteurs</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/app/(auth)/_layout.tsx" data-titre="src/app/(auth)/_layout.tsx"><code class="language-tsx" data-line-numbers="">import { Stack } from "expo-router";
+
+export default function AuthLayout() {
+  return (
+    &lt;Stack screenOptions={{ headerTransparent: false }}&gt;
+      &lt;Stack.Screen name="sign-in" options={{ title: "Connexion" }} /&gt;
+      &lt;Stack.Screen
+        name="sign-up"
+        options={{ title: "Inscription" }}
+      /&gt;
+    &lt;/Stack&gt;
+  );
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Un groupe peut avoir son propre navigateur : ici une pile simple, sans onglets</li>
+            <li>Chaque écran reçoit son titre</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Un onglet « Compte »</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/app/(tabs)/account.tsx" data-titre="src/app/(tabs)/account.tsx"><code class="language-tsx" data-line-numbers="">import { Pressable, StyleSheet, Text, View } from "react-native";
+
+import { useAuth } from "@/hooks/use-auth";
+import { signOut } from "@/services/auth-service";
+
+export default function AccountScreen() {
+  const { user } = useAuth();
+
+  return (
+    &lt;View style={styles.screen}&gt;
+      &lt;Text style={styles.label}&gt;Connecté en tant que&lt;/Text&gt;
+      &lt;Text style={styles.email}&gt;{user?.email}&lt;/Text&gt;
+      &lt;Pressable onPress={signOut} style={styles.button}&gt;
+        &lt;Text style={styles.buttonLabel}&gt;Se déconnecter&lt;/Text&gt;
+      &lt;/Pressable&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { padding: 24, gap: 8 },
+  label: { fontSize: 15, color: "#5A5F80" },
+  email: { fontSize: 18, fontWeight: "700" },
+  button: {
+    marginTop: 16,
+    alignSelf: "flex-start",
+    borderWidth: 1,
+    borderColor: "#C2410C",
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+  },
+  buttonLabel: { color: "#C2410C", fontWeight: "700" },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>useAuth</code> fournit l'utilisateur connecté</li>
+            <li><code>signOut</code> déconnecte. La redirection vers la connexion se fera toute seule</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Le troisième onglet</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/app/(tabs)/_layout.tsx" data-titre="src/app/(tabs)/_layout.tsx"><code class="language-tsx" data-line-numbers="41-53">import Ionicons from "@expo/vector-icons/Ionicons";
+import { Tabs } from "expo-router/js-tabs";
+
+const ACTIVE = "#0B7A70";
+const INACTIVE = "#8C90B4";
+
+export default function TabsLayout() {
+  return (
+    &lt;Tabs
+      screenOptions={{
+        tabBarActiveTintColor: ACTIVE,
+        tabBarInactiveTintColor: INACTIVE,
+      }}
+    &gt;
+      &lt;Tabs.Screen
+        name="index"
+        options={{
+          title: "Séjours",
+          tabBarIcon: ({ focused, size }) =&gt; (
+            &lt;Ionicons
+              name="bed-outline"
+              size={size}
+              color={focused ? ACTIVE : INACTIVE}
+            /&gt;
+          ),
+        }}
+      /&gt;
+      &lt;Tabs.Screen
+        name="favorites"
+        options={{
+          title: "Favoris",
+          tabBarIcon: ({ focused, size }) =&gt; (
+            &lt;Ionicons
+              name="heart-outline"
+              size={size}
+              color={focused ? ACTIVE : INACTIVE}
+            /&gt;
+          ),
+        }}
+      /&gt;
+      &lt;Tabs.Screen
+        name="account"
+        options={{
+          title: "Compte",
+          tabBarIcon: ({ focused, size }) =&gt; (
+            &lt;Ionicons
+              name="person-outline"
+              size={size}
+              color={focused ? ACTIVE : INACTIVE}
+            /&gt;
+          ),
+        }}
+      /&gt;
+    &lt;/Tabs&gt;
+  );
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Seul l'onglet <code>account</code> est nouveau</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Protéger les écrans</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/app/_layout.tsx" data-titre="src/app/_layout.tsx"><code class="language-tsx" data-line-numbers="">import { Stack } from "expo-router";
+
+import { StateMessage } from "@/components/state-message";
+import { AuthProvider } from "@/context/auth-context";
+import { FavoritesProvider } from "@/context/favorites-context";
+import { useAuth } from "@/hooks/use-auth";
+
+// Un séjour ouvert directement par son URL (lien partagé) est posé
+// sur les onglets : sa flèche de retour y mène
+export const unstable_settings = { anchor: "(tabs)" };
+
+export default function RootLayout() {
+  return (
+    &lt;AuthProvider&gt;
+      &lt;FavoritesProvider&gt;
+        &lt;RootStack /&gt;
+      &lt;/FavoritesProvider&gt;
+    &lt;/AuthProvider&gt;
+  );
+}
+
+// Sous les Providers : il peut lire l'utilisateur connecté
+function RootStack() {
+  const { user, initializing } = useAuth();
+
+  if (initializing) return &lt;StateMessage loading /&gt;;
+
+  return (
+    &lt;Stack screenOptions={{ headerTransparent: false }}&gt;
+      &lt;Stack.Protected guard={user !== null}&gt;
+        &lt;Stack.Screen
+          name="(tabs)"
+          options={{ headerShown: false, title: "Séjours" }}
+        /&gt;
+        &lt;Stack.Screen name="stays/[id]" /&gt;
+      &lt;/Stack.Protected&gt;
+      &lt;Stack.Protected guard={user === null}&gt;
+        &lt;Stack.Screen
+          name="(auth)"
+          options={{ headerShown: false }}
+        /&gt;
+      &lt;/Stack.Protected&gt;
+    &lt;/Stack&gt;
+  );
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>AuthProvider</code> entoure <code>FavoritesProvider</code> : les favoris auront besoin de l'utilisateur</li>
+            <li><code>RootStack</code> lit <code>useAuth</code>. Il est donc placé <strong>sous</strong> les Providers</li>
+            <li><a href="https://docs.expo.dev/router/advanced/protected/" target="_blank"><code>Stack.Protected</code></a> n'ouvre un groupe que si <code>guard</code> vaut <code>true</code>. À la connexion ou à la déconnexion, Expo Router redirige tout seul</li>
+            <li>Ce garde ne fait que cacher des écrans. La vraie protection des données vient des règles de sécurité</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">Démo : créer un compte, se déconnecter depuis l'onglet Compte, se reconnecter. Montrer l'utilisateur dans la console Firebase (Authentication).</aside>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">04</div>
+    <h2>Firestore en temps réel</h2>
+    <div class="sous-titre">Des favoris annotés, par utilisateur</div>
+  </section>
+
+  <section>
+    <h2>Le modèle d'un favori</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/models/favorite.ts" data-titre="src/models/favorite.ts"><code class="language-typescript" data-line-numbers="">// Un favori annoté : un séjour gardé par l'utilisateur, avec sa note
+export type Favorite = {
+  stayId: string;
+  note: string;
+  createdAt: number;
+};</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Un favori garde un séjour et une note libre</li>
+            <li><code>createdAt</code> permet d'afficher les plus récents en premier</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Le service des favoris</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/services/favorites-service.ts" data-titre="src/services/favorites-service.ts"><code class="language-typescript" data-line-numbers="">import {
+  collection,
+  deleteDoc,
+  doc,
+  DocumentData,
+  onSnapshot,
+  orderBy,
+  query,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+
+import { Favorite } from "@/models/favorite";
+import { db } from "@/services/firebase";
+
+// Chaque utilisateur a sa propre collection : users/{uid}/favorites
+function favoritesOf(uid: string) {
+  return collection(db, "users", uid, "favorites");
+}
+
+// Traduit un document Firestore dans le vocabulaire du modèle
+function toFavorite(id: string, data: DocumentData): Favorite {
+  return {
+    stayId: id,
+    note: data.note ?? "",
+    createdAt: data.createdAt ?? 0,
+  };
+}
+
+// Lecture en temps réel : onChange est rappelée à chaque modification.
+// Renvoie la fonction qui arrête l'écoute
+export function subscribeToFavorites(
+  uid: string,
+  onChange: (favorites: Favorite[]) =&gt; void,
+  onError: () =&gt; void,
+) {
+  const favoritesQuery = query(
+    favoritesOf(uid),
+    orderBy("createdAt", "desc"),
+  );
+  return onSnapshot(
+    favoritesQuery,
+    (snapshot) =&gt;
+      onChange(snapshot.docs.map((d) =&gt; toFavorite(d.id, d.data()))),
+    onError,
+  );
+}
+
+// Créer : l'identifiant du document est celui du séjour
+export async function addFavorite(uid: string, stayId: string) {
+  await setDoc(doc(favoritesOf(uid), stayId), {
+    note: "",
+    createdAt: Date.now(),
+  });
+}
+
+// Modifier
+export async function updateFavoriteNote(
+  uid: string,
+  stayId: string,
+  note: string,
+) {
+  await updateDoc(doc(favoritesOf(uid), stayId), { note });
+}
+
+// Supprimer
+export async function removeFavorite(uid: string, stayId: string) {
+  await deleteDoc(doc(favoritesOf(uid), stayId));
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>onSnapshot</code> lit en <strong>temps réel</strong> : la fonction est rappelée à chaque modification, sur tous les appareils connectés</li>
+            <li><code>setDoc</code>, <code>updateDoc</code> et <code>deleteDoc</code> créent, modifient et suppriment : c'est un CRUD complet</li>
+            <li>Comme pour l'API, <code>toFavorite</code> traduit un document dans le vocabulaire du modèle</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">Le document a pour identifiant celui du séjour : un séjour ne peut être en favori qu'une fois par utilisateur.</aside>
+  </section>
+
+  <section>
+    <h2>Le temps réel dans un hook</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/hooks/use-realtime-favorites.ts" data-titre="src/hooks/use-realtime-favorites.ts"><code class="language-typescript" data-line-numbers="">import { useEffect, useState } from "react";
+
+import { Favorite } from "@/models/favorite";
+import { subscribeToFavorites } from "@/services/favorites-service";
+
+export type FavoritesState =
+  | { status: "loading" }
+  | { status: "error"; message: string }
+  | { status: "success"; favorites: Favorite[] };
+
+// Contrôleur : écoute les favoris de l'utilisateur tant que le
+// composant est monté
+export function useRealtimeFavorites(uid: string | null) {
+  const [state, setState] = useState&lt;FavoritesState&gt;({
+    status: "loading",
+  });
+
+  useEffect(() =&gt; {
+    if (!uid) return;
+    const unsubscribe = subscribeToFavorites(
+      uid,
+      (favorites) =&gt; setState({ status: "success", favorites }),
+      () =&gt;
+        setState({
+          status: "error",
+          message: "Favoris indisponibles",
+        }),
+    );
+    // Au démontage (ou si l'utilisateur change), on arrête l'écoute
+    return unsubscribe;
+  }, [uid]);
+
+  return state;
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li>L'abonnement commence dans <code>useEffect</code>, au montage</li>
+            <li>La fonction renvoyée arrête l'écoute au <strong>démontage</strong>, ou quand l'utilisateur change</li>
+            <li>Sans ce nettoyage, les écouteurs s'accumuleraient à chaque connexion</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Monté, affiché, au premier plan</h2>
+    <div class="corps">
+      <svg class="schema-pile" viewBox="0 0 1100 200" role="img" aria-label="Cycle de vie d'un composant : montage et abonnement, mises à jour, démontage et désabonnement">
+        <defs><marker id="fleche-vie" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1B1E3C"/></marker></defs>
+        <g font-family="Outfit, Arial, sans-serif" fill="#1B1E3C">
+          <line x1="60" y1="100" x2="1040" y2="100" stroke="#1B1E3C" stroke-width="2.5" marker-end="url(#fleche-vie)"/>
+          <circle cx="140" cy="100" r="12" fill="#2EC4B6"/>
+          <text x="140" y="62" text-anchor="middle" font-size="19" font-weight="700">Montage</text>
+          <text x="140" y="145" text-anchor="middle" font-size="15" fill="#5A5F80">onSnapshot : on s'abonne</text>
+          <rect x="290" y="78" width="440" height="44" rx="10" fill="#E2F7F4" stroke="#2EC4B6" stroke-width="2"/>
+          <text x="510" y="106" text-anchor="middle" font-size="16">à chaque modification : setState, l'écran se met à jour</text>
+          <circle cx="900" cy="100" r="12" fill="#FF7A59"/>
+          <text x="900" y="62" text-anchor="middle" font-size="19" font-weight="700">Démontage</text>
+          <text x="900" y="145" text-anchor="middle" font-size="15" fill="#5A5F80">unsubscribe : on se désabonne</text>
+        </g>
+      </svg>
+      <ul class="dense" style="margin-top: 6px;">
+        <li>Un composant a un <strong>cycle de vie</strong> : il est monté, mis à jour, puis démonté. <code>useEffect</code> et sa fonction de nettoyage suivent ce cycle</li>
+        <li>Avec le temps réel, un écran qui redevient visible est déjà à jour : rien à recharger</li>
+        <li>Sans temps réel, deux outils existent. <a href="https://docs.expo.dev/router/reference/hooks/#usefocuseffect" target="_blank"><code>useFocusEffect</code></a> recharge un écran qui redevient visible. <a href="https://reactnative.dev/docs/appstate" target="_blank"><code>AppState</code></a> signale le retour de l'application au premier plan</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Les favoris passent dans Firestore</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/context/favorites-context.tsx" data-titre="src/context/favorites-context.tsx"><code class="language-tsx" data-line-numbers="">import { createContext, ReactNode } from "react";
+
+import { useAuth } from "@/hooks/use-auth";
+import { useRealtimeFavorites } from "@/hooks/use-realtime-favorites";
+import { Favorite } from "@/models/favorite";
+import {
+  addFavorite,
+  removeFavorite,
+  updateFavoriteNote,
+} from "@/services/favorites-service";
+
+export type FavoritesContextValue = {
+  favorites: Favorite[];
+  isFavorite: (id: string) =&gt; boolean;
+  noteOf: (id: string) =&gt; string;
+  toggleFavorite: (id: string) =&gt; void;
+  updateNote: (id: string, note: string) =&gt; Promise&lt;void&gt;;
+};
+
+export const FavoritesContext =
+  createContext&lt;FavoritesContextValue | null&gt;(null);
+
+export function FavoritesProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const { user } = useAuth();
+  const state = useRealtimeFavorites(user ? user.uid : null);
+  const favorites =
+    user &amp;&amp; state.status === "success" ? state.favorites : [];
+
+  const isFavorite = (id: string) =&gt;
+    favorites.some((f) =&gt; f.stayId === id);
+  const noteOf = (id: string) =&gt;
+    favorites.find((f) =&gt; f.stayId === id)?.note ?? "";
+
+  // Firestore prévient ensuite tous les écrans : pas d'état à modifier
+  const toggleFavorite = (id: string) =&gt; {
+    if (!user) return;
+    if (isFavorite(id)) void removeFavorite(user.uid, id);
+    else void addFavorite(user.uid, id);
+  };
+  const updateNote = async (id: string, note: string) =&gt; {
+    if (user) await updateFavoriteNote(user.uid, id, note);
+  };
+
+  return (
+    &lt;FavoritesContext.Provider
+      value={{
+        favorites,
+        isFavorite,
+        noteOf,
+        toggleFavorite,
+        updateNote,
+      }}
+    &gt;
+      {children}
+    &lt;/FavoritesContext.Provider&gt;
+  );
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Le Context garde la même interface : le catalogue et la carte ne changent pas</li>
+            <li>Il ne stocke plus rien lui-même. Il lit les favoris de l'utilisateur connecté grâce au hook temps réel</li>
+            <li><code>toggleFavorite</code> écrit dans Firestore. <code>onSnapshot</code> prévient ensuite tous les écrans</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Annoter un favori</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/components/favorite-note.tsx" data-titre="src/components/favorite-note.tsx"><code class="language-tsx" data-line-numbers="">import { useState } from "react";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+
+import { useFavorites } from "@/hooks/use-favorites";
+
+type FavoriteNoteProps = { stayId: string };
+
+// La note d'un favori : lue dans le Context, enregistrée dans Firestore
+export function FavoriteNote({ stayId }: FavoriteNoteProps) {
+  const { isFavorite, noteOf, updateNote } = useFavorites();
+  const [note, setNote] = useState(noteOf(stayId));
+  const [message, setMessage] = useState("");
+
+  if (!isFavorite(stayId)) {
+    return (
+      &lt;Text style={styles.hint}&gt;
+        Ajoutez ce séjour à vos favoris pour l&amp;apos;annoter.
+      &lt;/Text&gt;
+    );
+  }
+
+  const save = async () =&gt; {
+    try {
+      await updateNote(stayId, note.trim());
+      setMessage("Note enregistrée");
+    } catch {
+      setMessage("Échec de l'enregistrement");
+    }
+  };
+
+  return (
+    &lt;View style={styles.box}&gt;
+      &lt;Text style={styles.label}&gt;Ma note&lt;/Text&gt;
+      &lt;TextInput
+        value={note}
+        onChangeText={setNote}
+        placeholder="Pourquoi ce séjour vous plaît…"
+        multiline
+        maxLength={500}
+        style={styles.input}
+      /&gt;
+      &lt;Pressable onPress={save} style={styles.button}&gt;
+        &lt;Text style={styles.buttonLabel}&gt;Enregistrer&lt;/Text&gt;
+      &lt;/Pressable&gt;
+      {message !== "" &amp;&amp; &lt;Text style={styles.hint}&gt;{message}&lt;/Text&gt;}
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  box: { gap: 8, marginTop: 8 },
+  label: { fontSize: 15, fontWeight: "700" },
+  input: {
+    minHeight: 80,
+    borderWidth: 1,
+    borderColor: "#D9DCEA",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    textAlignVertical: "top",
+    backgroundColor: "#FFFFFF",
+  },
+  button: {
+    alignSelf: "flex-start",
+    backgroundColor: "#0B7A70",
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+  },
+  buttonLabel: { color: "#FFFFFF", fontWeight: "700" },
+  hint: { fontSize: 14, color: "#5A5F80" },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>La note est lue dans le Context, modifiée dans un état local, puis enregistrée dans Firestore</li>
+            <li><code>await</code> attend la réponse : on affiche une confirmation ou une erreur</li>
+            <li>Les hooks sont appelés avant le <code>return</code> conditionnel, jamais après</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>La note dans le détail</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/app/stays/[id].tsx" data-titre="src/app/stays/[id].tsx"><code class="language-tsx" data-line-numbers="10,35">import { Stack, useLocalSearchParams } from "expo-router";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
+import { FavoriteNote } from "@/components/favorite-note";
+import { StateMessage } from "@/components/state-message";
+import { useStay } from "@/hooks/use-stay";
+import { Stay } from "@/models/stay";
+
+export default function StayScreen() {
+  const { id } = useLocalSearchParams&lt;{ id: string }&gt;();
+  const state = useStay(id);
+
+  if (state.status === "loading") return &lt;StateMessage loading /&gt;;
+  if (state.status === "not-found")
+    return &lt;StateMessage message="Ce séjour est introuvable." /&gt;;
+  return &lt;StayDetails stay={state.stay} /&gt;;
+}
+
+function StayDetails({ stay }: { stay: Stay }) {
+  return (
+    &lt;ScrollView contentContainerStyle={styles.content}&gt;
+      &lt;Stack.Screen options={{ title: stay.title }} /&gt;
+      &lt;Image source={{ uri: stay.imageUrl }} style={styles.image} /&gt;
+      &lt;View style={styles.body}&gt;
+        &lt;Text style={styles.title}&gt;{stay.title}&lt;/Text&gt;
+        &lt;Text style={styles.city}&gt;
+          {stay.city} · {stay.pricePerNight} € / nuit
+        &lt;/Text&gt;
+        &lt;FavoriteNote stayId={stay.id} /&gt;
+      &lt;/View&gt;
+    &lt;/ScrollView&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  content: { width: "100%", maxWidth: 800, alignSelf: "center" },
+  image: { width: "100%", aspectRatio: 16 / 9 },
+  body: { padding: 16, gap: 8 },
+  title: { fontSize: 26, fontWeight: "800" },
+  city: { fontSize: 17, color: "#5A5F80" },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>Seul le composant <code>FavoriteNote</code> est ajouté</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>La note dans la liste des favoris</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="2,11,27-40,59-61">import { Link } from "expo-router";
+import { SectionList, StyleSheet, Text, View } from "react-native";
+
+import { StateMessage } from "@/components/state-message";
+import { useFavorites } from "@/hooks/use-favorites";
+import { useStays } from "@/hooks/use-stays";
+import { groupByCity } from "@/models/stay";
+
+export default function FavoritesScreen() {
+  const { state } = useStays();
+  const { isFavorite, noteOf } = useFavorites();
+
+  if (state.status !== "success")
+    return &lt;StateMessage loading={state.status === "loading"} /&gt;;
+  const sections = groupByCity(
+    state.stays.filter((stay) =&gt; isFavorite(stay.id)),
+  );
+
+  return (
+    &lt;SectionList
+      sections={sections}
+      keyExtractor={(stay) =&gt; stay.id}
+      renderSectionHeader={({ section }) =&gt; (
+        &lt;Text style={styles.city}&gt;{section.title}&lt;/Text&gt;
+      )}
+      renderItem={({ item }) =&gt; (
+        &lt;View style={styles.row}&gt;
+          &lt;Link
+            href={{
+              pathname: "/stays/[id]",
+              params: { id: item.id },
+            }}
+            style={styles.item}
+          &gt;
+            {item.title}
+          &lt;/Link&gt;
+          {noteOf(item.id) !== "" &amp;&amp; (
+            &lt;Text style={styles.note}&gt;{noteOf(item.id)}&lt;/Text&gt;
+          )}
+        &lt;/View&gt;
+      )}
+      ListEmptyComponent={
+        &lt;Text style={styles.item}&gt;Aucun favori pour le moment.&lt;/Text&gt;
+      }
+      contentContainerStyle={styles.list}
+    /&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  list: { padding: 16 },
+  city: {
+    fontSize: 14,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    color: "#0B7A70",
+    marginTop: 16,
+  },
+  row: { paddingVertical: 8, gap: 2 },
+  item: { fontSize: 17 },
+  note: { fontSize: 14, color: "#5A5F80" },
+});</code></pre>
+        <div>
+          <ul class="dense">
+            <li>La note s'affiche sous le titre, quand elle existe</li>
+            <li>Modifiez une note sur le web : elle apparaît aussitôt sur le téléphone</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">Démo du temps réel : le web et Expo Go côte à côte, connectés au même compte. Ajouter un favori d'un côté, il apparaît de l'autre.</aside>
+  </section>
+
+  <!-- ================================================================== -->
+  <section data-layout="section">
+    <div class="numero">05</div>
+    <h2>Les règles de sécurité</h2>
+    <div class="sous-titre">Le seul vrai verrou</div>
+  </section>
+
+  <section>
+    <h2>Pourquoi des règles ?</h2>
+    <div class="corps">
+      <ul>
+        <li>La configuration de Firebase est dans l'application, donc lisible par tous. N'importe qui peut appeler votre base <strong>sans passer par vos écrans</strong></li>
+        <li>Masquer un bouton ou un écran ne protège rien. Seules les <strong>règles</strong>, vérifiées par les serveurs de Firebase, protègent les données</li>
+        <li>Chaque lecture et chaque écriture est refusée, sauf si une règle l'autorise</li>
+      </ul>
+      <div class="encadre corail" style="margin-top: 20px;">
+        Une règle <code>allow read, write: if true;</code> (le « mode test ») laisse n'importe qui lire, modifier et effacer toutes vos données. Ne la publiez jamais, même pour un essai.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Les règles des favoris</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/firestore.rules" data-titre="firestore.rules"><code class="language-javascript" data-line-numbers="">rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Chacun ne lit et n'écrit que ses propres favoris
+    match /users/{userId}/favorites/{stayId} {
+      allow read, delete: if request.auth != null
+        &amp;&amp; request.auth.uid == userId;
+      // À l'écriture, on vérifie aussi la forme du document
+      allow create, update: if request.auth != null
+        &amp;&amp; request.auth.uid == userId
+        &amp;&amp; request.resource.data.note is string
+        &amp;&amp; request.resource.data.note.size() &lt;= 500
+        &amp;&amp; request.resource.data.createdAt is int;
+    }
+    // Tout le reste est refusé par défaut
+  }
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li><code>match</code> désigne un chemin. <code>{userId}</code> capture l'identifiant de l'utilisateur dans ce chemin</li>
+            <li><code>request.auth</code> est l'utilisateur qui fait la demande : chacun n'accède qu'à ses favoris</li>
+            <li><code>request.resource.data</code> est le document envoyé : on vérifie sa forme avant de l'accepter</li>
+            <li>Copiez le fichier dans la console, onglet <strong>Règles</strong> de Firestore, puis <strong>Publier</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">Le langage des règles ressemble à du JavaScript sans en être. Documentation : firebase.google.com/docs/firestore/security/rules-structure.</aside>
+  </section>
+
+  <section>
+    <h2>Tester les règles</h2>
+    <div class="corps">
+      <ol>
+        <li>Dans la console, onglet <strong>Règles</strong> de Firestore, ouvrez le <a href="https://firebase.google.com/docs/rules/simulator" target="_blank"><em>Rules Playground</em></a></li>
+        <li>Simulez une lecture de <code>users/abc/favorites/s3</code> <strong>sans</strong> être authentifié : elle doit être refusée</li>
+        <li>Simulez la même lecture authentifié avec l'identifiant <code>abc</code> : elle doit être acceptée</li>
+        <li>Recommencez avec un autre identifiant : elle doit être refusée</li>
+      </ol>
+      <div class="encadre" style="margin-top: 20px;">
+        Une erreur <code>permission-denied</code> dans l'application signifie que les règles ont refusé la demande. Vérifiez le chemin et l'utilisateur connecté avant de les assouplir.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>À retenir</h2>
+    <div class="corps">
+      <ul>
+        <li>Firebase fournit l'authentification, une base Firestore et des règles de sécurité, sans serveur à écrire</li>
+        <li>Les appels à Firebase restent dans les <strong>services</strong>, qui traduisent les documents en modèles</li>
+        <li>Un Context d'authentification et <code>Stack.Protected</code> séparent les écrans des visiteurs de ceux des utilisateurs connectés</li>
+        <li><code>onSnapshot</code> lit en temps réel. On s'abonne au montage, on se désabonne au démontage</li>
+        <li>La configuration n'est pas secrète. Seules les <strong>règles</strong> protègent les données</li>
+      </ul>
+    </div>
+  </section>
+
+  <section data-layout="titre">
+    <h1>Des questions ?</h1>
+    <div class="sous-titre">
+      Chris CHEVALIER<br>
+      chevalier@chris-freelance.com
+    </div>
+  </section>
+
+</div>
+</div>
+
+<script src="../assets/vendor/reveal/dist/reveal.js"></script>
+<script src="../assets/vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="../assets/vendor/reveal/plugin/notes/notes.js"></script>
+<script src="../assets/js/theme.js"></script>
+</body>
+</html>
