@@ -102,14 +102,61 @@
   <section>
     <h2>Créer le projet Firebase</h2>
     <div class="corps">
-      <ol>
-        <li>Dans la <a href="https://console.firebase.google.com/" target="_blank">console Firebase</a>, créez un projet (Google Analytics est inutile)</li>
-        <li><strong>Authentication</strong>, onglet <em>Sign-in method</em> : activez <strong>E-mail/Mot de passe</strong></li>
-        <li><strong>Firestore Database</strong> : créez la base en <strong>mode production</strong>, région <code>eur3</code> (Europe)</li>
-        <li><strong>Paramètres du projet</strong>, puis <strong>Ajouter une application Web</strong> : copiez le bloc <code>firebaseConfig</code></li>
-      </ol>
-      <div class="encadre corail" style="margin-top: 20px;">
-        N'utilisez pas le <strong>mode test</strong> proposé à la création de la base : il ouvre toutes les données à tout le monde pendant 30 jours. Le mode production refuse tout. Les règles de la dernière partie ouvrent ensuite le strict nécessaire.
+      <div class="colonnes capture-texte">
+        <img class="capture" src="../assets/img/cours4/01-nom-projet.png" alt="Console Firebase : saisie du nom du projet staybnb-demo">
+        <div>
+          <ul class="dense">
+            <li>Dans la <a href="https://console.firebase.google.com/" target="_blank">console Firebase</a>, choisissez <strong>Créer un projet Firebase</strong></li>
+            <li>Donnez-lui un nom. Firebase en déduit l'identifiant du projet, sous le champ</li>
+            <li>Aux étapes suivantes, désactivez Gemini et Google Analytics : ils sont inutiles ici</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2>Activer la connexion par e-mail</h2>
+    <div class="corps">
+      <div class="colonnes capture-texte">
+        <img class="capture" src="../assets/img/cours4/04-auth-email.png" alt="Authentication : activation du fournisseur Adresse e-mail/Mot de passe">
+        <div>
+          <ul class="dense">
+            <li>Menu <strong>Authentication</strong>, puis <strong>Commencer</strong></li>
+            <li>Onglet <em>Méthode de connexion</em> : choisissez <strong>Adresse e-mail/Mot de passe</strong></li>
+            <li>Activez le premier interrupteur seulement, puis <strong>Enregistrer</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2>Créer la base Firestore</h2>
+    <div class="corps">
+      <div class="colonnes capture-texte">
+        <img class="capture" src="../assets/img/cours4/06-firestore-production.png" alt="Firestore : choix du mode production à la création de la base">
+        <div>
+          <ul class="dense">
+            <li>Menu <strong>Firestore</strong>, puis <strong>Créer une base de données</strong> (édition Standard)</li>
+            <li>Emplacement <code>eur3</code> (Europe). Il ne pourra plus être modifié</li>
+            <li>Choisissez le <strong>mode production</strong> : tout est refusé tant qu'aucune règle ne l'autorise</li>
+          </ul>
+          <div class="encadre corail" style="margin-top: 14px;">N'utilisez pas le <strong>mode test</strong> : il ouvre toutes les données à tout le monde pendant 30 jours. Les règles de la dernière partie ouvrent le strict nécessaire.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2>Ajouter une application Web</h2>
+    <div class="corps">
+      <div class="colonnes capture-texte">
+        <img class="capture" src="../assets/img/cours4/10-configuration.png" alt="Console Firebase : bloc firebaseConfig de l'application Web, valeurs masquées">
+        <div>
+          <ul class="dense">
+            <li><strong>Paramètres du projet</strong>, section <em>Vos applications</em> : cliquez sur l'icône <code>&lt;/&gt;</code></li>
+            <li>Donnez un pseudo à l'application, sans cocher Firebase Hosting, puis enregistrez-la</li>
+            <li>Firebase affiche le bloc <code>firebaseConfig</code> : ses valeurs iront dans <code>.env.local</code>. Je les ai masquées ici</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -1352,16 +1399,35 @@ service cloud.firestore {
   </section>
 
   <section>
+    <h2>Publier les règles</h2>
+    <div class="corps">
+      <div class="colonnes capture-texte">
+        <img class="capture" src="../assets/img/cours4/07-regles-publier.png" alt="Firestore, onglet Règles : règles des favoris prêtes à être publiées">
+        <div>
+          <ul class="dense">
+            <li>Firestore, onglet <strong>Règles</strong> : remplacez le contenu par celui de <code>firestore.rules</code></li>
+            <li>Cliquez sur <strong>Publier</strong>. Les règles s'appliquent en moins d'une minute</li>
+            <li>Gardez <code>firestore.rules</code> dans le dépôt, identique aux règles publiées</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
     <h2>Tester les règles</h2>
     <div class="corps">
-      <ol>
-        <li>Dans la console, onglet <strong>Règles</strong> de Firestore, ouvrez le <a href="https://firebase.google.com/docs/rules/simulator" target="_blank"><em>Rules Playground</em></a></li>
-        <li>Simulez une lecture de <code>users/abc/favorites/s3</code> <strong>sans</strong> être authentifié : elle doit être refusée</li>
-        <li>Simulez la même lecture authentifié avec l'identifiant <code>abc</code> : elle doit être acceptée</li>
-        <li>Recommencez avec un autre identifiant : elle doit être refusée</li>
-      </ol>
-      <div class="encadre" style="margin-top: 20px;">
-        Une erreur <code>permission-denied</code> dans l'application signifie que les règles ont refusé la demande. Vérifiez le chemin et l'utilisateur connecté avant de les assouplir.
+      <div class="colonnes capture-texte">
+        <img class="capture" src="../assets/img/cours4/11-playground-refus.png" alt="Rules Playground : simulation de lecture refusée sans authentification">
+        <div>
+          <ol class="dense">
+            <li>Onglet <strong>Règles</strong>, ouvrez l'<a href="https://firebase.google.com/docs/rules/simulator" target="_blank"><em>espace de test dédié aux règles</em></a></li>
+            <li>Simulez un <code>get</code> de <code>users/abc/favorites/s3</code> <strong>sans</strong> authentification : refusé</li>
+            <li>Activez <em>Authentifié</em> avec l'identifiant <code>abc</code> : accepté</li>
+            <li>Avec un autre identifiant : refusé</li>
+          </ol>
+          <div class="encadre" style="margin-top: 14px;">Une erreur <code>permission-denied</code> dans l'application signifie que les règles ont refusé la demande. Vérifiez le chemin et l'utilisateur connecté avant de les assouplir.</div>
+        </div>
       </div>
     </div>
   </section>
