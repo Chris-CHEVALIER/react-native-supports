@@ -115,13 +115,17 @@ export const db = getFirestore(app);</code></pre>
     <ol>
       <li>Écrivez le modèle de l'utilisateur dans <code>src/models/user.ts</code> et le service <code>src/services/auth-service.ts</code> : inscription, connexion, déconnexion, écoute de la session et traduction des erreurs en messages lisibles.</li>
       <li>Écrivez un Context d'authentification dans <code>src/context/</code> et son hook <code>useAuth</code> dans <code>src/hooks/</code>. Il expose l'utilisateur connecté et indique si Firebase a fini de vérifier la session.</li>
-      <li>Créez un groupe <code>src/app/(auth)/</code> avec un écran de connexion (<code>sign-in.tsx</code>) et un écran d'inscription (<code>sign-up.tsx</code>).</li>
-      <li>Dans la pile racine, protégez vos écrans avec <a href="https://docs.expo.dev/router/advanced/protected/" target="_blank"><code>Stack.Protected</code></a> : les onglets et le détail pour un utilisateur connecté, le groupe <code>(auth)</code> pour un visiteur.</li>
+      <li>Créez un groupe <code>src/app/(auth)/</code> avec un écran de connexion (<code>sign-in.tsx</code>) et un écran d'inscription (<code>sign-up.tsx</code>), sans <code>_layout.tsx</code> dans ce groupe.</li>
+      <li>Dans la pile racine, protégez vos écrans avec <a href="https://docs.expo.dev/router/advanced/protected/" target="_blank"><code>Stack.Protected</code></a> : les onglets et le détail pour un utilisateur connecté, <code>(auth)/sign-in</code> et <code>(auth)/sign-up</code> pour un visiteur.</li>
       <li>Ajoutez un moyen de se déconnecter, par exemple un onglet « Compte ».</li>
     </ol>
     <details>
       <summary>Indice : lire l'utilisateur dans la pile racine</summary>
       <p>Un composant ne peut pas lire le Context qu'il fournit lui-même. Placez les Providers dans <code>RootLayout</code>, puis écrivez la pile dans un petit composant placé sous eux, qui appelle <code>useAuth()</code>.</p>
+    </details>
+    <details>
+      <summary>Indice : « Page introuvable » après la déconnexion</summary>
+      <p>Si le groupe <code>(auth)</code> a son propre <code>_layout.tsx</code>, Expo Router redirige vers <code>/(auth)</code>, qui n'est pas une page. Retirez ce fichier et déclarez <code>(auth)/sign-in</code> et <code>(auth)/sign-up</code> directement dans la pile racine.</p>
     </details>
     <details>
       <summary>Indice : les codes d'erreur</summary>

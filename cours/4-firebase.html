@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
 });</code></pre>
         <div>
           <ul class="dense">
-            <li>Le groupe <code>(auth)</code> range les écrans réservés aux visiteurs non connectés</li>
+            <li>Le groupe <code>(auth)</code> range les écrans réservés aux visiteurs non connectés. Il n'a pas de navigateur à lui : la pile racine les affiche</li>
             <li>L'écran ne contient que la mise en page : l'action vient du service</li>
           </ul>
         </div>
@@ -638,38 +638,13 @@ const styles = StyleSheet.create({
           <ul class="dense">
             <li>Il répond à <code>/sign-in</code> : les parenthèses du groupe n'apparaissent pas dans l'URL</li>
             <li>Le lien mène à l'inscription, écrite à la diapo précédente</li>
+            <li>Sans titre, l'en-tête afficherait le nom de la route : les titres seront donnés dans la pile racine</li>
           </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>La pile des visiteurs</h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours4/src/app/(auth)/_layout.tsx" data-titre="src/app/(auth)/_layout.tsx"><code class="language-tsx" data-line-numbers="">import { Stack } from "expo-router";
-
-export default function AuthLayout() {
-  return (
-    &lt;Stack screenOptions={{ headerTransparent: false }}&gt;
-      &lt;Stack.Screen name="sign-in" options={{ title: "Connexion" }} /&gt;
-      &lt;Stack.Screen
-        name="sign-up"
-        options={{ title: "Inscription" }}
-      /&gt;
-    &lt;/Stack&gt;
-  );
-}</code></pre>
-        <div>
-          <ul class="dense">
-            <li>Un groupe peut avoir son propre navigateur : ici une pile simple, sans onglets</li>
-            <li>Chaque écran reçoit son titre</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <section>
     <h2>Un onglet « Compte »</h2>
@@ -830,8 +805,12 @@ function RootStack() {
       &lt;/Stack.Protected&gt;
       &lt;Stack.Protected guard={user === null}&gt;
         &lt;Stack.Screen
-          name="(auth)"
-          options={{ headerShown: false }}
+          name="(auth)/sign-in"
+          options={{ title: "Connexion" }}
+        /&gt;
+        &lt;Stack.Screen
+          name="(auth)/sign-up"
+          options={{ title: "Inscription" }}
         /&gt;
       &lt;/Stack.Protected&gt;
     &lt;/Stack&gt;
@@ -841,7 +820,7 @@ function RootStack() {
           <ul class="dense">
             <li><code>AuthProvider</code> entoure <code>FavoritesProvider</code> : les favoris auront besoin de l'utilisateur</li>
             <li><code>RootStack</code> lit <code>useAuth</code>. Il est donc placé <strong>sous</strong> les Providers</li>
-            <li><a href="https://docs.expo.dev/router/advanced/protected/" target="_blank"><code>Stack.Protected</code></a> n'ouvre un groupe que si <code>guard</code> vaut <code>true</code>. À la connexion ou à la déconnexion, Expo Router redirige tout seul</li>
+            <li><a href="https://docs.expo.dev/router/advanced/protected/" target="_blank"><code>Stack.Protected</code></a> n'ouvre ses écrans que si <code>guard</code> vaut <code>true</code>. À la connexion ou à la déconnexion, Expo Router redirige tout seul : un visiteur arrive sur <code>/sign-in</code></li>
             <li>Ce garde ne fait que cacher des écrans. La vraie protection des données vient des règles de sécurité</li>
           </ul>
         </div>
