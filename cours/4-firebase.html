@@ -859,7 +859,7 @@ function RootStack() {
           <ul class="dense">
                         <li><code>RootStack</code> lit <code>useAuth</code>. Il est donc placé <strong>sous</strong> les Providers</li>
             <li><a href="https://docs.expo.dev/router/advanced/protected/" target="_blank"><code>Stack.Protected</code></a> n'ouvre ses écrans que si <code>guard</code> vaut <code>true</code>. À la connexion ou à la déconnexion, Expo Router redirige tout seul : un visiteur arrive sur <code>/sign-in</code></li>
-            <li>Ce garde cache des écrans, mais ne protège pas les données : on peut appeler Firebase sans passer par l'application. La dernière partie protège les données elles-mêmes</li>
+            <li>Ce garde cache des écrans, mais ne protège pas les données : on peut appeler Firebase sans passer par l'application. Les règles de Firestore protègent les données elles-mêmes</li>
           </ul>
         </div>
       </div>
@@ -946,7 +946,7 @@ function RootStack() {
             <li>Emplacement <code>eur3</code> (Europe). Il ne pourra plus être modifié</li>
             <li>Choisissez le <strong>mode production</strong> : tout est refusé tant qu'aucune règle ne l'autorise</li>
           </ul>
-          <div class="encadre corail" style="margin-top: 14px;">N'utilisez pas le <strong>mode test</strong> : il ouvre toutes les données à tout le monde pendant 30 jours. Les règles de la dernière partie ouvrent le strict nécessaire.</div>
+          <div class="encadre corail" style="margin-top: 14px;">N'utilisez pas le <strong>mode test</strong> : il ouvre toutes les données à tout le monde pendant 30 jours. Nos règles, publiées avant de tester, ouvrent le strict nécessaire.</div>
         </div>
       </div>
     </div>
@@ -1325,40 +1325,6 @@ const styles = StyleSheet.create({
   </section>
 
 
-  <section class="resultat">
-    <h2>✅ Résultat 4 : le temps réel</h2>
-    <div class="corps">
-      <div class="colonnes">
-        <div class="carte">
-          <h3>À l'écran</h3>
-          <ol class="dense">
-            <li>Ouvrez l'application sur le web et sur Expo Go, avec le même compte</li>
-            <li>Ajoutez un favori sur le web : il apparaît sur le téléphone</li>
-            <li>Ajoutez une note dans le détail, puis rechargez : elle est toujours là</li>
-            <li>Regardez la console, <strong>Firestore</strong>, onglet <em>Données</em> : le document existe</li>
-          </ol>
-        </div>
-        <div class="carte">
-          <h3>Ce qu'on vient de gagner</h3>
-          <ul class="dense">
-            <li>Les favoris sont gardés sur un serveur, par utilisateur</li>
-            <li>Un CRUD complet : créer, lire, modifier, supprimer</li>
-            <li>Le hook s'abonne au montage et se désabonne au démontage</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <aside class="notes">Démo du temps réel côte à côte. Modifier aussi un document directement dans la console pour montrer qu'il apparaît dans l'application.</aside>
-  </section>
-
-  <!-- ================================================================== -->
-  <section data-layout="section">
-    <div class="numero">04</div>
-    <h2>Les règles de sécurité</h2>
-    <div class="sous-titre">Le seul vrai verrou</div>
-  </section>
-
-
   <section>
     <h2>Les règles des favoris</h2>
     <div class="corps">
@@ -1380,10 +1346,11 @@ service cloud.firestore {
 }</code></pre>
         <div>
           <ul class="dense">
-            <li>La configuration est publique : on peut appeler la base <strong>sans passer par vos écrans</strong>. Seules ces règles, vérifiées par Firebase, protègent les données</li>
+            <li>La configuration est publique : on peut appeler la base <strong>sans vos écrans</strong>. Seules ces règles protègent les données</li>
             <li><code>{userId}</code> capture l'identifiant dans le chemin. <code>request.auth</code> est l'utilisateur qui demande : chacun n'accède qu'à ses favoris</li>
             <li><code>request.resource.data</code> est le document envoyé : on vérifie sa forme</li>
-            <li>Ne publiez jamais <code>if true</code> (le « mode test ») : tout le monde lirait et effacerait tout</li>
+            <li>Firestore, onglet <strong>Règles</strong> : collez ce fichier, puis cliquez sur <strong>Publier</strong>. Sans cela, le mode production refuse tout</li>
+            <li>Jamais de <code>if true</code> (le «&nbsp;mode test&nbsp;») : tout le monde lirait et effacerait tout</li>
           </ul>
         </div>
       </div>
@@ -1391,22 +1358,32 @@ service cloud.firestore {
     <aside class="notes">Le langage des règles ressemble à du JavaScript sans en être. Documentation : firebase.google.com/docs/firestore/security/rules-structure.</aside>
   </section>
 
-  <section>
-    <h2>Publier les règles</h2>
+  <section class="resultat">
+    <h2>✅ Résultat 4 : le temps réel</h2>
     <div class="corps">
-      <div class="colonnes capture-texte">
-        <img class="capture" src="../assets/img/cours4/07-regles-publier.png" alt="Firestore, onglet Règles : règles des favoris prêtes à être publiées">
-        <div>
+      <div class="colonnes">
+        <div class="carte">
+          <h3>À l'écran</h3>
+          <ol class="dense">
+            <li>Ouvrez l'application sur le web et sur Expo Go, avec le même compte</li>
+            <li>Ajoutez un favori sur le web : il apparaît sur le téléphone</li>
+            <li>Ajoutez une note dans le détail, puis rechargez : elle est toujours là</li>
+            <li>Regardez la console, <strong>Firestore</strong>, onglet <em>Données</em> : le document existe</li>
+          </ol>
+        </div>
+        <div class="carte">
+          <h3>Ce qu'on vient de gagner</h3>
           <ul class="dense">
-            <li>Firestore, onglet <strong>Règles</strong> : remplacez le contenu par celui de <code>firestore.rules</code></li>
-            <li>Cliquez sur <strong>Publier</strong>. Les règles s'appliquent en moins d'une minute</li>
-            <li>Gardez <code>firestore.rules</code> dans le dépôt, identique aux règles publiées</li>
+            <li>Les favoris sont gardés sur un serveur, par utilisateur</li>
+            <li>Un CRUD complet : créer, lire, modifier, supprimer</li>
+            <li>Le hook s'abonne au montage et se désabonne au démontage</li>
+            <li>Les règles réservent les favoris à leur propriétaire</li>
           </ul>
         </div>
       </div>
     </div>
+    <aside class="notes">Démo du temps réel côte à côte. Modifier aussi un document directement dans la console pour montrer qu'il apparaît dans l'application.</aside>
   </section>
-
 
   <section>
     <h2>À retenir</h2>

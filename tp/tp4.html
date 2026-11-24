@@ -152,6 +152,10 @@ export const db = getFirestore(app);</code></pre>
       <li>Décrivez dans le README le schéma des trois collections : leur chemin et les champs de leurs documents.</li>
     </ol>
     <details>
+      <summary>Indice : « Missing or insufficient permissions »</summary>
+      <p>En mode production, Firestore refuse tout tant qu'aucune règle ne l'autorise. Dès votre première collection, écrivez et publiez ses règles comme à l'étape 4, puis complétez-les au fil des collections.</p>
+    </details>
+    <details>
       <summary>Indice : tester le temps réel</summary>
       <p>Ouvrez l'application sur le web et sur Expo Go, connectés au même compte. Une modification d'un côté doit apparaître de l'autre sans rien recharger. Vous pouvez aussi modifier un document directement dans la console Firebase.</p>
     </details>
