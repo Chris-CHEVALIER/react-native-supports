@@ -1047,7 +1047,7 @@ export function useRealtimeFavorites(uid: string | null) {
             <li>L'abonnement commence dans <code>useEffect</code>, au montage</li>
             <li>La fonction renvoyée arrête l'écoute au <strong>démontage</strong>, ou quand l'utilisateur change</li>
             <li>Sans ce nettoyage, les écouteurs s'accumuleraient à chaque connexion</li>
-            <li>C'est le <strong>cycle de vie</strong> d'un composant : monté, mis à jour, démonté. Sans temps réel, il faudrait recharger à la main : <a href="https://docs.expo.dev/router/reference/hooks/#usefocuseffect" target="_blank"><code>useFocusEffect</code></a> quand l'écran redevient visible, <a href="https://reactnative.dev/docs/appstate" target="_blank"><code>AppState</code></a> quand l'application revient au premier plan</li>
+            <li>C'est le <strong>cycle de vie</strong> d'un composant : monté, mis à jour, démonté</li>
           </ul>
         </div>
       </div>
@@ -1155,7 +1155,7 @@ export function FavoriteNote({ stayId }: FavoriteNoteProps) {
   if (!isFavorite(stayId)) {
     return (
       &lt;Text style={styles.hint}&gt;
-        Ajoutez ce séjour à vos favoris pour l&amp;apos;annoter.
+        Ajoutez ce séjour à vos favoris pour l’annoter.
       &lt;/Text&gt;
     );
   }
