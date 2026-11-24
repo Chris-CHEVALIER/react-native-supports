@@ -20,16 +20,6 @@
     </div>
   </section>
 
-  <section data-layout="sommaire">
-    <h1>Sommaire</h1>
-    <ol>
-      <li>Firebase en bref</li>
-      <li>Brancher Firebase</li>
-      <li>L'authentification</li>
-      <li>Firestore en temps réel</li>
-      <li>Les règles de sécurité</li>
-    </ol>
-  </section>
 
   <section>
     <h2>Ce qu'on construit aujourd'hui</h2>
@@ -47,8 +37,8 @@
   <!-- ================================================================== -->
   <section data-layout="section">
     <div class="numero">01</div>
-    <h2>Firebase en bref</h2>
-    <div class="sous-titre">Un backend sans serveur à écrire</div>
+    <h2>Brancher Firebase</h2>
+    <div class="sous-titre">Créer le projet, installer, configurer</div>
   </section>
 
   <section>
@@ -83,7 +73,7 @@
       <table class="serre">
         <tr><th></th><th><span class="couche modele">Modèle</span></th><th><span class="couche service">Service</span></th><th><span class="couche controleur">Contrôleur</span></th><th><span class="couche vue">Vue</span></th></tr>
         <tr><td><strong>Compte</strong></td><td><code>user.ts</code></td><td><code>firebase.ts</code><br><code>auth-service.ts</code></td><td><code>auth-context.tsx</code><br><code>use-auth.ts</code></td><td><code>auth-form.tsx</code>, <code>sign-up.tsx</code>, <code>sign-in.tsx</code>, <code>account.tsx</code>, <code>_layout.tsx</code></td></tr>
-        <tr><td><strong>Favoris</strong></td><td><code>favorite.ts</code></td><td><code>favorites-service.ts</code></td><td><code>use-realtime-favorites.ts</code><br><code>favorites-context.tsx</code></td><td><code>favorite-note.tsx</code>, <code>[id].tsx</code>, <code>favorites.tsx</code></td></tr>
+        <tr><td><strong>Favoris</strong></td><td><code>favorite.ts</code></td><td><code>favorites-service.ts</code></td><td><code>use-realtime-favorites.ts</code><br><code>favorites-context.tsx</code></td><td><code>favorite-note.tsx</code>, <code>[id].tsx</code></td></tr>
       </table>
       <ul class="dense" style="margin-top: 16px;">
         <li>Le découpage est celui du cours 2 : seul le service parle à Firebase</li>
@@ -141,12 +131,6 @@
     </div>
   </section>
 
-  <!-- ================================================================== -->
-  <section data-layout="section">
-    <div class="numero">02</div>
-    <h2>Brancher Firebase</h2>
-    <div class="sous-titre">Installer, configurer, initialiser</div>
-  </section>
 
   <section>
     <h2>Installer le SDK</h2>
@@ -259,7 +243,7 @@ export const db = getFirestore(app);</code></pre>
 
   <!-- ================================================================== -->
   <section data-layout="section">
-    <div class="numero">03</div>
+    <div class="numero">02</div>
     <h2>L'authentification</h2>
     <div class="sous-titre">Inscription, connexion, écrans protégés</div>
   </section>
@@ -603,7 +587,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           <ul class="dense">
             <li>Même principe que les favoris : <code>user</code> est partagé par tous les écrans. Il vaut <code>null</code> si personne n'est connecté</li>
             <li>Au démarrage, Firebase relit la session enregistrée. Cela prend un instant, pendant lequel <code>user</code> vaut <code>null</code>, même pour quelqu'un de connecté</li>
-            <li><code>initializing</code> signale cet instant : on attend la réponse au lieu de croire l'utilisateur déconnecté et de l'envoyer sur la connexion</li>
+            <li><code>initializing</code> signale cet instant : on attend la réponse. Sans lui, un lien vers <code>/stays/s1</code> ouvert par un utilisateur connecté le ramènerait sur l'accueil : la page demandée serait perdue</li>
           </ul>
         </div>
       </div>
@@ -911,7 +895,7 @@ function RootStack() {
 
   <!-- ================================================================== -->
   <section data-layout="section">
-    <div class="numero">04</div>
+    <div class="numero">03</div>
     <h2>Firestore en temps réel</h2>
     <div class="sous-titre">Des favoris annotés, par utilisateur</div>
   </section>
@@ -1105,36 +1089,13 @@ export function useRealtimeFavorites(uid: string | null) {
             <li>L'abonnement commence dans <code>useEffect</code>, au montage</li>
             <li>La fonction renvoyée arrête l'écoute au <strong>démontage</strong>, ou quand l'utilisateur change</li>
             <li>Sans ce nettoyage, les écouteurs s'accumuleraient à chaque connexion</li>
+            <li>C'est le <strong>cycle de vie</strong> d'un composant : monté, mis à jour, démonté. Sans temps réel, il faudrait recharger à la main : <a href="https://docs.expo.dev/router/reference/hooks/#usefocuseffect" target="_blank"><code>useFocusEffect</code></a> quand l'écran redevient visible, <a href="https://reactnative.dev/docs/appstate" target="_blank"><code>AppState</code></a> quand l'application revient au premier plan</li>
           </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>Monté, affiché, au premier plan</h2>
-    <div class="corps">
-      <svg class="schema-pile" viewBox="0 0 1100 200" role="img" aria-label="Cycle de vie d'un composant : montage et abonnement, mises à jour, démontage et désabonnement">
-        <defs><marker id="fleche-vie" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1B1E3C"/></marker></defs>
-        <g font-family="Outfit, Arial, sans-serif" fill="#1B1E3C">
-          <line x1="60" y1="100" x2="1040" y2="100" stroke="#1B1E3C" stroke-width="2.5" marker-end="url(#fleche-vie)"/>
-          <circle cx="140" cy="100" r="12" fill="#2EC4B6"/>
-          <text x="140" y="62" text-anchor="middle" font-size="19" font-weight="700">Montage</text>
-          <text x="140" y="145" text-anchor="middle" font-size="15" fill="#5A5F80">onSnapshot : on s'abonne</text>
-          <rect x="290" y="78" width="440" height="44" rx="10" fill="#E2F7F4" stroke="#2EC4B6" stroke-width="2"/>
-          <text x="510" y="106" text-anchor="middle" font-size="16">à chaque modification : setState, l'écran se met à jour</text>
-          <circle cx="900" cy="100" r="12" fill="#FF7A59"/>
-          <text x="900" y="62" text-anchor="middle" font-size="19" font-weight="700">Démontage</text>
-          <text x="900" y="145" text-anchor="middle" font-size="15" fill="#5A5F80">unsubscribe : on se désabonne</text>
-        </g>
-      </svg>
-      <ul class="dense" style="margin-top: 6px;">
-        <li>Un composant a un <strong>cycle de vie</strong> : il est monté, mis à jour, puis démonté. <code>useEffect</code> et sa fonction de nettoyage suivent ce cycle</li>
-        <li>Avec le temps réel, un écran qui redevient visible est déjà à jour : rien à recharger</li>
-        <li>Sans temps réel, deux outils existent. <a href="https://docs.expo.dev/router/reference/hooks/#usefocuseffect" target="_blank"><code>useFocusEffect</code></a> recharge un écran qui redevient visible. <a href="https://reactnative.dev/docs/appstate" target="_blank"><code>AppState</code></a> signale le retour de l'application au premier plan</li>
-      </ul>
-    </div>
-  </section>
 
   <section>
     <h2>Les favoris passent dans Firestore <span class="couche controleur">Contrôleur</span></h2>
@@ -1363,82 +1324,6 @@ const styles = StyleSheet.create({
     </div>
   </section>
 
-  <section>
-    <h2>La note dans la liste des favoris <span class="couche vue">Vue</span></h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours4/src/app/(tabs)/favorites.tsx" data-titre="src/app/(tabs)/favorites.tsx"><code class="language-tsx" data-line-numbers="2,11,27-40,59-61">import { Link } from "expo-router";
-import { SectionList, StyleSheet, Text, View } from "react-native";
-
-import { StateMessage } from "@/components/state-message";
-import { useFavorites } from "@/hooks/use-favorites";
-import { useStays } from "@/hooks/use-stays";
-import { groupByCity } from "@/models/stay";
-
-export default function FavoritesScreen() {
-  const { state } = useStays();
-  const { isFavorite, noteOf } = useFavorites();
-
-  if (state.status !== "success")
-    return &lt;StateMessage loading={state.status === "loading"} /&gt;;
-  const sections = groupByCity(
-    state.stays.filter((stay) =&gt; isFavorite(stay.id)),
-  );
-
-  return (
-    &lt;SectionList
-      sections={sections}
-      keyExtractor={(stay) =&gt; stay.id}
-      renderSectionHeader={({ section }) =&gt; (
-        &lt;Text style={styles.city}&gt;{section.title}&lt;/Text&gt;
-      )}
-      renderItem={({ item }) =&gt; (
-        &lt;View style={styles.row}&gt;
-          &lt;Link
-            href={{
-              pathname: "/stays/[id]",
-              params: { id: item.id },
-            }}
-            style={styles.item}
-          &gt;
-            {item.title}
-          &lt;/Link&gt;
-          {noteOf(item.id) !== "" &amp;&amp; (
-            &lt;Text style={styles.note}&gt;{noteOf(item.id)}&lt;/Text&gt;
-          )}
-        &lt;/View&gt;
-      )}
-      ListEmptyComponent={
-        &lt;Text style={styles.item}&gt;Aucun favori pour le moment.&lt;/Text&gt;
-      }
-      contentContainerStyle={styles.list}
-    /&gt;
-  );
-}
-
-const styles = StyleSheet.create({
-  list: { padding: 16 },
-  city: {
-    fontSize: 14,
-    fontWeight: "700",
-    textTransform: "uppercase",
-    color: "#0B7A70",
-    marginTop: 16,
-  },
-  row: { paddingVertical: 8, gap: 2 },
-  item: { fontSize: 17 },
-  note: { fontSize: 14, color: "#5A5F80" },
-});</code></pre>
-        <div>
-          <ul class="dense">
-            <li>La note s'affiche sous le titre, quand elle existe</li>
-            <li>Modifiez une note sur le web : elle apparaît aussitôt sur le téléphone</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <aside class="notes">Démo du temps réel : le web et Expo Go côte à côte, connectés au même compte. Ajouter un favori d'un côté, il apparaît de l'autre.</aside>
-  </section>
 
   <section class="resultat">
     <h2>✅ Résultat 4 : le temps réel</h2>
@@ -1449,7 +1334,7 @@ const styles = StyleSheet.create({
           <ol class="dense">
             <li>Ouvrez l'application sur le web et sur Expo Go, avec le même compte</li>
             <li>Ajoutez un favori sur le web : il apparaît sur le téléphone</li>
-            <li>Ajoutez une note dans le détail : elle s'affiche dans la liste</li>
+            <li>Ajoutez une note dans le détail, puis rechargez : elle est toujours là</li>
             <li>Regardez la console, <strong>Firestore</strong>, onglet <em>Données</em> : le document existe</li>
           </ol>
         </div>
@@ -1468,24 +1353,11 @@ const styles = StyleSheet.create({
 
   <!-- ================================================================== -->
   <section data-layout="section">
-    <div class="numero">05</div>
+    <div class="numero">04</div>
     <h2>Les règles de sécurité</h2>
     <div class="sous-titre">Le seul vrai verrou</div>
   </section>
 
-  <section>
-    <h2>Pourquoi des règles ?</h2>
-    <div class="corps">
-      <ul>
-        <li>La configuration de Firebase est dans l'application, donc lisible par tous. N'importe qui peut appeler votre base <strong>sans passer par vos écrans</strong></li>
-        <li>Masquer un bouton ou un écran ne protège rien. Seules les <strong>règles</strong>, vérifiées par les serveurs de Firebase, protègent les données</li>
-        <li>Chaque lecture et chaque écriture est refusée, sauf si une règle l'autorise</li>
-      </ul>
-      <div class="encadre corail" style="margin-top: 20px;">
-        Une règle <code>allow read, write: if true;</code> (le « mode test ») laisse n'importe qui lire, modifier et effacer toutes vos données. Ne la publiez jamais, même pour un essai.
-      </div>
-    </div>
-  </section>
 
   <section>
     <h2>Les règles des favoris</h2>
@@ -1508,10 +1380,10 @@ service cloud.firestore {
 }</code></pre>
         <div>
           <ul class="dense">
-            <li><code>match</code> désigne un chemin. <code>{userId}</code> capture l'identifiant de l'utilisateur dans ce chemin</li>
-            <li><code>request.auth</code> est l'utilisateur qui fait la demande : chacun n'accède qu'à ses favoris</li>
-            <li><code>request.resource.data</code> est le document envoyé : on vérifie sa forme avant de l'accepter</li>
-            <li>Copiez le fichier dans la console, onglet <strong>Règles</strong> de Firestore, puis <strong>Publier</strong></li>
+            <li>La configuration est publique : on peut appeler la base <strong>sans passer par vos écrans</strong>. Seules ces règles, vérifiées par Firebase, protègent les données</li>
+            <li><code>{userId}</code> capture l'identifiant dans le chemin. <code>request.auth</code> est l'utilisateur qui demande : chacun n'accède qu'à ses favoris</li>
+            <li><code>request.resource.data</code> est le document envoyé : on vérifie sa forme</li>
+            <li>Ne publiez jamais <code>if true</code> (le « mode test ») : tout le monde lirait et effacerait tout</li>
           </ul>
         </div>
       </div>
@@ -1535,23 +1407,6 @@ service cloud.firestore {
     </div>
   </section>
 
-  <section>
-    <h2>Tester les règles</h2>
-    <div class="corps">
-      <div class="colonnes capture-texte">
-        <img class="capture" src="../assets/img/cours4/11-playground-refus.png" alt="Rules Playground : simulation de lecture refusée sans authentification">
-        <div>
-          <ol class="dense">
-            <li>Onglet <strong>Règles</strong>, ouvrez l'<a href="https://firebase.google.com/docs/rules/simulator" target="_blank"><em>espace de test dédié aux règles</em></a></li>
-            <li>Simulez un <code>get</code> de <code>users/abc/favorites/s3</code> <strong>sans</strong> authentification : refusé</li>
-            <li>Activez <em>Authentifié</em> avec l'identifiant <code>abc</code> : accepté</li>
-            <li>Avec un autre identifiant : refusé</li>
-          </ol>
-          <div class="encadre" style="margin-top: 14px;">Une erreur <code>permission-denied</code> dans l'application signifie que les règles ont refusé la demande. Vérifiez le chemin et l'utilisateur connecté avant de les assouplir.</div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <section>
     <h2>À retenir</h2>
