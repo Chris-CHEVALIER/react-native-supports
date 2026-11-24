@@ -29,7 +29,7 @@
         <div class="carte"><h3>2. Des écrans protégés</h3><ul class="dense"><li>Un visiteur arrive sur la connexion</li><li>Un utilisateur connecté arrive sur les séjours</li></ul></div>
         <div class="carte"><h3>3. Des favoris en ligne</h3><ul class="dense"><li>Gardés sur un serveur, par utilisateur, avec une note</li><li>Synchronisés en temps réel entre le web et le téléphone</li></ul></div>
       </div>
-      <div class="encadre" style="margin-top: 20px;">Le chemin compte quatre étapes. Chacune se termine par une diapo ✅ <strong>Résultat</strong>, que l'on teste ensemble avant de continuer.</div>
+      <div class="encadre" style="margin-top: 20px;">Le chemin compte quatre étapes. Chacune se termine par une puce ✅ <strong>Testez</strong> : on vérifie ensemble que l'application fonctionne avant de continuer.</div>
     </div>
     <aside class="notes">Montrer la démo finale pendant deux minutes, avant toute ligne de code : le web et Expo Go côte à côte, connectés au même compte. Ajouter un favori d'un côté, il apparaît de l'autre.</aside>
   </section>
@@ -470,36 +470,11 @@ const styles = StyleSheet.create({
           <ul class="dense">
             <li>Le groupe <code>(auth)</code> range les écrans réservés aux visiteurs non connectés. Il n'a pas de navigateur à lui : la pile racine les affiche</li>
             <li>L'écran ne contient que la mise en page : l'action vient du service</li>
+            <li class="testez">✅ <strong>Testez</strong> : ouvrez <code>/sign-up</code> et créez un compte. Il apparaît dans <strong>Authentication</strong>, onglet <em>Utilisateurs</em></li>
           </ul>
         </div>
       </div>
     </div>
-  </section>
-
-  <section class="resultat">
-    <h2>✅ Résultat 1 : créer un compte</h2>
-    <div class="corps">
-      <div class="colonnes">
-        <div class="carte">
-          <h3>À l'écran</h3>
-          <ol class="dense">
-            <li>Ouvrez <code>/sign-up</code> dans le navigateur</li>
-            <li>Essayez un mot de passe de 3 caractères : le message d'erreur s'affiche</li>
-            <li>Créez un compte avec un mot de passe valide</li>
-            <li>Dans la console, <strong>Authentication</strong>, onglet <em>Utilisateurs</em> : le compte apparaît</li>
-          </ol>
-        </div>
-        <div class="carte">
-          <h3>Ce qu'on vient de gagner</h3>
-          <ul class="dense">
-            <li>Firebase est branché : l'application crée de vrais comptes</li>
-            <li>Les erreurs de Firebase arrivent traduites à l'écran</li>
-            <li>Le formulaire, le service et l'écran sont séparés : chacun a un seul rôle</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <aside class="notes">Faire la manipulation en direct. Les étudiants voient leur premier résultat concret : un utilisateur dans la console.</aside>
   </section>
 
   <section>
@@ -771,36 +746,11 @@ export default function TabsLayout() {
         <div>
           <ul class="dense">
             <li>Ce fichier existe déjà : on y ajoute seulement l'onglet <code>account</code>, surligné</li>
+            <li class="testez">✅ <strong>Testez</strong> : connectez-vous sur <code>/sign-in</code>. L'onglet <strong>Compte</strong> affiche votre e-mail, même après un rechargement</li>
           </ul>
         </div>
       </div>
     </div>
-  </section>
-
-  <section class="resultat">
-    <h2>✅ Résultat 2 : savoir qui est connecté</h2>
-    <div class="corps">
-      <div class="colonnes">
-        <div class="carte">
-          <h3>À l'écran</h3>
-          <ol class="dense">
-            <li>Connectez-vous sur <code>/sign-in</code></li>
-            <li>Ouvrez <code>/account</code>, l'onglet <strong>Compte</strong> : votre e-mail s'affiche</li>
-            <li>Rechargez la page : vous êtes toujours connecté</li>
-            <li>Cliquez sur <strong>Se déconnecter</strong></li>
-          </ol>
-        </div>
-        <div class="carte">
-          <h3>Ce qu'on vient de gagner</h3>
-          <ul class="dense">
-            <li>Tous les écrans savent qui est connecté, grâce au Context</li>
-            <li>La session survit au rechargement</li>
-            <li>Pour l'instant, un visiteur voit encore les onglets : c'est l'étape suivante</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <aside class="notes">Montrer aussi la session gardée sur Expo Go en fermant puis rouvrant l'application.</aside>
   </section>
 
   <section>
@@ -860,37 +810,12 @@ function RootStack() {
                         <li><code>RootStack</code> lit <code>useAuth</code>. Il est donc placé <strong>sous</strong> les Providers</li>
             <li><a href="https://docs.expo.dev/router/advanced/protected/" target="_blank"><code>Stack.Protected</code></a> n'ouvre ses écrans que si <code>guard</code> vaut <code>true</code>. À la connexion ou à la déconnexion, Expo Router redirige tout seul : un visiteur arrive sur <code>/sign-in</code></li>
             <li>Ce garde cache des écrans, mais ne protège pas les données : on peut appeler Firebase sans passer par l'application. Les règles de Firestore protègent les données elles-mêmes</li>
+            <li class="testez">✅ <strong>Testez</strong> : déconnecté, ouvrez <code>/</code> ou <code>/stays/s1</code>. Vous arrivez sur la connexion</li>
           </ul>
         </div>
       </div>
     </div>
     <aside class="notes">Démo : créer un compte, se déconnecter depuis l'onglet Compte, se reconnecter. Montrer l'utilisateur dans la console Firebase (Authentication).</aside>
-  </section>
-
-  <section class="resultat">
-    <h2>✅ Résultat 3 : des écrans protégés</h2>
-    <div class="corps">
-      <div class="colonnes">
-        <div class="carte">
-          <h3>À l'écran</h3>
-          <ol class="dense">
-            <li>Déconnecté, ouvrez <code>/</code> : vous arrivez sur la connexion</li>
-            <li>Ouvrez <code>/stays/s1</code> : même redirection</li>
-            <li>Connectez-vous : les onglets apparaissent</li>
-            <li>Déconnectez-vous : retour à la connexion</li>
-          </ol>
-        </div>
-        <div class="carte">
-          <h3>Ce qu'on vient de gagner</h3>
-          <ul class="dense">
-            <li>Les visiteurs et les utilisateurs connectés voient des écrans différents</li>
-            <li>Expo Router redirige tout seul, sans <code>router.push</code></li>
-            <li>La partie compte est terminée. Reste à garder des données</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <aside class="notes">C'est le bon moment pour une pause ou une question rapide de la salle.</aside>
   </section>
 
   <!-- ================================================================== -->
@@ -969,6 +894,39 @@ function RootStack() {
         </div>
       </div>
     </div>
+  </section>
+
+  <section>
+    <h2>Les règles des favoris</h2>
+    <div class="corps">
+      <div class="colonnes code-texte">
+        <pre class="mini" data-fichier="demos/cours4/firestore.rules" data-titre="firestore.rules"><code class="language-javascript" data-line-numbers="">rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/favorites/{stayId} {
+      allow read, delete: if request.auth != null
+        &amp;&amp; request.auth.uid == userId;
+      allow create, update: if request.auth != null
+        &amp;&amp; request.auth.uid == userId
+        &amp;&amp; request.resource.data.note is string
+        &amp;&amp; request.resource.data.note.size() &lt;= 500
+        &amp;&amp; request.resource.data.createdAt is int;
+    }
+  }
+}</code></pre>
+        <div>
+          <ul class="dense">
+            <li>La configuration est publique : on peut appeler la base <strong>sans vos écrans</strong>. Seules ces règles protègent les données</li>
+            <li><code>{userId}</code> capture l'identifiant du chemin. <code>request.auth</code> est l'utilisateur qui demande</li>
+            <li><code>request.resource.data</code> est le document envoyé, dont on vérifie la forme</li>
+            <li>Firestore, onglet <strong>Règles</strong> : collez ce fichier, puis cliquez sur <strong>Publier</strong>. Sans cela, le mode production refuse tout</li>
+            <li>Jamais de <code>if true</code> (le «&nbsp;mode test&nbsp;») : tout le monde lirait et effacerait tout</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">Le langage des règles ressemble à du JavaScript sans en être. Documentation : firebase.google.com/docs/firestore/security/rules-structure.</aside>
   </section>
 
   <section>
@@ -1318,72 +1276,14 @@ const styles = StyleSheet.create({
         <div>
           <ul class="dense">
             <li>Seul le composant <code>FavoriteNote</code> est ajouté</li>
+            <li class="testez">✅ <strong>Testez</strong> : ouvrez le web et Expo Go avec le même compte. Un favori ajouté d'un côté apparaît de l'autre, et la note reste après un rechargement</li>
           </ul>
         </div>
       </div>
     </div>
+    <aside class="notes">Démo du temps réel côte à côte. Modifier aussi un document dans la console pour montrer qu'il apparaît dans l'application.</aside>
   </section>
 
-
-  <section>
-    <h2>Les règles des favoris</h2>
-    <div class="corps">
-      <div class="colonnes code-texte">
-        <pre class="mini" data-fichier="demos/cours4/firestore.rules" data-titre="firestore.rules"><code class="language-javascript" data-line-numbers="">rules_version = '2';
-
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{userId}/favorites/{stayId} {
-      allow read, delete: if request.auth != null
-        &amp;&amp; request.auth.uid == userId;
-      allow create, update: if request.auth != null
-        &amp;&amp; request.auth.uid == userId
-        &amp;&amp; request.resource.data.note is string
-        &amp;&amp; request.resource.data.note.size() &lt;= 500
-        &amp;&amp; request.resource.data.createdAt is int;
-    }
-  }
-}</code></pre>
-        <div>
-          <ul class="dense">
-            <li>La configuration est publique : on peut appeler la base <strong>sans vos écrans</strong>. Seules ces règles protègent les données</li>
-            <li><code>{userId}</code> capture l'identifiant dans le chemin. <code>request.auth</code> est l'utilisateur qui demande : chacun n'accède qu'à ses favoris</li>
-            <li><code>request.resource.data</code> est le document envoyé : on vérifie sa forme</li>
-            <li>Firestore, onglet <strong>Règles</strong> : collez ce fichier, puis cliquez sur <strong>Publier</strong>. Sans cela, le mode production refuse tout</li>
-            <li>Jamais de <code>if true</code> (le «&nbsp;mode test&nbsp;») : tout le monde lirait et effacerait tout</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <aside class="notes">Le langage des règles ressemble à du JavaScript sans en être. Documentation : firebase.google.com/docs/firestore/security/rules-structure.</aside>
-  </section>
-
-  <section class="resultat">
-    <h2>✅ Résultat 4 : le temps réel</h2>
-    <div class="corps">
-      <div class="colonnes">
-        <div class="carte">
-          <h3>À l'écran</h3>
-          <ol class="dense">
-            <li>Ouvrez l'application sur le web et sur Expo Go, avec le même compte</li>
-            <li>Ajoutez un favori sur le web : il apparaît sur le téléphone</li>
-            <li>Ajoutez une note dans le détail, puis rechargez : elle est toujours là</li>
-            <li>Regardez la console, <strong>Firestore</strong>, onglet <em>Données</em> : le document existe</li>
-          </ol>
-        </div>
-        <div class="carte">
-          <h3>Ce qu'on vient de gagner</h3>
-          <ul class="dense">
-            <li>Les favoris sont gardés sur un serveur, par utilisateur</li>
-            <li>Un CRUD complet : créer, lire, modifier, supprimer</li>
-            <li>Le hook s'abonne au montage et se désabonne au démontage</li>
-            <li>Les règles réservent les favoris à leur propriétaire</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <aside class="notes">Démo du temps réel côte à côte. Modifier aussi un document directement dans la console pour montrer qu'il apparaît dans l'application.</aside>
-  </section>
 
   <section>
     <h2>À retenir</h2>

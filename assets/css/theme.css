@@ -286,7 +286,7 @@
 .reveal .colonnes.capture-texte { grid-template-columns: 1.35fr 1fr; align-items: start; }
 .reveal img.capture { display: block; width: 100%; max-height: 470px; object-fit: contain; object-position: top left; border-radius: 10px; box-shadow: 0 6px 18px rgba(27, 30, 60, .25); margin: 0; }
 
-/* Étiquette de couche MVC dans les titres et diapos « Résultat » (cours 4) */
+/* Étiquette de couche MVC dans les titres et puce « Testez » (cours 4) */
 .reveal .couche { display: inline-block; margin-left: 14px; padding: 3px 12px; border-radius: 999px; font-size: 15px; font-weight: 700; letter-spacing: .02em; vertical-align: middle; font-family: var(--police); }
 .reveal .couche.modele { background: #E8E4FF; color: #4B3BB5; }
 .reveal .couche.service { background: var(--accent-clair); color: var(--accent-texte); }
@@ -294,4 +294,5 @@
 .reveal .couche.vue { background: var(--corail-clair); color: var(--corail-texte); }
 .reveal th .couche { margin-left: 0; }
 .reveal .colonnes.trois { grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.reveal section.resultat h2 { color: var(--accent-texte); }
+.reveal .corps ul > li.testez { padding-left: 0; color: var(--accent-texte); }
+.reveal .corps ul > li.testez::before { display: none; }
